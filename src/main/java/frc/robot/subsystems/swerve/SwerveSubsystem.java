@@ -83,10 +83,8 @@ public class SwerveSubsystem extends SubsystemBase{
         );
 
         /* Gyro Calibration */
-        while(gyro.isCalibrating()) {
-            Timer.delay(1);
-            Commands.print("Gyro Calibrating").schedule();
-        }
+        gyro.waitForCalibrationToFinish(10);
+        Commands.print("[Swerve] Gyro Calibrating").schedule();
 
         gyro.setYaw(0);
         frontLeft.resetEncoders();
@@ -197,7 +195,7 @@ public class SwerveSubsystem extends SubsystemBase{
     /**
      * set the state of four modules with {@link SwerveModuleState} array
      * @param states the desired {@link SwerveModuleState} array
-     * @param isOpenLoop true for duty cycle
+     * @param isOpenLoop true for openLoop control (for drive motor)
      */
     private void setModuleStates(SwerveModuleState[] states, boolean isOpenLoop){
         // normalize wheelspeed to make it smaller than the maximum speed
@@ -216,7 +214,7 @@ public class SwerveSubsystem extends SubsystemBase{
     /**
      * set the state of four modules with a {@link ChassisSpeeds} object
      * @param speeds the desired {@link ChassisSpeeds} speed
-     * @param isOpenLoop true for duty cycle
+     * @param isOpenLoop true for openLoop control (for drive motor)
      */
     public void setModuleStates(ChassisSpeeds speeds, boolean isOpenLoop){
         speeds = ChassisSpeeds.discretize(speeds, 0.02);
@@ -260,6 +258,10 @@ public class SwerveSubsystem extends SubsystemBase{
     public void periodic(){
         // Pose Estimator
         updatePoseEstimator();
+
+        SmartDashboard.putNumber("x accel", gyro.getAccelerationX() * 9.80665);
+        SmartDashboard.putNumber("y accel", gyro.getAccelerationY() * 9.80665);
+        SmartDashboard.putNumber("z accel", gyro.getAccelerationZ() * 9.80665);
 
         // Telemetry
         estimateField.setRobotPose(getPoseEstimate());

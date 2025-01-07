@@ -222,10 +222,10 @@ public class SwerveModule {
     /**
      * set the speed for perpotion
      * @param speed the optimized {@link SwerveModuleState}'s speed
-     * @param isDutyCycle control mode, true for {@link DutyCycleOut} Control, false for {@link VelocityDutyCycle}
+     * @param isDutyCycle true for openloop {@link DutyCycleOut} Control, false for {@link VelocityDutyCycle}
      */
-    public void setDrive(double speed, boolean isDutyCycle) {
-        if(isDutyCycle){
+    public void setDrive(double speed, boolean openLoop) {
+        if(openLoop){
             dutyCycle.Output = speed / PhysicalConstants.DriveBase.MAX_SPEED_METERS;
             driveMotor.setControl(dutyCycle);
         }else{
@@ -249,7 +249,7 @@ public class SwerveModule {
      * @param desireState the desired {@link SwerveModuleState} 
      * @param isDutyCycle control mode, duty cycle is true, velocity is false
      */
-    public void setState(SwerveModuleState desireState, boolean isDutyCycle){
+    public void setState(SwerveModuleState desireState, boolean openLoop){
         /* Stop Module if speed < 1% */
         if(Math.abs(desireState.speedMetersPerSecond) < 0.05){
             stopModule();
@@ -261,7 +261,7 @@ public class SwerveModule {
         desireState.optimize(currnetAngle);
         desireState.speedMetersPerSecond *= desireState.angle.minus(currnetAngle).getCos();
 
-        setDrive(desireState.speedMetersPerSecond, isDutyCycle);
+        setDrive(desireState.speedMetersPerSecond, openLoop);
         setTurn(desireState.angle.getRadians());
     }
 
