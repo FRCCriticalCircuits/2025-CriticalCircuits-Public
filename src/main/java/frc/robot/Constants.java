@@ -85,8 +85,8 @@ public class Constants {
                 new Translation2d( -(LENGTHS.TRACK_WIDTH_METERS / 2.0), -(LENGTHS.TRACK_WIDTH_METERS / 2.0) )   // Rear  Right  Translation2D (-1,-1) -> ( -1 ,  1 )
             ); 
 
-            public static double MAX_ANGULAR_SPEED_RAD = Math.PI * 3; // 1.5 * 360 Deg
-            public static double MAX_SPEED_METERS = 6.46;
+            public static double MAX_ANGULAR_SPEED_RAD = Math.PI * 2;
+            public static double MAX_SPEED_METERS = 5;
         }
 
         public static double GYRO_FACTOR = -1;

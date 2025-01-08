@@ -26,6 +26,7 @@ import frc.robot.utils.DriveStationIO.DriveStationIO;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PhysicalConstants;
+import frc.robot.Robot;
 
 public class SwerveSubsystem extends SubsystemBase{
     private static SwerveSubsystem instance;
@@ -83,8 +84,8 @@ public class SwerveSubsystem extends SubsystemBase{
         );
 
         /* Gyro Calibration */
-        gyro.waitForCalibrationToFinish(10);
         Commands.print("[Swerve] Gyro Calibrating").schedule();
+        gyro.waitForCalibrationToFinish(12);
 
         gyro.setYaw(0);
         frontLeft.resetEncoders();
@@ -208,7 +209,7 @@ public class SwerveSubsystem extends SubsystemBase{
         rearRight.setState(states[3], isOpenLoop);
 
         // telemetry
-        desireSwerveStatePublisher.set(states);
+        if(Robot.testMode) desireSwerveStatePublisher.set(states);
     }
 
     /**
@@ -259,28 +260,13 @@ public class SwerveSubsystem extends SubsystemBase{
         // Pose Estimator
         updatePoseEstimator();
 
-        SmartDashboard.putNumber("x accel", gyro.getAccelerationX() * 9.80665);
-        SmartDashboard.putNumber("y accel", gyro.getAccelerationY() * 9.80665);
-        SmartDashboard.putNumber("z accel", gyro.getAccelerationZ() * 9.80665);
-
         // Telemetry
         estimateField.setRobotPose(getPoseEstimate());
         SmartDashboard.putData("Estimate Field", estimateField);
-        SmartDashboard.putNumber("Gyro", gyro.getYaw() * Math.PI * 2);
 
-        currentSwerveStatePublisher.set(getSwerveModuleStates());
-    }
-
-    boolean simulationInitRunned = false;
-
-    public void simulationInit(){
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        if(!simulationInitRunned){
-            simulationInit();
-            simulationInitRunned = true;
+        if(Robot.testMode) {
+            SmartDashboard.putNumber("Gyro", gyro.getYaw() * Math.PI * 2);
+            currentSwerveStatePublisher.set(getSwerveModuleStates());
         }
     }
 }

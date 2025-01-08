@@ -37,9 +37,9 @@ public class teleopDrive extends Command{
         this.scalingFactorA = scalingFactorA;
         this.scalingFactorB = scalingFactorB;
 
-        this.xLimiter = new SlewRateLimiter(3);
-        this.yLimiter = new SlewRateLimiter(3);
-        this.omegaLimiter = new SlewRateLimiter(3);
+        this.xLimiter = new SlewRateLimiter(1.5);
+        this.yLimiter = new SlewRateLimiter(1.5);
+        this.omegaLimiter = new SlewRateLimiter(Math.PI);
 
         addRequirements(swerveSubsystem);
     }

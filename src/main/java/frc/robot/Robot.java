@@ -12,6 +12,8 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
+  
+  public static boolean testMode = false;
 
   public Robot() {
     m_robotContainer = new RobotContainer();
@@ -62,11 +64,14 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
+    testMode = true;
   }
 
   @Override
   public void testPeriodic() {}
 
   @Override
-  public void testExit() {}
+  public void testExit() {
+    testMode = false;
+  }
 }
