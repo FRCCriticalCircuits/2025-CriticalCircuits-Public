@@ -49,7 +49,7 @@ public class SwerveSubsystem extends SubsystemBase{
         // Swerve Modules
         frontLeft = new SwerveModule(
             DeviceID.DriveBase.FRONT_LEFT_CANCODER_ID, 
-            PhysicalConstants.DriveBase.CANCODER_OFFSET.FRONT_LEFT_OFFSET, 
+            PhysicalConstants.DriveBase.CANCoder.FRONT_LEFT_OFFSET, 
             DeviceID.DriveBase.FRONT_LEFT_DRIVE_ID, 
             true,
             DeviceID.DriveBase.FRONT_LEFT_TURN_ID,
@@ -58,7 +58,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
         frontRight = new SwerveModule(
             DeviceID.DriveBase.FRONT_RIGHT_CANCODER_ID, 
-            PhysicalConstants.DriveBase.CANCODER_OFFSET.FRONT_RIGHT_OFFSET, 
+            PhysicalConstants.DriveBase.CANCoder.FRONT_RIGHT_OFFSET, 
             DeviceID.DriveBase.FRONT_RIGHT_DRIVE_ID, 
             false,
             DeviceID.DriveBase.FRONT_RIGHT_TURN_ID, 
@@ -67,7 +67,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
         rearLeft = new SwerveModule(
             DeviceID.DriveBase.REAR_LEFT_CANCODER_ID, 
-            PhysicalConstants.DriveBase.CANCODER_OFFSET.REAR_LEFT_OFFSET, 
+            PhysicalConstants.DriveBase.CANCoder.REAR_LEFT_OFFSET, 
             DeviceID.DriveBase.REAR_LEFT_DRIVE_ID, 
             true,
             DeviceID.DriveBase.REAR_LEFT_TURN_ID, 
@@ -76,7 +76,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
         rearRight = new SwerveModule(
             DeviceID.DriveBase.REAR_RIGHT_CANCODER_ID, 
-            PhysicalConstants.DriveBase.CANCODER_OFFSET.REAR_RIGHT_OFFSET,
+            PhysicalConstants.DriveBase.CANCoder.REAR_RIGHT_OFFSET,
             DeviceID.DriveBase.REAR_RIGHT_DRIVE_ID,
             false,
             DeviceID.DriveBase.REAR_RIGHT_TURN_ID,
@@ -99,8 +99,8 @@ public class SwerveSubsystem extends SubsystemBase{
             PhysicalConstants.DriveBase.KINEMATICS, 
             getGyroRotation2D(),
             getSwerveModulePositions(),
-            DriveStationIO.isBlue()   ? FieldConstants.initPose 
-                                      : FieldConstants.initPose.horizontallyFlip()
+            DriveStationIO.isBlue()   ? FieldConstants.INIT_POSE_BLUE 
+                                      : FieldConstants.INIT_POSE_BLUE.horizontallyFlip()
         );
 
         RobotConfig config = null;

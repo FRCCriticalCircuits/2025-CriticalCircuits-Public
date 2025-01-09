@@ -78,13 +78,13 @@ public class SwerveModule {
         /* Current Limits */
         driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         driveConfig.CurrentLimits.SupplyCurrentLimitEnable = false;
-        driveConfig.CurrentLimits.StatorCurrentLimit = PhysicalConstants.DriveBase.LIMITING.DRIVE_CURRENT_LIMIT;
+        driveConfig.CurrentLimits.StatorCurrentLimit = PhysicalConstants.DriveBase.CurrentLimits.DRIVE_CURRENT_LIMIT;
 
         /* Gear Ratio */
-        driveConfig.Feedback.SensorToMechanismRatio = PhysicalConstants.DriveBase.GEARS.DRIVE_GEAR_RATIO;
+        driveConfig.Feedback.SensorToMechanismRatio = PhysicalConstants.DriveBase.GearRatios.DRIVE_GEAR_RATIO;
 
         /* OpenLoop Control Ramp Period*/
-        driveConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = PhysicalConstants.DriveBase.LIMITING.DRIVE_LOOP_RAMP_RATE; // use with DutyCycleOut Control
+        driveConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = PhysicalConstants.DriveBase.CurrentLimits.DRIVE_LOOP_RAMP_RATE; // use with DutyCycleOut Control
         
         /* CloseLoop Control Ramp Period */
         driveConfig.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = 0; // use with VelocityDutyCycle Control
@@ -121,11 +121,11 @@ public class SwerveModule {
 
         /* Current Limits */
         turnConfig.voltageCompensation(PhysicalConstants.NOMINAL_VOLTAGE);
-        turnConfig.smartCurrentLimit(PhysicalConstants.DriveBase.LIMITING.TURN_CURRENT_LIMIT);
+        turnConfig.smartCurrentLimit(PhysicalConstants.DriveBase.CurrentLimits.TURN_CURRENT_LIMIT);
         
         /* Gear Ratio */
-        encoderConfig.positionConversionFactor((1.0 / PhysicalConstants.DriveBase.GEARS.TURN_GEAR_RATIO) * Math.PI * 2);
-        encoderConfig.velocityConversionFactor((60.0 / PhysicalConstants.DriveBase.GEARS.TURN_GEAR_RATIO) * Math.PI * 2);
+        encoderConfig.positionConversionFactor((1.0 / PhysicalConstants.DriveBase.GearRatios.TURN_GEAR_RATIO) * Math.PI * 2);
+        encoderConfig.velocityConversionFactor((60.0 / PhysicalConstants.DriveBase.GearRatios.TURN_GEAR_RATIO) * Math.PI * 2);
 
         /* PID Constructor */
         turnPID = new PIDController(
