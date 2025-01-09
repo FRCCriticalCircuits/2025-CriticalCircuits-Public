@@ -32,6 +32,11 @@ public class DataStrcutures{
         public Spot spot;
         public Level level;
         public Mode mode;
+
+        public AutoAimSetting(Spot spot, Level level, Mode mode){
+            this.spot = spot;
+            this.level = level;
+            this.mode = mode;
+        }
     }
 }
-

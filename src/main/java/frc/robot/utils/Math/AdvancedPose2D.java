@@ -3,8 +3,8 @@ package frc.robot.utils.Math;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-
 import frc.robot.Constants.FieldConstants;
+import frc.robot.utils.DataStrcutures.Station;
 
 public class AdvancedPose2D extends Pose2d{
     public AdvancedPose2D(Translation2d translation, Rotation2d rotation){
@@ -30,8 +30,14 @@ public class AdvancedPose2D extends Pose2d{
     }
 
     public AdvancedPose2D withVector(Rotation2d direction, Translation2d translation, Rotation2d desireHeading) {
-        double xFinal = translation.getX() * (direction.getCos() - direction.getSin());
-        double yFinal = translation.getY() * (direction.getSin() + direction.getCos());
-        return new AdvancedPose2D(xFinal, yFinal, desireHeading);
+        double x = translation.getX() * direction.getCos() - translation.getY() * direction.getSin();
+        double y = translation.getX() * direction.getSin() + translation.getY() * direction.getCos();
+        x += this.getX();
+        y += this.getY();
+        return new AdvancedPose2D(x, y, desireHeading);
+    }
+
+    public AdvancedPose2D withRobotRelativeTransformation(Translation2d transformation){
+        return this.withVector(this.getRotation().minus(Rotation2d.fromDegrees(90)), transformation, this.getRotation()); // minus 90 because 0 axis changes to Y
     }
 }

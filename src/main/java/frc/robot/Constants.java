@@ -94,10 +94,20 @@ public class Constants {
     }
 
     public class FieldConstants{
-        public static double FIELD_LENGTH = 16.54;
-        public static double FIELD_WIDTH = 8.21;
+        public static double FIELD_LENGTH = Units.feetToMeters(57.573);
+        public static double FIELD_WIDTH = Units.feetToMeters(26.417);
+
+        public static AdvancedPose2D INIT_POSE_BLUE = new AdvancedPose2D(2, 2, Rotation2d.fromDegrees(180));
+        public static AdvancedPose2D REEF_CENTER_BLUE = new AdvancedPose2D(4.48945, FIELD_WIDTH / 2, Rotation2d.fromDegrees(0));
 
         public class AutoAim{
+            public static double[] BOUNDARIES = {-180.0, -150.0, -90.0, -30.0, 30.0, 90.0, 150.0, 180.0}; 
+            public static Station[] STATIONS = {Station.D, Station.E, Station.F, Station.A, Station.B, Station.C, Station.D};
+
+            public static double REEF_CENTER_TO_ROBOT = 1.3;
+            public static double AUTO_TRANSLATION_OFFSET_X = 0.2;
+            public static double MANUAL_TRANSLATION_RANGE = 0.4; // Plus Minus .4m 
+
             public static HashMap<Station, AdvancedPose2D> STATION_BLUE = new HashMap<Station, AdvancedPose2D>(){{
                 put(Station.A, REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(180), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(0)));
                 put(Station.B, REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(-120), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(60)));
@@ -115,16 +125,6 @@ public class Constants {
                 put(Station.E, REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(60), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(-120)));
                 put(Station.F, REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(120), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(-60)));
             }};
-
-            public static double[] BOUNDARIES = {-180.0, -150.0, -90.0, -30.0, 30.0, 90.0, 150.0, 180.0}; 
-            public static Station[] STATIONS = {Station.D, Station.E, Station.F, Station.A, Station.B, Station.C, Station.D};
-
-            public static double REEF_CENTER_TO_ROBOT = 1;
-            public static double AUTO_TRANSLATION_OFFSET_X = 0.2;
-            public static double MANUAL_TRANSLATION_RANGE = 0.4;        // Plus Minus .4m 
         }
-
-        public static AdvancedPose2D INIT_POSE_BLUE = new AdvancedPose2D(2, 2, Rotation2d.fromDegrees(180));
-        public static AdvancedPose2D REEF_CENTER_BLUE = new AdvancedPose2D(4.8451, FIELD_WIDTH / 2, Rotation2d.fromDegrees(0));
     }
 }

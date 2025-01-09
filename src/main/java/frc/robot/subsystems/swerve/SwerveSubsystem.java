@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.utils.DriveStationIO.DriveStationIO;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.FieldConstants;
@@ -245,6 +244,13 @@ public class SwerveSubsystem extends SubsystemBase{
      */
     public void updatePoseEstimator() {
         poseEstimator.update(getGyroRotation2D(), getSwerveModulePositions());
+    }
+
+    /**
+     * update the {@link SwerveDrivePoseEstimator} with Vision Results
+     */
+    public void updatePoseEstimator(Pose2d visionEstimatedPose) {
+        poseEstimator.addVisionMeasurement(visionEstimatedPose, 0, null);
     }
 
     /**
