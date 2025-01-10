@@ -41,7 +41,7 @@ public class SwerveAimPose {
      * @param manualTranslationX manual distence in meters
      * @return {@link AdvancePose2D} object for auto aiming
      */
-    public static AdvancedPose2D estimateStationAdvancedPose2D(Pose2d currentPose, AutoAimSetting setting, double manualTranslationX){
+    public static AdvancedPose2D estimateStationAdvancedPose2D(Pose2d currentPose, AutoAimSetting setting, Translation2d manualTranslation){
         Station station = estimateStation(currentPose.getRotation().getDegrees());
         AdvancedPose2D aimPose = DriveStationIO.isBlue() ? FieldConstants.AutoAim.STATION_BLUE.get(station) : FieldConstants.AutoAim.STATION_RED.get(station);
 
@@ -51,7 +51,7 @@ public class SwerveAimPose {
         }else if(setting.spot == Spot.R){
             return aimPose.withVector(aimPose.getRotation(), new Translation2d(FieldConstants.AutoAim.REEF_CENTER_TO_ROBOT, 0), aimPose.getRotation());
         }else{
-            return aimPose.withVector(aimPose.getRotation(), new Translation2d(manualTranslationX, 0), aimPose.getRotation());
+            return aimPose.withVector(aimPose.getRotation(), new Translation2d(manualTranslation.getX(), manualTranslation.getY()), aimPose.getRotation());
         }
     }
 }

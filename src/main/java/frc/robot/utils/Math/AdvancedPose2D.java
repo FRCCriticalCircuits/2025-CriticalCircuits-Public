@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.utils.DataStrcutures.Station;
 
 public class AdvancedPose2D extends Pose2d{
     public AdvancedPose2D(Translation2d translation, Rotation2d rotation){
@@ -30,10 +29,8 @@ public class AdvancedPose2D extends Pose2d{
     }
 
     public AdvancedPose2D withVector(Rotation2d direction, Translation2d translation, Rotation2d desireHeading) {
-        double x = translation.getX() * direction.getCos() - translation.getY() * direction.getSin();
-        double y = translation.getX() * direction.getSin() + translation.getY() * direction.getCos();
-        x += this.getX();
-        y += this.getY();
+        double x = translation.getX() * direction.getCos() - translation.getY() * direction.getSin() + this.getX();
+        double y = translation.getX() * direction.getSin() + translation.getY() * direction.getCos() + this.getY();
         return new AdvancedPose2D(x, y, desireHeading);
     }
 

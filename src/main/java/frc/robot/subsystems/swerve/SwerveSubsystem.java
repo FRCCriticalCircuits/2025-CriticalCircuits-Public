@@ -250,7 +250,7 @@ public class SwerveSubsystem extends SubsystemBase{
      * update the {@link SwerveDrivePoseEstimator} with Vision Results
      */
     public void updatePoseEstimator(Pose2d visionEstimatedPose) {
-        poseEstimator.addVisionMeasurement(visionEstimatedPose, 0, null);
+        
     }
 
     /**

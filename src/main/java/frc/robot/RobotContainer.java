@@ -40,7 +40,7 @@ public class RobotContainer {
       )
     );
 
-    autoChooser.setDefaultOption("1", "Auto 0");
+    autoChooser.setDefaultOption("1", "Auto");
     autoChooser.addOption("2", "Auto 1");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -66,7 +66,7 @@ public class RobotContainer {
             swerveSubsystem.resetPoseEstimate(
               PathPlannerAuto.getPathGroupFromAutoFile(autoChooser.getSelected())
                              .get(0)
-                             .getStartingDifferentialPose() // Should be Holonomic but we don't need starting velocity... etc
+                             .getStartingHolonomicPose().get() // Should be Holonomic but we don't need starting velocity... etc
             );
           } catch (IOException | ParseException e) {
             e.printStackTrace();
