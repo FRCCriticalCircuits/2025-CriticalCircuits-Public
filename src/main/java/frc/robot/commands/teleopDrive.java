@@ -10,6 +10,9 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.Constants.PhysicalConstants;
 
 public class teleopDrive extends Command{
+    public static teleopDrive instance;
+    public static boolean manualEnable = true;
+
     private SwerveSubsystem swerveSubsystem;
     
     private Supplier<Double>    verticalSpeed,
@@ -44,42 +47,56 @@ public class teleopDrive extends Command{
         addRequirements(swerveSubsystem);
     }
 
+    public static teleopDrive getInstance
+    (
+        Supplier<Double> verticalSpeed,
+        Supplier<Double> horizontalSpeed,
+        Supplier<Double> omegaSpeed,
+        Supplier<Double> scalingFactorA,
+        Supplier<Double> scalingFactorB
+    ){
+        if(instance == null) instance = new teleopDrive(verticalSpeed, horizontalSpeed, omegaSpeed, scalingFactorA, scalingFactorB);
+        return instance;
+    }
+
     @Override
     public void execute(){
-        /**
-         * Get values from supplier
-         * here we swap to the WPI Coordinate System
-         */
-        double xSpeed = verticalSpeed.get();
-        double ySpeed = horizontalSpeed.get();
-        double rotSpeed = omegaSpeed.get();
-        double factorA = scalingFactorA.get();
-        double factorB = scalingFactorB.get();
-        
-        /**
-         * Apply Deadbands to Inputs
-         */
-        xSpeed = Math.abs(xSpeed) > 0.15 ? xSpeed : 0.0;
-        ySpeed = Math.abs(ySpeed) > 0.15 ? ySpeed : 0.0;
-        rotSpeed = Math.abs(rotSpeed) > 0.15 ? rotSpeed : 0.0;
-        factorA = (factorA > 0.3) ? factorA : 0.3;
-        factorB = (factorB > 0.3) ? factorB : 0.3;
-        
-        /**
-         * Apply Speed Factors
-         */
-        xSpeed *= (factorA + factorB) * 0.5;
-        ySpeed *= (factorA + factorB) * 0.5;
+        if(manualEnable){
+            /**
+             * Get values from supplier
+             * here we swap to the WPI Coordinate System
+             */
+            double xSpeed = verticalSpeed.get();
+            double ySpeed = horizontalSpeed.get();
+            double rotSpeed = omegaSpeed.get();
+            double factorA = scalingFactorA.get();
+            double factorB = scalingFactorB.get();
+            
+            /**
+             * Apply Deadbands to Inputs
+             */
+            xSpeed = Math.abs(xSpeed) > 0.15 ? xSpeed : 0.0;
+            ySpeed = Math.abs(ySpeed) > 0.15 ? ySpeed : 0.0;
+            rotSpeed = Math.abs(rotSpeed) > 0.15 ? rotSpeed : 0.0;
+            factorA = (factorA > 0.3) ? factorA : 0.3;
+            factorB = (factorB > 0.3) ? factorB : 0.3;
+            
+            /**
+             * Apply Speed Factors
+             */
+            xSpeed *= (factorA + factorB) * 0.5;
+            ySpeed *= (factorA + factorB) * 0.5;
 
-        /**
-         * Apply Limiters
-         */
-        xSpeed = xLimiter.calculate(xSpeed) * PhysicalConstants.DriveBase.MAX_SPEED_METERS;
-        ySpeed = yLimiter.calculate(ySpeed) * PhysicalConstants.DriveBase.MAX_SPEED_METERS;
-        rotSpeed = omegaLimiter.calculate(rotSpeed) * PhysicalConstants.DriveBase.MAX_ANGULAR_SPEED_RAD;
+            /**
+             * Apply Limiters
+             */
+            xSpeed = xLimiter.calculate(xSpeed) * PhysicalConstants.DriveBase.MAX_SPEED_METERS;
+            ySpeed = yLimiter.calculate(ySpeed) * PhysicalConstants.DriveBase.MAX_SPEED_METERS;
+            rotSpeed = omegaLimiter.calculate(rotSpeed) * PhysicalConstants.DriveBase.MAX_ANGULAR_SPEED_RAD;
 
-        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2D());
-        swerveSubsystem.setModuleStates(speeds, false);
+            ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2D());
+            swerveSubsystem.setModuleStates(speeds, false);
+        }       
     } 
 
     /**

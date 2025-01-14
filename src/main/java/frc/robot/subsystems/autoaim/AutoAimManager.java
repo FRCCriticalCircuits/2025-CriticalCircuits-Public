@@ -6,6 +6,8 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.utils.DataStrcutures.AutoAimSetting;
@@ -16,6 +18,8 @@ public class AutoAimManager {
     
     private static SwerveSubsystem swerveSubsystem = SwerveSubsystem.getInstance();
 
+    private static Field2d field2d = new Field2d();
+
     public static void configure(AutoAimSetting setting){
         AutoAimManager.setting = setting;
     }
@@ -23,6 +27,9 @@ public class AutoAimManager {
     public static Command runSwerveAutoAim(Translation2d manualTranslation){
         Pose2d targetPose = SwerveAimPose.estimateStationAdvancedPose2D(swerveSubsystem.getPoseEstimate(), setting, manualTranslation);
         
+        field2d.setRobotPose(targetPose);
+        SmartDashboard.putData(field2d);
+
         // Create the constraints to use while pathfinding
         PathConstraints constraints = new PathConstraints(
             1.5,

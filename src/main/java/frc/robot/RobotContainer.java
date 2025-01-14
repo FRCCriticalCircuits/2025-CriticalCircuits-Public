@@ -11,14 +11,20 @@ import org.json.simple.parser.ParseException;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.ControllerBinding;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.commands.teleopDrive;
 import frc.robot.subsystems.Controller;
+import frc.robot.subsystems.autoaim.AutoAimManager;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class RobotContainer {
@@ -31,7 +37,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     swerveSubsystem.setDefaultCommand(
-      new teleopDrive(
+      teleopDrive.getInstance(
         () -> -controller.getDriverLY(),    // Left-Positive
         () -> -controller.getDriverLX(),    // Forward-Positive
         () -> -controller.getDriverRX(),    // CCW Positive
@@ -49,10 +55,38 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    driveController.button(8).debounce(0.02).onTrue(
+    driveController.button(ControllerBinding.GYRO_RESET).debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
           swerveSubsystem.resetGyro();
+        }
+      )
+    );
+
+    Command autoAimCommandGroup = new SequentialCommandGroup
+    (
+      AutoAimManager.runSwerveAutoAim(
+        new Translation2d(-controller.getDriverLY() * FieldConstants.AutoAim.MANUAL_TRANSLATION_RANGE,0)
+      ),
+      new WaitCommand(0.2)
+    );
+
+    driveController.a().debounce(0.02).whileTrue(
+      autoAimCommandGroup
+    );
+
+    driveController.x().debounce(0.02).onTrue(
+      new InstantCommand(
+        () -> {
+          CommandScheduler.getInstance().cancel(autoAimCommandGroup);
+        }
+      )
+    );
+
+    driveController.a().debounce(0.02).onChange(
+      new InstantCommand(
+        () -> {
+          teleopDrive.manualEnable = !teleopDrive.manualEnable;
         }
       )
     );

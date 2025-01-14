@@ -10,6 +10,10 @@ import frc.robot.utils.DataStrcutures.Station;
 import frc.robot.utils.Math.AdvancedPose2D;
 
 public class Constants {
+    public class ControllerBinding{
+        public static int GYRO_RESET = 8; // Menu
+    }
+
     public class DeviceID {
         public static final int GAMEPAD_DRIVER = 0;
         
@@ -105,7 +109,7 @@ public class Constants {
             public static Station[] STATIONS = {Station.D, Station.E, Station.F, Station.A, Station.B, Station.C, Station.D};
 
             public static double REEF_CENTER_TO_ROBOT = 1.3;
-            public static double AUTO_TRANSLATION_OFFSET_X = 0.2;
+            public static double AUTO_TRANSLATION_OFFSET_X = 0.2; // Shift for L/R coral
             public static double MANUAL_TRANSLATION_RANGE = 0.4; // Plus Minus .4m 
 
             public static HashMap<Station, AdvancedPose2D> STATION_BLUE = new HashMap<Station, AdvancedPose2D>(){{

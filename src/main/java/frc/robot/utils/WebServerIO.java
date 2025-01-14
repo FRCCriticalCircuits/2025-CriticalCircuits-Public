@@ -30,7 +30,7 @@ public class WebServerIO extends WebSocketServer {
 	}
 
 	@Override
-	public void onMessage( WebSocket conn, ByteBuffer message ) {
+	public void onMessage(WebSocket conn, ByteBuffer message) {
 
 	}
 
