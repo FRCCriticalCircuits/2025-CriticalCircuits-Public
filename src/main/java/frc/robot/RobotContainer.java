@@ -18,13 +18,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ControllerBinding;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.commands.teleopDrive;
 import frc.robot.subsystems.Controller;
-import frc.robot.subsystems.autoaim.AutoAimManager;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class RobotContainer {
@@ -46,7 +43,7 @@ public class RobotContainer {
       )
     );
 
-    autoChooser.setDefaultOption("1", "Auto");
+    autoChooser.setDefaultOption("1", "Auto 0");
     autoChooser.addOption("2", "Auto 1");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -58,17 +55,14 @@ public class RobotContainer {
     driveController.button(ControllerBinding.GYRO_RESET).debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
-          swerveSubsystem.resetGyro();
+          swerveSubsystem.resetGyro(0);
         }
       )
     );
 
     Command autoAimCommandGroup = new SequentialCommandGroup
     (
-      AutoAimManager.runSwerveAutoAim(
-        new Translation2d(-controller.getDriverLY() * FieldConstants.AutoAim.MANUAL_TRANSLATION_RANGE,0)
-      ),
-      new WaitCommand(0.2)
+      
     );
 
     driveController.a().debounce(0.02).whileTrue(

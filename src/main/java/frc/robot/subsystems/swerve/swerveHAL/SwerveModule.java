@@ -1,4 +1,4 @@
-package frc.robot.subsystems.swerve;
+package frc.robot.subsystems.swerve.swerveHAL;
 
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -26,10 +26,10 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-
-import frc.robot.utils.Conversions.WheelConversions;
 import frc.robot.Constants.PhysicalConstants;
 import frc.robot.Constants.TunedConstants;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
+import frc.robot.utils.conversions.WheelConversions;
 
 
 public class SwerveModule {

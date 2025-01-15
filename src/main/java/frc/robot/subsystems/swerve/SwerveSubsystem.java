@@ -1,10 +1,11 @@
 package frc.robot.subsystems.swerve;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.reduxrobotics.sensors.canandgyro.Canandgyro;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -19,20 +20,24 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PhysicalConstants;
+import frc.robot.subsystems.swerve.swerveHAL.GyroIO;
+import frc.robot.subsystems.swerve.swerveHAL.GyroIOReal;
+import frc.robot.subsystems.swerve.swerveHAL.GyroIOSim;
+import frc.robot.subsystems.swerve.swerveHAL.SwerveModule;
 import frc.robot.Robot;
 
 public class SwerveSubsystem extends SubsystemBase{
     private static SwerveSubsystem instance;
-    
+    public static final ReentrantLock odometryLock = new ReentrantLock(); // same with mutex lock
+
     // Hardwares
     private SwerveModule frontLeft, frontRight, rearLeft, rearRight;
-    private Canandgyro gyro;
+    private GyroIO gyro;
 
     // PoseEstimation
     private SwerveDrivePoseEstimator poseEstimator;
@@ -43,8 +48,13 @@ public class SwerveSubsystem extends SubsystemBase{
     private StructArrayPublisher<SwerveModuleState> desireSwerveStatePublisher;
 
     private SwerveSubsystem(){
-        gyro = new Canandgyro(DeviceID.DriveBase.GYRO_CAN_ID);
-
+        if(Robot.isReal()) {
+            gyro = new GyroIOReal();
+        }
+        else {
+            gyro = new GyroIOSim();
+        }
+        
         // Swerve Modules
         frontLeft = new SwerveModule(
             DeviceID.DriveBase.FRONT_LEFT_CANCODER_ID, 
@@ -82,15 +92,13 @@ public class SwerveSubsystem extends SubsystemBase{
             true
         );
 
-        /* Gyro Calibration */
-        Commands.print("[Swerve] Gyro Calibrating").schedule();
-        gyro.waitForCalibrationToFinish(12);
+        resetGyro(0);;
 
-        gyro.setYaw(0);
         frontLeft.resetEncoders();
         frontRight.resetEncoders();
         rearLeft.resetEncoders();
         rearRight.resetEncoders();
+        
         Timer.delay(0.1); // 100ms delay
 
         // Pose Estimator
@@ -141,20 +149,12 @@ public class SwerveSubsystem extends SubsystemBase{
         return instance;
     }
 
-    /*
-     * Gyro Methods
-     */
-
     public Rotation2d getGyroRotation2D(){
-        return gyro.getRotation2d();
+        return gyro.getGyroRotation2D();
     }
 
     public void resetGyro(double yaw){
         gyro.setYaw(yaw);
-    }
-
-    public void resetGyro(){
-        gyro.setYaw(0);
     }
 
     /**
@@ -249,7 +249,7 @@ public class SwerveSubsystem extends SubsystemBase{
     /**
      * update the {@link SwerveDrivePoseEstimator} with Vision Results
      */
-    public void updatePoseEstimator(Pose2d visionEstimatedPose) {
+    public void updatePoseEstimator(Pose2d visionEstimatedPose, double timeStampSeconds) {
         
     }
 
@@ -271,7 +271,7 @@ public class SwerveSubsystem extends SubsystemBase{
         SmartDashboard.putData("Estimate Field", estimateField);
 
         if(Robot.testMode) {
-            SmartDashboard.putNumber("Gyro", gyro.getYaw() * Math.PI * 2);
+            SmartDashboard.putNumber("Gyro", getGyroRotation2D().getRadians());
             currentSwerveStatePublisher.set(getSwerveModuleStates());
         }
     }

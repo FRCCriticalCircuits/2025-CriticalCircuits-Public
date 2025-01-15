@@ -1,4 +1,4 @@
-package frc.robot.utils;
+package frc.robot.utils.web;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;

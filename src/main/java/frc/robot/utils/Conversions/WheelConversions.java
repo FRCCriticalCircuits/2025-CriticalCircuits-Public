@@ -1,4 +1,4 @@
-package frc.robot.utils.Conversions;
+package frc.robot.utils.conversions;
 
 public class WheelConversions {
     /**

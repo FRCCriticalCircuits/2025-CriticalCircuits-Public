@@ -1,13 +1,19 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
 import java.util.HashMap;
+
+import org.ironmaple.simulation.drivesims.COTS;
+import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import frc.robot.utils.DataStrcutures.Station;
 import frc.robot.utils.Math.AdvancedPose2D;
+import frc.robot.utils.structures.DataStrcutures.Station;
 
 public class Constants {
     public class ControllerBinding{
@@ -44,12 +50,17 @@ public class Constants {
             public static double DRIVE_PID_I = 0;
 
             public static double DRIVE_FEED_FORWARD_KS = 0.015;
-            public static double DRIVE_FEED_FORWARD_KV = 0.17; // 0.17V -> RPM
+            public static double DRIVE_FEED_FORWARD_KV = 0.17;
             public static double DRIVE_FEED_FORWARD_KA = 0;
 
             public static double TURN_PID_P = 0.3;
             public static double TURN_PID_I = 0;
             public static double TURN_PID_D = 0;
+
+            public static double DRIVE_PID_P_SIM = 0;
+            public static double DRIVE_FF_KS = 0;
+            public static double DRIVE_FF_KV = 0;
+            public static double TURN_PID_P_SIM = 0;
         }
     }
 
@@ -57,9 +68,26 @@ public class Constants {
         public static double NOMINAL_VOLTAGE = 12;
         
         public class DriveBase {
+            // drivetrain simulation configuration
+            public static DriveTrainSimulationConfig SIMULATION_CONFIG = DriveTrainSimulationConfig.Default()
+                // Specify gyro type (for realistic gyro drifting and error simulation)
+                .withGyro(COTS.ofNav2X())
+                // Specify swerve module (for realistic swerve dynamics)
+                .withSwerveModule(
+                COTS.ofMark4i(
+                        DCMotor.getKrakenX60(1), // Drive motor is a Kraken X60
+                        DCMotor.getNEO(1), // Steer motor is a NEO
+                        COTS.WHEELS.SLS_PRINTED_WHEELS.cof, // Use the COF for 3D-printed Wheels
+                        2 // L2 Gear Ratio
+                    )
+                )
+                // Configures the track length and track width (spacing between swerve modules)
+                .withTrackLengthTrackWidth(Inches.of(24), Inches.of(24))
+                // Configures the bumper size (dimensions of the robot bumper)
+                .withBumperSize(Inches.of(27), Inches.of(27));
+
             public class LENGTHS{
                 public static double TRACK_WIDTH_METERS = 0.55245;
-                public static double TRACK_RADIUS_METERS = Math.sqrt((TRACK_WIDTH_METERS * TRACK_WIDTH_METERS) + (TRACK_WIDTH_METERS * TRACK_WIDTH_METERS));
 
                 public static double DRIVE_WHEEL_DIAMETER_INCHES = 4;
                 public static double DRIVE_WHEEL_DIAMETER_METERS = Units.inchesToMeters(DRIVE_WHEEL_DIAMETER_INCHES);

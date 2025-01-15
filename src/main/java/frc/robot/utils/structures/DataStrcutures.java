@@ -1,4 +1,4 @@
-package frc.robot.utils;
+package frc.robot.utils.structures;
 
 public class DataStrcutures{
     public enum Station{
@@ -26,17 +26,5 @@ public class DataStrcutures{
         INTAKE,
         PICK,
         PLACE
-    }
-
-    public class AutoAimSetting{
-        public Spot spot;
-        public Level level;
-        public Mode mode;
-
-        public AutoAimSetting(Spot spot, Level level, Mode mode){
-            this.spot = spot;
-            this.level = level;
-            this.mode = mode;
-        }
     }
 }

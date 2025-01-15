@@ -3,10 +3,10 @@ package frc.robot.utils.Math;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.utils.DataStrcutures.AutoAimSetting;
-import frc.robot.utils.DataStrcutures.Spot;
-import frc.robot.utils.DataStrcutures.Station;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
+import frc.robot.utils.structures.AutoAimSetting;
+import frc.robot.utils.structures.DataStrcutures.Spot;
+import frc.robot.utils.structures.DataStrcutures.Station;
 
 public class SwerveAimPose {
     /**U
@@ -37,7 +37,7 @@ public class SwerveAimPose {
     /**
      * estimate the station driver heads
      * @param currentPose the current position of robot
-     * @param spot The scoring Spot
+     * @param setting Autoaim Setting Includes {@link Spot}, {@link Level}, {@link Mode}
      * @param manualTranslationX manual distence in meters
      * @return {@link AdvancePose2D} object for auto aiming
      */
