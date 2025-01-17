@@ -10,8 +10,6 @@ import org.json.simple.parser.ParseException;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.commands.PathfindingCommand;
-import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -36,8 +34,12 @@ public class RobotContainer {
 
   Command autoAimCommandGroup = new SequentialCommandGroup
   (
+    new InstantCommand(
+      () -> {
+        AutoAimManager.getInstance().updateAngle(swerveSubsystem.getPoseEstimate().getRotation().getDegrees());
+      }, swerveSubsystem
+    ),
     AutoAimManager.getInstance().runSwerveAutoAim(
-      () -> swerveSubsystem.getPoseEstimate().getRotation().getDegrees(),
       new Translation2d(
         0,
         0

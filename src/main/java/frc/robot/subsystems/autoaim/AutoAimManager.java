@@ -25,7 +25,8 @@ public class AutoAimManager{
 
     private double[] BOUNDARIES = {-180.0, -150.0, -90.0, -30.0, 30.0, 90.0, 150.0, 180.0}; 
     private Station[] STATIONS = {Station.D, Station.E, Station.F, Station.A, Station.B, Station.C, Station.D};
-
+    
+    private double currentAngle = 0;
     private Field2d field2d = new Field2d();
     
     private PathConstraints constraints = new PathConstraints(
@@ -63,8 +64,8 @@ public class AutoAimManager{
      * @param manualTranslationX manual distence in meters
      * @return {@link AdvancePose2D} object for auto aiming
      */
-    public AdvancedPose2D estimateStationAdvancedPose2D(Supplier<Double> swerveHeading, AutoAimSetting setting, Translation2d manualTranslation){
-        Station station = estimateStation(swerveHeading.get());
+    public AdvancedPose2D estimateStationAdvancedPose2D(AutoAimSetting setting, Translation2d manualTranslation){
+        Station station = estimateStation(currentAngle);
         AdvancedPose2D aimPose = DriveStationIO.isBlue() ? FieldConstants.AutoAim.STATION_BLUE.get(station) : FieldConstants.AutoAim.STATION_RED.get(station);
 
         // Apply Translations
@@ -77,8 +78,12 @@ public class AutoAimManager{
         }
     }
 
-    public Command runSwerveAutoAim(Supplier<Double> swerveHeading, Translation2d manualTranslation){
-        Pose2d targetPose = estimateStationAdvancedPose2D(swerveHeading, setting, manualTranslation);
+    public void updateAngle(double angleDegree){
+        this.currentAngle = angleDegree;
+    }
+
+    public Command runSwerveAutoAim(Translation2d manualTranslation){
+        Pose2d targetPose = estimateStationAdvancedPose2D(setting, manualTranslation);
 
         field2d.setRobotPose(targetPose);
 
