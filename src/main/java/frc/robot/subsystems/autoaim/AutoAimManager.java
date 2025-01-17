@@ -1,7 +1,5 @@
 package frc.robot.subsystems.autoaim;
 
-import java.util.function.Supplier;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 

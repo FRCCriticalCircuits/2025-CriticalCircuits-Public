@@ -198,8 +198,8 @@ public class SwerveSubsystem extends SubsystemBase{
             this::getChassisSpeeds, // ChassisSpeeds supplier
             (speeds, feedforwards) -> setModuleStates(speeds), // optionally outputs individual feedforwards
             new PPHolonomicDriveController(
-                new PIDConstants(0.1, 20.0, 0.0), // Translation Feedback PID constants
-                new PIDConstants(2, 0, 0.0) // Rotation Feedback PID constants
+                new PIDConstants(5.0, 10.0, 0.0, 0.5), // Translation Feedback PID constants
+                new PIDConstants(4.0, 0.0, 0.0) // Rotation Feedback PID constants
             ),
             config, // The robot configuration
             () -> {

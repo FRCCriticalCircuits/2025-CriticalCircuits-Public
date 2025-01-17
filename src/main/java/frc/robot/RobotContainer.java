@@ -32,21 +32,6 @@ public class RobotContainer {
   private Controller controller = Controller.getInstance();
   private CommandXboxController driveController = new CommandXboxController(0); 
 
-  Command autoAimCommandGroup = new SequentialCommandGroup
-  (
-    new InstantCommand(
-      () -> {
-        AutoAimManager.getInstance().updateAngle(swerveSubsystem.getPoseEstimate().getRotation().getDegrees());
-      }, swerveSubsystem
-    ),
-    AutoAimManager.getInstance().runSwerveAutoAim(
-      new Translation2d(
-        0,
-        0
-      )
-    )
-  );
-
   public RobotContainer() {
     swerveSubsystem.setDefaultCommand(
       teleopDrive.getInstance(
@@ -76,13 +61,23 @@ public class RobotContainer {
     );    
 
     driveController.a().debounce(0.02).onTrue(
-      autoAimCommandGroup
+      new InstantCommand(
+        () -> {
+          AutoAimManager.getInstance().updateAngle(swerveSubsystem.getPoseEstimate().getRotation().getDegrees());
+          AutoAimManager.getInstance().runSwerveAutoAim(
+            new Translation2d(
+              0,
+              0
+            )
+          ).schedule();
+        }, swerveSubsystem
+      )
     );
 
     driveController.x().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
-          CommandScheduler.getInstance().cancel(autoAimCommandGroup);
+          CommandScheduler.getInstance().cancelAll();
         }
       )
     );

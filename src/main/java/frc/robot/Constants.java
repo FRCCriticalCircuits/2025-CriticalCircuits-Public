@@ -132,14 +132,20 @@ public class Constants {
     }
 
     public class FieldConstants{
+        // 1.3147m from the front of robot to surface of reef
+        // suppose to be 1cm away from reef
+        // A-Start X-Stop
+        // Stop it if things goes wrong
+        // If it stuck with a glich-loop after pressing A and not able to drive manually, press X
+
         public static double FIELD_LENGTH = 17.548;
         public static double FIELD_WIDTH = 8.052;
 
-        public static AdvancedPose2D INIT_POSE_BLUE = new AdvancedPose2D(2, 4, Rotation2d.fromDegrees(0));
+        public static AdvancedPose2D INIT_POSE_BLUE = new AdvancedPose2D(2, FIELD_WIDTH / 2, Rotation2d.fromDegrees(0));
         public static AdvancedPose2D REEF_CENTER_BLUE = new AdvancedPose2D(4.48945, FIELD_WIDTH / 2, Rotation2d.fromDegrees(0));
 
         public class AutoAim{
-            public static double REEF_CENTER_TO_ROBOT = 0.3;
+            public static double REEF_CENTER_TO_ROBOT = Units.inchesToMeters(32.75) + Units.inchesToMeters(27) / 2 + 0.01; // 118.475
             public static double AUTO_TRANSLATION_OFFSET_X = 0.2; // Shift for L/R coral
             public static double MANUAL_TRANSLATION_RANGE = 0.4; // Plus Minus .4m 
 
