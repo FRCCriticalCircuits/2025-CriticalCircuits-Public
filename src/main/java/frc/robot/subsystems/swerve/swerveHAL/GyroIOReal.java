@@ -30,4 +30,12 @@ public class GyroIOReal implements GyroIO{
     public void setYaw(double yaw) {
         gyro.setYaw(yaw);
     }
+
+    /**
+     * @return speed in Radians per Sec
+     */
+    @Override
+    public double getYawVelocity() {
+        return gyro.getAngularVelocityYaw() * Math.PI * 2;   
+    }
 }

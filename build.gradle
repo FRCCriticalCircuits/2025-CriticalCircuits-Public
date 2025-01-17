@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2025.1.1"
+    id "edu.wpi.first.GradleRIO" version "2025.2.1"
 }
 
 java {
@@ -55,6 +55,7 @@ dependencies {
     annotationProcessor wpi.java.deps.wpilibAnnotations()
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
+
     implementation 'org.java-websocket:Java-WebSocket:1.6.0'
 
     roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)

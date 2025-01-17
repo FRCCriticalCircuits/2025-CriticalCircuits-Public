@@ -1,7 +1,11 @@
 package frc.robot.subsystems.swerve;
 
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -16,11 +20,15 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 import frc.robot.utils.DriveStationIO.DriveStationIO;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.FieldConstants;
@@ -46,6 +54,71 @@ public class SwerveSubsystem extends SubsystemBase{
     private Field2d estimateField = new Field2d();
     private StructArrayPublisher<SwerveModuleState> currentSwerveStatePublisher;
     private StructArrayPublisher<SwerveModuleState> desireSwerveStatePublisher;
+
+    // SysId
+    public SysIdRoutine routineLinear = new SysIdRoutine(
+        new SysIdRoutine.Config(
+            Volts.of(1).per(Seconds),
+            Volts.of(6),
+            Seconds.of(10),
+            (state) -> SignalLogger.writeString("sysId-Linear", state.toString())
+        ),
+        new SysIdRoutine.Mechanism(this::voltageDriveLinear, null, this)
+    );
+
+    public SysIdRoutine routineAngular = new SysIdRoutine(
+        new SysIdRoutine.Config(
+            Volts.of(0.5).per(Seconds),
+            Volts.of(6),
+            Seconds.of(20),
+            (state) -> SignalLogger.writeString("sysId-Angular", state.toString())
+        ),
+        new SysIdRoutine.Mechanism(this::voltageDriveAngular, null, this)
+    );
+
+    public void voltageDriveLinear(Voltage volt){
+        double voltage = volt.magnitude();
+
+        frontLeft.setDriveVoltage(voltage);
+        frontRight.setDriveVoltage(voltage);
+        rearLeft.setDriveVoltage(voltage);
+        rearRight.setDriveVoltage(voltage);
+        
+        frontLeft.setTurn(0);
+        frontRight.setTurn(0);
+        rearLeft.setTurn(0);
+        rearRight.setTurn(0);
+    }
+
+    public void voltageDriveAngular(Voltage volt){
+        double voltage = volt.magnitude();
+        
+        frontLeft.setDriveVoltage(voltage);
+        frontRight.setDriveVoltage(voltage);
+        rearLeft.setDriveVoltage(voltage);
+        rearRight.setDriveVoltage(voltage);
+        
+        frontLeft.setTurn(Rotation2d.fromDegrees(135).getRadians());
+        frontRight.setTurn(Rotation2d.fromDegrees(45).getRadians());
+        rearLeft.setTurn(Rotation2d.fromDegrees(-135).getRadians());
+        rearRight.setTurn(Rotation2d.fromDegrees(-45).getRadians());
+    }
+
+    public Command sysIdLinearQuasistatic(SysIdRoutine.Direction direction) {
+        return routineLinear.quasistatic(direction);
+    }
+
+    public Command sysIdLinearDynamic(SysIdRoutine.Direction direction) {
+        return routineLinear.dynamic(direction);
+    }
+
+    public Command sysIdAngularQuasistatic(SysIdRoutine.Direction direction) {
+        return routineAngular.quasistatic(direction);
+    }
+
+    public Command sysIdAngularDynamic(SysIdRoutine.Direction direction) {
+        return routineAngular.dynamic(direction);
+    }
 
     private SwerveSubsystem(){
         if(Robot.isReal()) {
@@ -92,7 +165,7 @@ public class SwerveSubsystem extends SubsystemBase{
             true
         );
 
-        resetGyro(0);;
+        resetGyro(0);
 
         frontLeft.resetEncoders();
         frontRight.resetEncoders();
@@ -125,8 +198,8 @@ public class SwerveSubsystem extends SubsystemBase{
             this::getChassisSpeeds, // ChassisSpeeds supplier
             (speeds, feedforwards) -> setModuleStates(speeds), // optionally outputs individual feedforwards
             new PPHolonomicDriveController(
-                new PIDConstants(0, 0.0, 0.0), // Translation PID constants
-                new PIDConstants(0, 0.0, 0.0) // Rotation PID constants
+                new PIDConstants(0.1, 20.0, 0.0), // Translation Feedback PID constants
+                new PIDConstants(2, 0, 0.0) // Rotation Feedback PID constants
             ),
             config, // The robot configuration
             () -> {
@@ -208,7 +281,7 @@ public class SwerveSubsystem extends SubsystemBase{
         rearRight.setState(states[3], isOpenLoop);
 
         // telemetry
-        if(Robot.testMode) desireSwerveStatePublisher.set(states);
+        if(DriveStationIO.isTest()) desireSwerveStatePublisher.set(states);
     }
 
     /**
@@ -270,9 +343,11 @@ public class SwerveSubsystem extends SubsystemBase{
         estimateField.setRobotPose(getPoseEstimate());
         SmartDashboard.putData("Estimate Field", estimateField);
 
-        if(Robot.testMode) {
+        if(DriveStationIO.isTest()) {
             SmartDashboard.putNumber("Gyro", getGyroRotation2D().getRadians());
             currentSwerveStatePublisher.set(getSwerveModuleStates());
         }
+
+        SmartDashboard.putNumber("angle", getPoseEstimate().getRotation().getDegrees());
     }
 }

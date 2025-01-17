@@ -19,18 +19,21 @@ public class ModuleIOSim implements ModuleIO {
 
     private boolean driveClosedLoop = false;
     private boolean turnClosedLoop = false;
+
     private final PIDController driveController = new PIDController
     (
         TunedConstants.DriveBase.DRIVE_PID_P_SIM,
-        0,
-        0
+        TunedConstants.DriveBase.DRIVE_PID_I_SIM,
+        TunedConstants.DriveBase.DRIVE_PID_D_SIM
     );
+
     private final PIDController turnController = new PIDController
     (
         TunedConstants.DriveBase.TURN_PID_P_SIM,
-        0,
-        0
+        TunedConstants.DriveBase.TURN_PID_I_SIM,
+        TunedConstants.DriveBase.TURN_PID_D_SIM
     );
+
     private double driveFFVolts = 0.0;
     private double driveAppliedVolts = 0.0;
     private double turnAppliedVolts = 0.0;
@@ -70,24 +73,21 @@ public class ModuleIOSim implements ModuleIO {
         // Update drive inputs
         inputs.driveConnected = true;
         inputs.drivePositionRad = moduleSimulation.getDriveWheelFinalPosition().in(Radians);
-        inputs.driveVelocityRadPerSec =
-                moduleSimulation.getDriveWheelFinalSpeed().in(RadiansPerSecond);
+        inputs.driveVelocityRadPerSec = moduleSimulation.getDriveWheelFinalSpeed().in(RadiansPerSecond);
         inputs.driveAppliedVolts = driveAppliedVolts;
-        inputs.driveCurrentAmps =
-                Math.abs(moduleSimulation.getDriveMotorStatorCurrent().in(Amps));
+        inputs.driveCurrentAmps = Math.abs(moduleSimulation.getDriveMotorStatorCurrent().in(Amps));
 
         // Update turn inputs
         inputs.turnConnected = true;
         inputs.turnPosition = moduleSimulation.getSteerAbsoluteFacing();
-        inputs.turnVelocityRadPerSec =
-                moduleSimulation.getSteerAbsoluteEncoderSpeed().in(RadiansPerSecond);
+        inputs.turnVelocityRadPerSec = moduleSimulation.getSteerAbsoluteEncoderSpeed().in(RadiansPerSecond);
         inputs.turnAppliedVolts = turnAppliedVolts;
-        inputs.turnCurrentAmps =
-                Math.abs(moduleSimulation.getSteerMotorStatorCurrent().in(Amps));
+        inputs.turnCurrentAmps = Math.abs(moduleSimulation.getSteerMotorStatorCurrent().in(Amps));
 
         // Update odometry inputs
-        // inputs.odometryTimestamps = SparkUtil.getSimulationOdometryTimeStamps(); // todo
-        inputs.odometryDrivePositionsRad = Arrays.stream(moduleSimulation.getCachedDriveWheelFinalPositions())
+        inputs.odometryTimestamps = SimUtil.getSimulationOdometryTimeStamps();
+        inputs.odometryDrivePositionsRad = 
+            Arrays.stream(moduleSimulation.getCachedDriveWheelFinalPositions())
                 .mapToDouble(angle -> angle.in(Radians))
                 .toArray();
         inputs.odometryTurnPositions = moduleSimulation.getCachedSteerAbsolutePositions();

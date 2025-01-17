@@ -55,6 +55,10 @@ public class DriveStationIO {
         return DriverStation.isTeleopEnabled();
     }
 
+    public static boolean isTest(){
+        return DriverStation.isTest();
+    }
+
     public static boolean isEnabled(){
         return DriverStation.isEnabled();
     }

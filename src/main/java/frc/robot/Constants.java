@@ -58,9 +58,15 @@ public class Constants {
             public static double TURN_PID_D = 0;
 
             public static double DRIVE_PID_P_SIM = 0;
-            public static double DRIVE_FF_KS = 0;
-            public static double DRIVE_FF_KV = 0;
+            public static double DRIVE_PID_I_SIM = 0;
+            public static double DRIVE_PID_D_SIM = 0;
+
+            public static double DRIVE_FF_KS_SIM = 0;
+            public static double DRIVE_FF_KV_SIM = 0;
+            
             public static double TURN_PID_P_SIM = 0;
+            public static double TURN_PID_I_SIM = 0;
+            public static double TURN_PID_D_SIM = 0;
         }
     }
 
@@ -71,20 +77,20 @@ public class Constants {
             // drivetrain simulation configuration
             public static DriveTrainSimulationConfig SIMULATION_CONFIG = DriveTrainSimulationConfig.Default()
                 // Specify gyro type (for realistic gyro drifting and error simulation)
-                .withGyro(COTS.ofNav2X())
+                .withGyro(COTS.ofPigeon2())
                 // Specify swerve module (for realistic swerve dynamics)
                 .withSwerveModule(
                 COTS.ofMark4i(
                         DCMotor.getKrakenX60(1), // Drive motor is a Kraken X60
                         DCMotor.getNEO(1), // Steer motor is a NEO
-                        COTS.WHEELS.SLS_PRINTED_WHEELS.cof, // Use the COF for 3D-printed Wheels
+                        2, // estimate COF for 3D-printed Wheels
                         2 // L2 Gear Ratio
                     )
                 )
                 // Configures the track length and track width (spacing between swerve modules)
-                .withTrackLengthTrackWidth(Inches.of(24), Inches.of(24))
+                .withTrackLengthTrackWidth(Meters.of(0.554), Meters.of(0.554))
                 // Configures the bumper size (dimensions of the robot bumper)
-                .withBumperSize(Inches.of(27), Inches.of(27));
+                .withBumperSize(Meters.of(0.864), Meters.of(0.864));
 
             public class LENGTHS{
                 public static double TRACK_WIDTH_METERS = 0.55245;
@@ -121,22 +127,19 @@ public class Constants {
             ); 
 
             public static double MAX_ANGULAR_SPEED_RAD = Math.PI * 2;
-            public static double MAX_SPEED_METERS = 5;
+            public static double MAX_SPEED_METERS = 5.500;
         }
     }
 
     public class FieldConstants{
-        public static double FIELD_LENGTH = Units.feetToMeters(57.573);
-        public static double FIELD_WIDTH = Units.feetToMeters(26.417);
+        public static double FIELD_LENGTH = 17.548;
+        public static double FIELD_WIDTH = 8.052;
 
-        public static AdvancedPose2D INIT_POSE_BLUE = new AdvancedPose2D(2, 2, Rotation2d.fromDegrees(180));
+        public static AdvancedPose2D INIT_POSE_BLUE = new AdvancedPose2D(2, 4, Rotation2d.fromDegrees(0));
         public static AdvancedPose2D REEF_CENTER_BLUE = new AdvancedPose2D(4.48945, FIELD_WIDTH / 2, Rotation2d.fromDegrees(0));
 
         public class AutoAim{
-            public static double[] BOUNDARIES = {-180.0, -150.0, -90.0, -30.0, 30.0, 90.0, 150.0, 180.0}; 
-            public static Station[] STATIONS = {Station.D, Station.E, Station.F, Station.A, Station.B, Station.C, Station.D};
-
-            public static double REEF_CENTER_TO_ROBOT = 1.3;
+            public static double REEF_CENTER_TO_ROBOT = 0.3;
             public static double AUTO_TRANSLATION_OFFSET_X = 0.2; // Shift for L/R coral
             public static double MANUAL_TRANSLATION_RANGE = 0.4; // Plus Minus .4m 
 

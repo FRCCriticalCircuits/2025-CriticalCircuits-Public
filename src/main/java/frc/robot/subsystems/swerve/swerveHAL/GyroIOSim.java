@@ -25,4 +25,12 @@ public class GyroIOSim implements GyroIO{
     public void setYaw(double yaw) {
         this.gyroSimulation.setRotation(Rotation2d.fromRotations(yaw));
     }
+
+    /**
+     * @return speed in Radians per Sec
+     */
+    @Override
+    public double getYawVelocity() {
+        return this.gyroSimulation.getMeasuredAngularVelocity().magnitude();
+    }
 }
