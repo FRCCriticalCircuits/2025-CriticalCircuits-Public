@@ -134,9 +134,6 @@ public class Constants {
     public class FieldConstants{
         // 1.3147m from the front of robot to surface of reef
         // suppose to be 1cm away from reef
-        // A-Start X-Stop
-        // Stop it if things goes wrong
-        // If it stuck with a glich-loop after pressing A and not able to drive manually, press X
 
         public static double FIELD_LENGTH = 17.548;
         public static double FIELD_WIDTH = 8.052;
