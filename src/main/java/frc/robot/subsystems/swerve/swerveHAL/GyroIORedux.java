@@ -6,10 +6,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.DeviceID;
 
-public class GyroIOReal implements GyroIO{
+public class GyroIORedux implements GyroIO{
     private final Canandgyro gyro;
 
-    public GyroIOReal(){
+    public GyroIORedux(){
         gyro = new Canandgyro(DeviceID.DriveBase.GYRO_CAN_ID);
 
         Commands.print("[Swerve] Gyro Calibrating").schedule();

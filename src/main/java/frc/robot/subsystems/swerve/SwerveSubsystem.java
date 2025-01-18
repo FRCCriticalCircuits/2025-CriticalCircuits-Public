@@ -34,7 +34,7 @@ import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PhysicalConstants;
 import frc.robot.subsystems.swerve.swerveHAL.GyroIO;
-import frc.robot.subsystems.swerve.swerveHAL.GyroIOReal;
+import frc.robot.subsystems.swerve.swerveHAL.GyroIORedux;
 import frc.robot.subsystems.swerve.swerveHAL.GyroIOSim;
 import frc.robot.subsystems.swerve.swerveHAL.SwerveModule;
 import frc.robot.Robot;
@@ -122,7 +122,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
     private SwerveSubsystem(){
         if(Robot.isReal()) {
-            gyro = new GyroIOReal();
+            gyro = new GyroIORedux();
         }
         else {
             gyro = new GyroIOSim();

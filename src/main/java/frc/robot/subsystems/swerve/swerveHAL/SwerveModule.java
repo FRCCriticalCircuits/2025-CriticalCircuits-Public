@@ -33,12 +33,12 @@ import frc.robot.utils.conversions.WheelConversions;
 
 
 public class SwerveModule {
-    public CANcoder canCoder;
+    private CANcoder canCoder;
 
-    public TalonFX driveMotor;
+    private TalonFX driveMotor;
     private TalonFXConfiguration driveConfig;
 
-    public SparkMax turnMotor;
+    private SparkMax turnMotor;
     private RelativeEncoder turnEncoder;
     private SparkMaxConfig turnConfig;
     private EncoderConfig encoderConfig;
