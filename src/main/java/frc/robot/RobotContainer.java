@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.ControllerBinding;
+import frc.robot.Constants.KeyBinding;
 import frc.robot.commands.teleopDrive;
 import frc.robot.subsystems.Controller;
 import frc.robot.subsystems.swerve.AutoAimManager;
@@ -56,7 +56,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    driveController.button(ControllerBinding.GYRO_RESET).debounce(0.02).onTrue(
+    driveController.button(KeyBinding.GYRO_RESET).debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
           swerveSubsystem.resetGyro(0);

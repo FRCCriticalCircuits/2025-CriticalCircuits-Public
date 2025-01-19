@@ -23,7 +23,7 @@ public class Constants {
     public static AutoAimSetting DEFAULT_SETTING = new AutoAimSetting(Spot.MID, Level.L1, Mode.CORAL_PLACE);
     public static int SAMPLE_NUM = 20;
 
-    public class ControllerBinding{
+    public class KeyBinding{
         public static int GYRO_RESET = 8; // Menu
     }
 
@@ -145,16 +145,17 @@ public class Constants {
         public static double FIELD_LENGTH = 17.548;
         public static double FIELD_WIDTH = 8.052;
 
-        public static AdvancedPose2D INIT_POSE_BLUE = new AdvancedPose2D(2, FIELD_WIDTH / 2, Rotation2d.fromDegrees(0));
+        public static AdvancedPose2D INIT_POSE_BLUE = new AdvancedPose2D(2, FIELD_WIDTH / 2 - 1, Rotation2d.fromDegrees(0));
         public static AdvancedPose2D REEF_CENTER_BLUE = new AdvancedPose2D(4.48945, FIELD_WIDTH / 2, Rotation2d.fromDegrees(0));
 
         public class AutoAim{
             public static double REEF_CENTER_TO_ROBOT = Units.inchesToMeters(32.75) + Units.inchesToMeters(27) / 2 + 0.01; // 118.475
+            public static double CORAL_STATION_TO_ROBOT = Units.inchesToMeters(27) / 2;
             public static double AUTO_TRANSLATION_OFFSET_X = 0.2; // Shift for L/R coral
             public static double MANUAL_TRANSLATION_RANGE = 0.4; // Plus Minus .4m 
 
             public static HashMap<Station, AdvancedPose2D> STATION_BLUE = new HashMap<Station, AdvancedPose2D>(){{
-                put(Station.A, REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(180), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(0)));
+                put(Station.A, REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(0), new Translation2d(-REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(0)));
                 put(Station.B, REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(-120), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(60)));
                 put(Station.C, REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(-60), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(120)));
                 put(Station.D, REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(0), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(180)));
@@ -163,13 +164,18 @@ public class Constants {
             }};
 
             public static HashMap<Station, AdvancedPose2D> STATION_RED = new HashMap<Station, AdvancedPose2D>(){{
-                put(Station.A, REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(180), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(0)));
+                put(Station.A, REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(0), new Translation2d(-REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(0)));
                 put(Station.B, REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(-120), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(60)));
                 put(Station.C, REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(-60), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(120)));
                 put(Station.D, REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(0), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(180)));
                 put(Station.E, REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(60), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(-120)));
                 put(Station.F, REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(120), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(-60)));
             }};
+
+            public static AdvancedPose2D CORAL_STATION_A = new AdvancedPose2D(new Translation2d(0.836168, 0.6334625), null).withVector(Rotation2d.fromDegrees(54), new Translation2d(CORAL_STATION_TO_ROBOT, 0), Rotation2d.fromDegrees(-126));
+            public static AdvancedPose2D CORAL_STATION_B = new AdvancedPose2D(new Translation2d(0.836168, 7.4185375), null).withVector(Rotation2d.fromDegrees(-54), new Translation2d(CORAL_STATION_TO_ROBOT, 0), Rotation2d.fromDegrees(126));
+            public static AdvancedPose2D CORAL_STATION_C = CORAL_STATION_A.horizontallyFlip();
+            public static AdvancedPose2D CORAL_STATION_D = CORAL_STATION_B.horizontallyFlip();
         }
     }
 }

@@ -8,6 +8,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,7 +47,7 @@ public class AutoAimManager{
         this.LTSupplier = LTSupplier;
         this.RTSupplier = RTSupplier;
 
-        notifier.startPeriodic(0.1);
+        notifier.startPeriodic(0.05);
     }
     
     public static AutoAimManager getInstance(Supplier<Double> LTSupplier, Supplier<Double> RTSupplier){
@@ -54,8 +55,25 @@ public class AutoAimManager{
         return instance;
     }
 
-    public void updateAimSettings(AutoAimSetting setting){
-        this.setting = setting;
+    /**
+     * Find the cloest coral station based on current Pos
+     * @param currentPos current {@link Translation2d} for the robot
+     * @return the pose for target coral station
+     */
+    private AdvancedPose2D cloestCoralStation(Translation2d currentPos){
+        if(DriveStationIO.getAlliance() == Alliance.Blue){
+            if (
+                currentPos.getDistance(FieldConstants.AutoAim.CORAL_STATION_A.getTranslation()) > 
+                currentPos.getDistance(FieldConstants.AutoAim.CORAL_STATION_B.getTranslation())
+            ) return FieldConstants.AutoAim.CORAL_STATION_B;
+            else return FieldConstants.AutoAim.CORAL_STATION_A;
+        }else{
+            if (
+                currentPos.getDistance(FieldConstants.AutoAim.CORAL_STATION_C.getTranslation()) > 
+                currentPos.getDistance(FieldConstants.AutoAim.CORAL_STATION_D.getTranslation())
+            ) return FieldConstants.AutoAim.CORAL_STATION_D;
+            else return FieldConstants.AutoAim.CORAL_STATION_C;
+        }
     }
 
     /**
@@ -84,41 +102,35 @@ public class AutoAimManager{
     }
 
     /**
-     * estimate the station driver heads
-     * @param currentPose the current position of robot
+     * estimate the station based on current heading
      * @param setting Autoaim Setting Includes {@link Spot}, {@link Level}, {@link Mode}
-     * @param manualTranslationX manual distence in meters
-     * @return {@link AdvancePose2D} object for auto aiming
+     * @param manualTranslation manual translation distence from the origin aim pos
+     * @return {@link AdvancedPose2D} for pathplanning
      */
-    private AdvancedPose2D estimateStationAdvancedPose2D(AutoAimSetting setting, Translation2d manualTranslation){
-        Station station = estimateStation(SwerveSubsystem.getInstance().getPoseEstimate().getRotation().getDegrees());
-        AdvancedPose2D aimPose = DriveStationIO.isBlue() ? FieldConstants.AutoAim.STATION_BLUE.get(station) : FieldConstants.AutoAim.STATION_RED.get(station);
-
-        // Apply Translations
-        if(setting.getSpot() == Spot.L){
-            return aimPose.withRobotRelativeTransformation(new Translation2d(-FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET_X, 0));
-        }else if(setting.getSpot() == Spot.R){
-            return aimPose.withRobotRelativeTransformation(new Translation2d(FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET_X, 0));
+    private AdvancedPose2D estimateAimPos(AutoAimSetting setting, Translation2d manualTranslation){
+        if(setting.getMode() == Mode.CORAL_INTAKE){
+            return cloestCoralStation(SwerveSubsystem.getInstance().getPoseEstimate().getTranslation());
         }else{
-            return aimPose.withRobotRelativeTransformation(manualTranslation);
+            Station station = estimateStation(SwerveSubsystem.getInstance().getPoseEstimate().getRotation().getDegrees());
+            AdvancedPose2D aimPose = DriveStationIO.isBlue() ? FieldConstants.AutoAim.STATION_BLUE.get(station) : FieldConstants.AutoAim.STATION_RED.get(station);
+
+            if(setting.getSpot() == Spot.L){
+                return aimPose.withRobotRelativeTransformation(new Translation2d(-FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET_X, 0));
+            }else if(setting.getSpot() == Spot.R){
+                return aimPose.withRobotRelativeTransformation(new Translation2d(FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET_X, 0));
+            }else{
+                return aimPose.withRobotRelativeTransformation(manualTranslation);
+            }
         }
     }
 
-    public Command runSwerveAutoAim(){
-        updateValues();
-
-        // Since AutoBuilder is configured, we can use it to build pathfinding commands
-        return AutoBuilder.pathfindToPose(
-            targetPose,
-            constraints,
-            0.0 // Goal end velocity in meters/sec
-        );
-    }
-
-    public void updateValues() {
+    /**
+     * a perodic funtion (0.05s) updates values from WebSocket, save/send Estimate Target Pose
+     */
+    private void updateValues() {
         setting = server.getAutoAimSettings();
 
-        targetPose = estimateStationAdvancedPose2D(
+        targetPose = estimateAimPos(
             setting,
             new Translation2d
             (
@@ -129,5 +141,20 @@ public class AutoAimManager{
         
         field2d.setRobotPose(targetPose);
         SmartDashboard.putData("Swerve AutoAim", field2d);
+    }
+
+    /**
+     * get the PathFinding Command based on current settings
+     * @return the {@link Command} to execute
+     */
+    public Command runSwerveAutoAim(){
+        updateValues();
+
+        // Since AutoBuilder is configured, we can use it to build pathfinding commands
+        return AutoBuilder.pathfindToPose(
+            targetPose,
+            constraints,
+            0.0 // Goal end velocity in meters/sec
+        );
     }
 }

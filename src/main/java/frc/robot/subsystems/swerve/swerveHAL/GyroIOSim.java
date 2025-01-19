@@ -17,18 +17,11 @@ public class GyroIOSim implements GyroIO{
         return this.gyroSimulation.getGyroReading();
     }
 
-    /**
-     * reset angle of gyro
-     * @param yaw new angle in rotations
-     */
     @Override
     public void setYaw(double yaw) {
         this.gyroSimulation.setRotation(Rotation2d.fromRotations(yaw));
     }
 
-    /**
-     * @return speed in Radians per Sec
-     */
     @Override
     public double getYawVelocity() {
         return this.gyroSimulation.getMeasuredAngularVelocity().magnitude();

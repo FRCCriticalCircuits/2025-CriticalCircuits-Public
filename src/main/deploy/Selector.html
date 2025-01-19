@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Selector</title>
     <script>
-        let settings = { spot: 0, level: 0, mode: 0 };
+        let settings = { spot: 2, level: 0, mode: 1 };
         let jsonData = { DatapackType: 0, setting: settings };
         let ws;
 
@@ -37,20 +37,20 @@
 </head>
 <body>
     <div>
-        <h3>选择 Level:</h3>
+        <h3>Level:</h3>
         <button onclick="updateSettings('level', 0)">L1</button>
         <button onclick="updateSettings('level', 1)">L2</button>
         <button onclick="updateSettings('level', 2)">L3</button>
         <button onclick="updateSettings('level', 3)">L4</button>
     </div>
     <div>
-        <h3>选择 Mode:</h3>
-        <button onclick="updateSettings('mode', 0)">Coral</button>
-        <button onclick="updateSettings('mode', 1)">Intake</button>
+        <h3>Mode:</h3>
+        <button onclick="updateSettings('mode', 0)">Intake</button>
+        <button onclick="updateSettings('mode', 1)">Coral</button>
         <button onclick="updateSettings('mode', 2)">Algae</button>
     </div>
     <div>
-        <h3>选择 Spot:</h3>
+        <h3>Spot:</h3>
         <button onclick="updateSettings('spot', 0)">Left</button>
         <button onclick="updateSettings('spot', 2)">Mid</button>
         <button onclick="updateSettings('spot', 1)">Right</button>

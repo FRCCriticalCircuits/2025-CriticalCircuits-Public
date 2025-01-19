@@ -241,7 +241,7 @@ public class SwerveSubsystem extends SubsystemBase{
     }
 
     /**
-     * get velocity & direction of four modules
+     * get vector of four modules
      * @return the position in {@link SwerveModuleState} 
      */
     public SwerveModuleState[] getSwerveModuleStates() {
@@ -295,7 +295,7 @@ public class SwerveSubsystem extends SubsystemBase{
     /**
      * set the state of four modules with a {@link ChassisSpeeds} object
      * @param states the desired {@link ChassisSpeeds} speed
-     * @apiNote uses for pathpalnner, CloseLoop by defualt
+     * @apiNote closeloop by defualt, uses for pathplanner
      */
     public void setModuleStates(ChassisSpeeds speeds){
         setModuleStates(speeds, false);
