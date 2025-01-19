@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ControllerBinding;
 import frc.robot.commands.teleopDrive;
 import frc.robot.subsystems.Controller;
-import frc.robot.subsystems.autoaim.AutoAimManager;
+import frc.robot.subsystems.swerve.AutoAimManager;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class RobotContainer {

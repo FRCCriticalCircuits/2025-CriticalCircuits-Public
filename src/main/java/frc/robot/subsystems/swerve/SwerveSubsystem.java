@@ -3,8 +3,6 @@ package frc.robot.subsystems.swerve;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.util.concurrent.locks.ReentrantLock;
-
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -41,7 +39,6 @@ import frc.robot.Robot;
 
 public class SwerveSubsystem extends SubsystemBase{
     private static SwerveSubsystem instance;
-    public static final ReentrantLock odometryLock = new ReentrantLock(); // same with mutex lock
 
     // Hardwares
     private SwerveModule frontLeft, frontRight, rearLeft, rearRight;

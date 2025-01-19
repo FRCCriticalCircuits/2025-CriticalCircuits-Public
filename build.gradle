@@ -57,6 +57,7 @@ dependencies {
     implementation wpi.java.vendor.java()
 
     implementation 'org.java-websocket:Java-WebSocket:1.6.0'
+    implementation 'org.json:json:20250107'
 
     roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)
     roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)

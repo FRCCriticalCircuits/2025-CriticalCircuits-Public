@@ -13,9 +13,16 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.utils.Math.AdvancedPose2D;
+import frc.robot.utils.structures.AutoAimSetting;
+import frc.robot.utils.structures.DataStrcutures.Level;
+import frc.robot.utils.structures.DataStrcutures.Mode;
+import frc.robot.utils.structures.DataStrcutures.Spot;
 import frc.robot.utils.structures.DataStrcutures.Station;
 
 public class Constants {
+    public static AutoAimSetting DEFAULT_SETTING = new AutoAimSetting(Spot.MID, Level.L1, Mode.CORAL_PLACE);
+    public static int SAMPLE_NUM = 20;
+
     public class ControllerBinding{
         public static int GYRO_RESET = 8; // Menu
     }

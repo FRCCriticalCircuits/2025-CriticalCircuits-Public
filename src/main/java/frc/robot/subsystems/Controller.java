@@ -7,13 +7,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DeviceID;
 
 public class Controller extends SubsystemBase{
-    public static Controller instance;
+    private static Controller instance;
 
     private XboxController driverController;
 
     private RUMBLE_STATE rumbleState = RUMBLE_STATE.DISABLE;
 
-    public Controller(){
+    private Controller(){
         driverController = new XboxController(DeviceID.GAMEPAD_DRIVER);
     }
 

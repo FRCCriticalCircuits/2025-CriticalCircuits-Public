@@ -1,4 +1,4 @@
-package frc.robot.subsystems.autoaim;
+package frc.robot.subsystems.swerve;
 
 import java.util.function.Supplier;
 
@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
 import frc.robot.utils.Math.AdvancedPose2D;
 import frc.robot.utils.structures.AutoAimSetting;
@@ -20,15 +19,16 @@ import frc.robot.utils.structures.DataStrcutures.Level;
 import frc.robot.utils.structures.DataStrcutures.Mode;
 import frc.robot.utils.structures.DataStrcutures.Spot;
 import frc.robot.utils.structures.DataStrcutures.Station;
+import frc.robot.utils.web.WebServer;
 
 public class AutoAimManager{
-    public static AutoAimManager instance;
-
-    Notifier notifier = new Notifier(this::update);
-
-    public AutoAimSetting setting = new AutoAimSetting(Spot.MID, Level.L1, Mode.PLACE);
-
+    private static AutoAimManager instance;
+    
+    private WebServer server = WebServer.getInstance();
+    private Notifier notifier = new Notifier(this::updateValues);
+    private AutoAimSetting setting;
     private Supplier<Double> LTSupplier, RTSupplier;
+
     private Pose2d targetPose;
     private double[] BOUNDARIES = {-180.0, -150.0, -90.0, -30.0, 30.0, 90.0, 150.0, 180.0}; 
     private Station[] STATIONS = {Station.D, Station.E, Station.F, Station.A, Station.B, Station.C, Station.D};
@@ -45,7 +45,7 @@ public class AutoAimManager{
         this.LTSupplier = LTSupplier;
         this.RTSupplier = RTSupplier;
 
-        notifier.startPeriodic(0.2);
+        notifier.startPeriodic(0.1);
     }
     
     public static AutoAimManager getInstance(Supplier<Double> LTSupplier, Supplier<Double> RTSupplier){
@@ -89,14 +89,14 @@ public class AutoAimManager{
      * @param manualTranslationX manual distence in meters
      * @return {@link AdvancePose2D} object for auto aiming
      */
-    public AdvancedPose2D estimateStationAdvancedPose2D(AutoAimSetting setting, Translation2d manualTranslation){
+    private AdvancedPose2D estimateStationAdvancedPose2D(AutoAimSetting setting, Translation2d manualTranslation){
         Station station = estimateStation(SwerveSubsystem.getInstance().getPoseEstimate().getRotation().getDegrees());
         AdvancedPose2D aimPose = DriveStationIO.isBlue() ? FieldConstants.AutoAim.STATION_BLUE.get(station) : FieldConstants.AutoAim.STATION_RED.get(station);
 
         // Apply Translations
-        if(setting.spot == Spot.L){
+        if(setting.getSpot() == Spot.L){
             return aimPose.withRobotRelativeTransformation(new Translation2d(FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET_X, 0));
-        }else if(setting.spot == Spot.R){
+        }else if(setting.getSpot() == Spot.R){
             return aimPose.withRobotRelativeTransformation(new Translation2d(-FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET_X, 0));
         }else{
             return aimPose.withRobotRelativeTransformation(manualTranslation);
@@ -104,7 +104,7 @@ public class AutoAimManager{
     }
 
     public Command runSwerveAutoAim(){
-        update();
+        updateValues();
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
         return AutoBuilder.pathfindToPose(
@@ -114,7 +114,9 @@ public class AutoAimManager{
         );
     }
 
-    public void update() {
+    public void updateValues() {
+        setting = server.getAutoAimSettings();
+        
         targetPose = estimateStationAdvancedPose2D(
             setting,
             new Translation2d
@@ -125,6 +127,6 @@ public class AutoAimManager{
         );
         
         field2d.setRobotPose(targetPose);
-        SmartDashboard.putData("Swerve AutoAim Pos", field2d);
+        SmartDashboard.putData("Swerve AutoAim", field2d);
     }
 }
