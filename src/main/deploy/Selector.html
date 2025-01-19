@@ -9,7 +9,7 @@
         let ws;
 
         function updateDisplay() {
-            const spotText = ['左', '中', '右'];
+            const spotText = ['Left', 'Right', 'Mid'];
             document.getElementById('display').innerText = `Mode: ${settings.mode} / Level: L${settings.level + 1} / Spot: ${spotText[settings.spot]}`;
             document.getElementById('jsonDisplay').innerText = JSON.stringify(jsonData, null, 2);
         }
