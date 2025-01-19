@@ -15,7 +15,11 @@ public class WebServer {
 
     private WebServer(){
         wsServer = new WebServerIO(new InetSocketAddress("localhost", 9062));
-        wsServer.run();
+        new Thread(
+            () -> {
+                wsServer.run();
+            }
+        ).start();
     }
 
     public static WebServer getInstance(){

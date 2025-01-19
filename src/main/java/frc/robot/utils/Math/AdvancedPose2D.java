@@ -43,7 +43,7 @@ public class AdvancedPose2D extends Pose2d{
 
     /**
      * apply a robot-relative transformation to the {@link AdvancedPose2D} object
-     * @param transformation Y positive goes front and X positive goes Left
+     * @param transformation Y positive goes front and X positive goes Right
      * @return the transformed {@link AdvancedPose2D} object
      */
     public AdvancedPose2D withRobotRelativeTransformation(Translation2d transformation){

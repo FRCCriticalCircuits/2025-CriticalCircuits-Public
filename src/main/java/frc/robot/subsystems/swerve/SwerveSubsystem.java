@@ -344,7 +344,5 @@ public class SwerveSubsystem extends SubsystemBase{
             SmartDashboard.putNumber("Gyro", getGyroRotation2D().getRadians());
             currentSwerveStatePublisher.set(getSwerveModuleStates());
         }
-
-        SmartDashboard.putNumber("angle", getPoseEstimate().getRotation().getDegrees());
     }
 }

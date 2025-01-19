@@ -26,6 +26,7 @@ public class AutoAimManager{
     
     private WebServer server = WebServer.getInstance();
     private Notifier notifier = new Notifier(this::updateValues);
+
     private AutoAimSetting setting;
     private Supplier<Double> LTSupplier, RTSupplier;
 
@@ -95,9 +96,9 @@ public class AutoAimManager{
 
         // Apply Translations
         if(setting.getSpot() == Spot.L){
-            return aimPose.withRobotRelativeTransformation(new Translation2d(FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET_X, 0));
-        }else if(setting.getSpot() == Spot.R){
             return aimPose.withRobotRelativeTransformation(new Translation2d(-FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET_X, 0));
+        }else if(setting.getSpot() == Spot.R){
+            return aimPose.withRobotRelativeTransformation(new Translation2d(FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET_X, 0));
         }else{
             return aimPose.withRobotRelativeTransformation(manualTranslation);
         }
@@ -116,7 +117,7 @@ public class AutoAimManager{
 
     public void updateValues() {
         setting = server.getAutoAimSettings();
-        
+
         targetPose = estimateStationAdvancedPose2D(
             setting,
             new Translation2d

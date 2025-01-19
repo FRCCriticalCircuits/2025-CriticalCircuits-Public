@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Selector</title>
+    <script>
+        let settings = { spot: 0, level: 0, mode: 0 };
+        let jsonData = { DatapackType: 0, setting: settings };
+        let ws;
+
+        function updateDisplay() {
+            const spotText = ['左', '中', '右'];
+            document.getElementById('display').innerText = `Mode: ${settings.mode} / Level: L${settings.level + 1} / Spot: ${spotText[settings.spot]}`;
+            document.getElementById('jsonDisplay').innerText = JSON.stringify(jsonData, null, 2);
+        }
+
+        function updateSettings(key, value) {
+            settings[key] = value;
+            updateDisplay();
+            if (ws) {
+                ws.send(JSON.stringify(jsonData));
+            }
+        }
+
+        function initWebSocket() {
+            ws = new WebSocket('ws://127.0.0.1:9062');
+            ws.onopen = () => console.log('WebSocket 连接已建立');
+            ws.onclose = () => console.log('WebSocket 连接已关闭');
+            ws.onerror = (error) => console.error('WebSocket 错误:', error);
+        }
+
+        window.onload = () => {
+            initWebSocket();
+            updateDisplay();
+        };
+    </script>
+</head>
+<body>
+    <div>
+        <h3>选择 Level:</h3>
+        <button onclick="updateSettings('level', 0)">L1</button>
+        <button onclick="updateSettings('level', 1)">L2</button>
+        <button onclick="updateSettings('level', 2)">L3</button>
+        <button onclick="updateSettings('level', 3)">L4</button>
+    </div>
+    <div>
+        <h3>选择 Mode:</h3>
+        <button onclick="updateSettings('mode', 0)">Coral</button>
+        <button onclick="updateSettings('mode', 1)">Intake</button>
+        <button onclick="updateSettings('mode', 2)">Algae</button>
+    </div>
+    <div>
+        <h3>选择 Spot:</h3>
+        <button onclick="updateSettings('spot', 0)">Left</button>
+        <button onclick="updateSettings('spot', 2)">Mid</button>
+        <button onclick="updateSettings('spot', 1)">Right</button>
+    </div>
+    <div id="display" style="margin-top: 20px;"></div>
+    <pre id="jsonDisplay" style="margin-top: 20px; background-color: #f0f0f0; padding: 10px;"></pre>
+</body>
+</html>

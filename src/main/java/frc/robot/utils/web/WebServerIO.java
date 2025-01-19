@@ -9,7 +9,6 @@ import org.java_websocket.server.WebSocketServer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.utils.structures.AutoAimSetting;
 import frc.robot.utils.structures.SolverResult;
@@ -43,14 +42,10 @@ public class WebServerIO extends WebSocketServer {
 	}
 
 	@Override
-	public void onOpen(WebSocket conn, ClientHandshake handshake) {
-		Commands.print("[Server] Connection From: " + conn.getRemoteSocketAddress());
-	}
+	public void onOpen(WebSocket conn, ClientHandshake handshake) {}
 
 	@Override
-	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-		Commands.print("[Server] " + conn.getRemoteSocketAddress() + "disconnected with exit code " + code + " [" + reason + "]");
-	}
+	public void onClose(WebSocket conn, int code, String reason, boolean remote) {}
 
 	@Override
 	public void onMessage(WebSocket conn, String message) {
@@ -65,9 +60,9 @@ public class WebServerIO extends WebSocketServer {
 		 */
 		switch(requestId){
 			case 0: 
-				Spot spot = Spot.valueOf(object.getJSONObject("settings").getInt("spot"));
-				Level level = Level.valueOf(object.getJSONObject("settings").getInt("level"));
-				Mode mode = Mode.valueOf(object.getJSONObject("settings").getInt("mode"));
+				Spot spot = Spot.valueOf(object.getJSONObject("setting").getInt("spot"));
+				Level level = Level.valueOf(object.getJSONObject("setting").getInt("level"));
+				Mode mode = Mode.valueOf(object.getJSONObject("setting").getInt("mode"));
 				this.settings = new AutoAimSetting(spot, level, mode);
 				break;
 			case 1:
@@ -91,12 +86,8 @@ public class WebServerIO extends WebSocketServer {
 	public void onMessage(WebSocket conn, ByteBuffer message) {}
 
 	@Override
-	public void onError(WebSocket conn, Exception ex) {
-		Commands.print("[Server] Error occured on : connection" + conn.getRemoteSocketAddress() + " [" + ex + "]");
-	}
+	public void onError(WebSocket conn, Exception ex) {}
 	
 	@Override
-	public void onStart() {
-		Commands.print("[Server] Started");
-	}
+	public void onStart() {}
 }
