@@ -23,7 +23,7 @@
         }
 
         function initWebSocket() {
-            ws = new WebSocket('ws://127.0.0.1:9062');
+            ws = new WebSocket('ws://10.90.62.2:9062');
             ws.onopen = () => console.log('WebSocket 连接已建立');
             ws.onclose = () => console.log('WebSocket 连接已关闭');
             ws.onerror = (error) => console.error('WebSocket 错误:', error);

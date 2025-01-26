@@ -68,12 +68,10 @@ public class RobotContainer {
       new SequentialCommandGroup(
         new InstantCommand(
           () -> {
-            autoAimCommand = autoAimManager.runSwerveAutoAim();
-            autoAimCommand.addRequirements(swerveSubsystem);
             teleopDrive.manualEnable = false;
           }, swerveSubsystem
         ),
-        autoAimCommand,
+        autoAimManager.runSwerveAutoAim(),
         new InstantCommand(
           () -> {
             teleopDrive.manualEnable = true;
@@ -85,13 +83,11 @@ public class RobotContainer {
     driveController.x().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
-          CommandScheduler.getInstance().cancel(autoAimCommand);
+          CommandScheduler.getInstance().cancelAll();
           teleopDrive.manualEnable = true;
         }
       )
     );
-
-    
   }
 
   public Command getAutonomousCommand() {
