@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import frc.robot.utils.DriveStationIO.DriveStationIO;
 import frc.robot.utils.structures.AutoAimSetting;
 import frc.robot.utils.structures.SolverRequest;
 import frc.robot.utils.structures.SolverResult;
@@ -15,11 +16,13 @@ public class WebServer {
 
     private WebServer(){
         wsServer = new WebServerIO(new InetSocketAddress("10.90.62.2", 9062));
-        new Thread(
+        if(DriveStationIO.isTest()){
+            new Thread(
             () -> {
                 wsServer.run();
             }
-        ).start();
+            ).start();
+        }
     }
 
     public static WebServer getInstance(){
@@ -50,5 +53,13 @@ public class WebServer {
 
     public AutoAimSetting getAutoAimSettings(){
         return wsServer.getSettings();
+    }
+
+    /**
+     * Update the settings when control through operator joystick
+     * @param settings target settings
+     */
+    public void updateSetting(AutoAimSetting settings){
+        wsServer.updateSetting(settings);
     }
 }

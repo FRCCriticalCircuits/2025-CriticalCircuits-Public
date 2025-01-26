@@ -29,6 +29,10 @@ public class WebServerIO extends WebSocketServer {
 		return this.settings;
 	}
 
+	public AutoAimSetting updateSetting(AutoAimSetting setting){
+		return this.settings = setting;
+	}
+
 	public SolverResult getSolverResult(){
 		return solverResult;
 	}

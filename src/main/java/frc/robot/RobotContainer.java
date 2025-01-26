@@ -31,7 +31,6 @@ public class RobotContainer {
   private Controller controller = Controller.getInstance();
   private CommandXboxController driveController = new CommandXboxController(0); 
 
-  private Command autoAimCommand = new Command() {};
   private AutoAimManager autoAimManager = AutoAimManager.getInstance(
     () -> controller.getDriverLT(),
     () -> controller.getDriverRT()
