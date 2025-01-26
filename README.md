@@ -7,7 +7,7 @@ Applying a robot-relative vector helped with generate manual swerve pathFinding 
 - AutoAim Position Calculator `src\main\java\frc\robot\utils\Math\SwerveAimPose.java`
 - Manual Velocity Control (Swerve) `src\main\java\frc\robot\commands\teleopDrive.java`
 
-# Refrences:
+# Web Selector:
 - WebSocket Lib: `https://github.com/TooTallNate/Java-WebSocket` 
 A webpage to configure auto-aim settings (left/right/mid or Coral Station/Reef) \
 communicate through websocket saves the time program NT4
