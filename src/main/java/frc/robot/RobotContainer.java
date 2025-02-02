@@ -70,7 +70,7 @@ public class RobotContainer {
             teleopDrive.manualEnable = false;
           }, swerveSubsystem
         ),
-        autoAimManager.runSwerveAutoAim(),
+        autoAimManager.getCommand(swerveSubsystem),
         new InstantCommand(
           () -> {
             teleopDrive.manualEnable = true;

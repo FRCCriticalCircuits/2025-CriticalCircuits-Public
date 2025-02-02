@@ -51,38 +51,35 @@ public class WebServerIO extends WebSocketServer {
 	@Override
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {}
 
+	private void handleSettingsUpdate(JSONObject settingObj) {
+		Spot spot = Spot.valueOf(settingObj.getInt("spot"));
+		Level level = Level.valueOf(settingObj.getInt("level"));
+		Mode mode = Mode.valueOf(settingObj.getInt("mode"));
+		this.settings = new AutoAimSetting(spot, level, mode);
+	}
+	
+	private void handleSolverResult(JSONObject object) {
+		JSONArray jsonArray = object.getJSONArray("result");
+		double[][] dataArray = new double[jsonArray.length()][2];
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONArray inner = jsonArray.getJSONArray(i);
+			dataArray[i] = new double[]{inner.getDouble(0), inner.getDouble(1)};
+		}
+		solverResult = new SolverResult(dataArray);
+		resultId = object.getInt("resultId");
+	}
+	
+	/* 
+	 * ID 0: Update AutoAim Settings Request from Driver 
+	 * ID 1: Solver Request - not gonna receive it
+	 * ID 2: Solver Result
+	 */
 	@Override
 	public void onMessage(WebSocket conn, String message) {
 		JSONObject object = new JSONObject(message);
-
-		int requestId = object.getInt("DatapackType");
-
-		/* 
-		 * ID 0: Update AutoAim Settings Request from Driver 
-		 * ID 1: Solver Request - not gonna receive it
-		 * ID 2: Solver Result
-		 */
-		switch(requestId){
-			case 0: 
-				Spot spot = Spot.valueOf(object.getJSONObject("setting").getInt("spot"));
-				Level level = Level.valueOf(object.getJSONObject("setting").getInt("level"));
-				Mode mode = Mode.valueOf(object.getJSONObject("setting").getInt("mode"));
-				this.settings = new AutoAimSetting(spot, level, mode);
-				break;
-			case 1:
-				break;
-			default:
-				JSONArray jsonArray = object.getJSONArray("result");
-				double[][] dataArray = new double[jsonArray.length()][2];
-				for (int i = 0; i < jsonArray.length(); i++) {
-					dataArray[i] = new double[2];
-					JSONArray innerArray = jsonArray.getJSONArray(i);
-					for(int j = 0; j < 2; j++){
-						dataArray[i][j] = innerArray.getDouble(j);
-					}
-				}
-				solverResult = new SolverResult(dataArray);
-				resultId = object.getInt("resultId");
+		switch(object.getInt("DatapackType")) {
+			case 0: handleSettingsUpdate(object.getJSONObject("setting")); break;
+			case 2: handleSolverResult(object); break;
 		}
 	}
 

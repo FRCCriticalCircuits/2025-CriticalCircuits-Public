@@ -122,7 +122,7 @@ public class Constants {
             public class CANCoder{
                 public static double FRONT_LEFT_OFFSET = -0.3;
                 public static double FRONT_RIGHT_OFFSET = 0.468;
-                public static double REAR_LEFT_OFFSET = -0.4065;
+                public static double REAR_LEFT_OFFSET = -0.3403;
                 public static double REAR_RIGHT_OFFSET = -0.210;
             }
 

@@ -31,14 +31,14 @@ public class AutoAimManager{
     private AutoAimSetting setting;
     private Supplier<Double> LTSupplier, RTSupplier;
 
-    private Pose2d targetPose;
+    private Pose2d targetPose = new Pose2d();
     private double[] BOUNDARIES = {-180.0, -150.0, -90.0, -30.0, 30.0, 90.0, 150.0, 180.0}; 
     private Station[] STATIONS = {Station.D, Station.E, Station.F, Station.A, Station.B, Station.C, Station.D};
     private Field2d field2d = new Field2d();
     
     private PathConstraints constraints = new PathConstraints(
-        1,
-        0.3,
+        1.3,
+        2,
         Math.PI / 4,
         Math.PI / 2
     );
@@ -98,6 +98,7 @@ public class AutoAimManager{
                 left = middle + 1;
             }
         }
+
         return Station.D;   // for theta = 180
     }
 
@@ -140,6 +141,7 @@ public class AutoAimManager{
         );
         
         field2d.setRobotPose(targetPose);
+
         SmartDashboard.putData("Swerve AutoAim", field2d);
     }
 
@@ -147,14 +149,18 @@ public class AutoAimManager{
      * get the PathFinding Command based on current settings
      * @return the {@link Command} to execute
      */
-    public Command runSwerveAutoAim(){
+    public Command getCommand(SwerveSubsystem instance){
         updateValues();
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
-        return AutoBuilder.pathfindToPose(
+        Command command = AutoBuilder.pathfindToPose(
             targetPose,
             constraints,
             0.0 // Goal end velocity in meters/sec
         );
+
+        command.addRequirements(instance);
+
+        return command;
     }
 }
