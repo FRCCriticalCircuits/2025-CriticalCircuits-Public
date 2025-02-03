@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Path 1"
+            "pathName": "0 - Path 1"
           }
         },
         {
@@ -57,7 +57,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Path 2"
+            "pathName": "0 - Path 2"
           }
         },
         {
@@ -88,7 +88,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Path 3"
+            "pathName": "0 - Path 3"
           }
         },
         {

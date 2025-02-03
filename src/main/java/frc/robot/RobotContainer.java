@@ -48,6 +48,7 @@ public class RobotContainer {
     );
 
     autoChooser.setDefaultOption("1", "Auto 0");
+    autoChooser.addOption("test", "Auto 1");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 

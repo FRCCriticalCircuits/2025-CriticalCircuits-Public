@@ -145,7 +145,7 @@ public class Constants {
         public static double FIELD_LENGTH = 17.548;
         public static double FIELD_WIDTH = 8.052;
 
-        public static AdvancedPose2D INIT_POSE_BLUE = new AdvancedPose2D(2, FIELD_WIDTH / 2 - 1, Rotation2d.fromDegrees(0));
+        public static AdvancedPose2D INIT_POSE_BLUE = new AdvancedPose2D(2, 4, Rotation2d.fromDegrees(0));
         public static AdvancedPose2D REEF_CENTER_BLUE = new AdvancedPose2D(4.48945, FIELD_WIDTH / 2, Rotation2d.fromDegrees(0));
 
         public class AutoAim{
