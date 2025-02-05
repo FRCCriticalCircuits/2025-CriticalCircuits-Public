@@ -50,7 +50,7 @@ public class AutoAimManager{
         notifier.startPeriodic(0.05);
     }
     
-    public static AutoAimManager getInstance(Supplier<Double> LTSupplier, Supplier<Double> RTSupplier){
+    public synchronized static AutoAimManager getInstance(Supplier<Double> LTSupplier, Supplier<Double> RTSupplier){
         if(instance == null) instance = new AutoAimManager(LTSupplier, RTSupplier);
         return instance;
     }
@@ -149,7 +149,7 @@ public class AutoAimManager{
      * get the PathFinding Command based on current settings
      * @return the {@link Command} to execute
      */
-    public Command getCommand(SwerveSubsystem instance){
+    public synchronized Command getCommand(SwerveSubsystem instance){
         updateValues();
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands

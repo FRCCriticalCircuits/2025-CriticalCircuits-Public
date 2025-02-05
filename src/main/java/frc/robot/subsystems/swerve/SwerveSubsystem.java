@@ -9,6 +9,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,6 +17,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.units.measure.Voltage;
@@ -73,7 +76,7 @@ public class SwerveSubsystem extends SubsystemBase{
         new SysIdRoutine.Mechanism(this::voltageDriveAngular, null, this)
     );
 
-    public void voltageDriveLinear(Voltage volt){
+    public synchronized void voltageDriveLinear(Voltage volt){
         double voltage = volt.magnitude();
 
         frontLeft.setDriveVoltage(voltage);
@@ -87,7 +90,7 @@ public class SwerveSubsystem extends SubsystemBase{
         rearRight.setTurn(0);
     }
 
-    public void voltageDriveAngular(Voltage volt){
+    public synchronized void voltageDriveAngular(Voltage volt){
         double voltage = volt.magnitude();
         
         frontLeft.setDriveVoltage(voltage);
@@ -101,19 +104,19 @@ public class SwerveSubsystem extends SubsystemBase{
         rearRight.setTurn(Rotation2d.fromDegrees(-45).getRadians());
     }
 
-    public Command sysIdLinearQuasistatic(SysIdRoutine.Direction direction) {
+    public synchronized Command sysIdLinearQuasistatic(SysIdRoutine.Direction direction) {
         return routineLinear.quasistatic(direction);
     }
 
-    public Command sysIdLinearDynamic(SysIdRoutine.Direction direction) {
+    public synchronized Command sysIdLinearDynamic(SysIdRoutine.Direction direction) {
         return routineLinear.dynamic(direction);
     }
 
-    public Command sysIdAngularQuasistatic(SysIdRoutine.Direction direction) {
+    public synchronized Command sysIdAngularQuasistatic(SysIdRoutine.Direction direction) {
         return routineAngular.quasistatic(direction);
     }
 
-    public Command sysIdAngularDynamic(SysIdRoutine.Direction direction) {
+    public synchronized Command sysIdAngularDynamic(SysIdRoutine.Direction direction) {
         return routineAngular.dynamic(direction);
     }
 
@@ -214,16 +217,16 @@ public class SwerveSubsystem extends SubsystemBase{
         desireSwerveStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("/SwerveStates/DesiredState", SwerveModuleState.struct).publish();
     }
 
-    public static SwerveSubsystem getInstance(){
+    public synchronized static SwerveSubsystem getInstance(){
         if(instance == null) instance = new SwerveSubsystem();
         return instance;
     }
 
-    public Rotation2d getGyroRotation2D(){
+    public synchronized Rotation2d getGyroRotation2D(){
         return gyro.getGyroRotation2D();
     }
 
-    public void resetGyro(double yaw){
+    public synchronized void resetGyro(double yaw){
         gyro.setYaw(yaw);
     }
 
@@ -231,7 +234,7 @@ public class SwerveSubsystem extends SubsystemBase{
      * get position of four modules
      * @return the position in {@link SwerveModulePosition} 
      */
-    public SwerveModulePosition[] getSwerveModulePositions() {
+    public synchronized SwerveModulePosition[] getSwerveModulePositions() {
         return new SwerveModulePosition[]{
             frontLeft.getModulePosition(),
             frontRight.getModulePosition(),
@@ -244,7 +247,7 @@ public class SwerveSubsystem extends SubsystemBase{
      * get vector of four modules
      * @return the position in {@link SwerveModuleState} 
      */
-    public SwerveModuleState[] getSwerveModuleStates() {
+    public synchronized SwerveModuleState[] getSwerveModuleStates() {
         return new SwerveModuleState[]{
             frontLeft.getModuleState(),
             frontRight.getModuleState(),
@@ -258,7 +261,7 @@ public class SwerveSubsystem extends SubsystemBase{
      * @return {@link ChassisSpeeds} object
      * @apiNote uses for pathplanner
      */
-    public ChassisSpeeds getChassisSpeeds() {
+    public synchronized ChassisSpeeds getChassisSpeeds() {
         return PhysicalConstants.DriveBase.KINEMATICS.toChassisSpeeds(getSwerveModuleStates());
     }
 
@@ -286,7 +289,7 @@ public class SwerveSubsystem extends SubsystemBase{
      * @param speeds the desired {@link ChassisSpeeds} speed
      * @param isOpenLoop true for openLoop control (for drive motor)
      */
-    public void setModuleStates(ChassisSpeeds speeds, boolean isOpenLoop){
+    public synchronized void setModuleStates(ChassisSpeeds speeds, boolean isOpenLoop){
         speeds = ChassisSpeeds.discretize(speeds, 0.02);
         SwerveModuleState states[] = PhysicalConstants.DriveBase.KINEMATICS.toSwerveModuleStates(speeds);
         setModuleStates(states, isOpenLoop);
@@ -297,7 +300,7 @@ public class SwerveSubsystem extends SubsystemBase{
      * @param states the desired {@link ChassisSpeeds} speed
      * @apiNote closeloop by defualt, uses for pathplanner
      */
-    public void setModuleStates(ChassisSpeeds speeds){
+    public synchronized void setModuleStates(ChassisSpeeds speeds){
         setModuleStates(speeds, false);
     }
 
@@ -305,34 +308,34 @@ public class SwerveSubsystem extends SubsystemBase{
      * get the position of robot from the {@link SwerveDrivePoseEstimator}
      * @return position in {@link Pose2d}
      */
-    public Pose2d getPoseEstimate() {
+    public synchronized Pose2d getPoseEstimate() {
         return poseEstimator.getEstimatedPosition();
     }
 
     /**
      * update the {@link SwerveDrivePoseEstimator}
      */
-    public void updatePoseEstimator() {
+    public synchronized void updatePoseEstimator() {
         poseEstimator.update(getGyroRotation2D(), getSwerveModulePositions());
     }
 
     /**
      * update the {@link SwerveDrivePoseEstimator} with Vision Results
      */
-    public void updatePoseEstimator(Pose2d visionEstimatedPose, double timeStampSeconds) {
-        
+    public synchronized void updatePoseEstimator(Pose2d visionEstimatedPose, double timeStampSeconds, Matrix<N3, N1> stdDevs) {
+        poseEstimator.addVisionMeasurement(visionEstimatedPose, timeStampSeconds, stdDevs);
     }
 
     /**
      * reset the position of the {@link SwerveDrivePoseEstimator} 
      * @param pose new position in {@link Pose2d}
      */
-    public void resetPoseEstimate(Pose2d pose) {
+    public synchronized void resetPoseEstimate(Pose2d pose) {
         poseEstimator.resetPosition(getGyroRotation2D(), getSwerveModulePositions(), pose);
     }
 
     @Override
-    public void periodic(){
+    public synchronized void periodic(){
         // Pose Estimator
         updatePoseEstimator();
 
