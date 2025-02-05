@@ -1,4 +1,4 @@
-package frc.robot.subsystems.swerve.swerveHAL;
+package frc.robot.subsystems.swerve.swerveIO;
 
 import com.reduxrobotics.sensors.canandgyro.Canandgyro;
 
@@ -6,10 +6,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.DeviceID;
 
-public class GyroIORedux implements GyroIO{
+public class GyroRedux implements GyroIO{
     private final Canandgyro gyro;
 
-    public GyroIORedux(){
+    public GyroRedux(){
         gyro = new Canandgyro(DeviceID.DriveBase.GYRO_CAN_ID);
 
         Commands.print("[Swerve] Gyro Calibrating").schedule();

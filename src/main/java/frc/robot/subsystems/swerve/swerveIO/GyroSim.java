@@ -1,14 +1,14 @@
-package frc.robot.subsystems.swerve.swerveHAL;
+package frc.robot.subsystems.swerve.swerveIO;
 
 import org.ironmaple.simulation.drivesims.COTS;
 import org.ironmaple.simulation.drivesims.GyroSimulation;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
-public class GyroIOSim implements GyroIO{
+public class GyroSim implements GyroIO{
     private GyroSimulation gyroSimulation;
 
-    public GyroIOSim(){
+    public GyroSim(){
         this.gyroSimulation = COTS.ofPigeon2().get();
     }
 
