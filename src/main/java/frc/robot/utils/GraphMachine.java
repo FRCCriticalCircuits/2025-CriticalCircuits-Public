@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /**
- * Adjacent List Based State Machine with pathfinding capabilities
+ * a graph class can find a path between two nodes (states).
  */
 public class GraphMachine {
     private final Map<String, Node> nodes = new HashMap<>();
@@ -23,9 +23,8 @@ public class GraphMachine {
     }
 
     public void addEdge(String originNode, String targetNode) {
-        if (nodes.containsKey(originNode) && nodes.containsKey(targetNode)) {
+        if (nodes.containsKey(originNode)) {
             edges.get(originNode).add(targetNode);
-            edges.get(targetNode).add(originNode);
         }
     }
 

@@ -51,7 +51,7 @@ public class SwerveSubsystem extends SubsystemBase{
     private SwerveDrivePoseEstimator poseEstimator;
 
     // telemetry
-    private Field2d estimateField = new Field2d();
+    private Field2d estimateField = new Field2d(), visionEst = new Field2d();
     private StructArrayPublisher<SwerveModuleState> currentSwerveStatePublisher;
     private StructArrayPublisher<SwerveModuleState> desireSwerveStatePublisher;
 
@@ -215,6 +215,9 @@ public class SwerveSubsystem extends SubsystemBase{
         // Telemetry
         currentSwerveStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("/SwerveStates/CurrentState", SwerveModuleState.struct).publish();
         desireSwerveStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("/SwerveStates/DesiredState", SwerveModuleState.struct).publish();
+
+        SmartDashboard.putData("Estimate Field", estimateField);
+        SmartDashboard.putData("Estimate Field", visionEst);
     }
 
     public synchronized static SwerveSubsystem getInstance(){
@@ -323,7 +326,8 @@ public class SwerveSubsystem extends SubsystemBase{
      * update the {@link SwerveDrivePoseEstimator} with Vision Results
      */
     public synchronized void updatePoseEstimator(Pose2d visionEstimatedPose, double timeStampSeconds, Matrix<N3, N1> stdDevs) {
-        poseEstimator.addVisionMeasurement(visionEstimatedPose, timeStampSeconds, stdDevs);
+        // poseEstimator.addVisionMeasurement(visionEstimatedPose, timeStampSeconds, stdDevs);
+        visionEst.setRobotPose(visionEstimatedPose);
     }
 
     /**
@@ -341,7 +345,6 @@ public class SwerveSubsystem extends SubsystemBase{
 
         // Telemetry
         estimateField.setRobotPose(getPoseEstimate());
-        SmartDashboard.putData("Estimate Field", estimateField);
 
         if(DriveStationIO.isTest()) {
             SmartDashboard.putNumber("Gyro", getGyroRotation2D().getRadians());

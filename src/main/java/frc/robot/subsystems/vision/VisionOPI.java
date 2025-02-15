@@ -21,7 +21,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 
 public class VisionOPI implements VisionIO{
-    private static HashMap<String, VisionOPI> instanceMap;
+    private static HashMap<String, VisionOPI> instanceMap = new HashMap<String, VisionOPI>();
 
     /* Default Camera Position */
     private final Transform3d defaultCameraPos;
@@ -37,17 +37,18 @@ public class VisionOPI implements VisionIO{
 
     private VisionOPI(String name) {
         switch (name) {
-            case "cam1":
+            case "cam_1":
                 this.defaultCameraPos = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
                 this.kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
                 this.kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
                 break;
-            case "cam2":
+            case "cam_2":
                 this.defaultCameraPos = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
                 this.kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
                 this.kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
                 break;
             default:
+                // this.defaultCameraPos = new Transform3d(new Translation3d(0.216, -0.267, 0.246), new Rotation3d(0, Math.toRadians(-15), Math.toRadians(35)));
                 this.defaultCameraPos = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0));
                 this.kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
                 this.kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
@@ -96,7 +97,6 @@ public class VisionOPI implements VisionIO{
         if (estimatedPose.isEmpty()) {
             // No pose input. Default to single-tag std devs
             curStdDevs = kSingleTagStdDevs;
-
         } else {
             // Pose present. Start running Heuristic
             var estStdDevs = kSingleTagStdDevs;

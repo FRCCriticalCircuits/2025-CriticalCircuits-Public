@@ -28,6 +28,8 @@ public class AutoAimManager{
     private WebServer server = WebServer.getInstance();
     private Notifier notifier = new Notifier(this::updateValues);
 
+    private Command command;
+
     private AutoAimSetting setting;
     private Supplier<Double> LTSupplier, RTSupplier;
 
@@ -149,18 +151,24 @@ public class AutoAimManager{
      * get the PathFinding Command based on current settings
      * @return the {@link Command} to execute
      */
-    public synchronized Command getCommand(SwerveSubsystem instance){
+    public synchronized Command getCommand(){
         updateValues();
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
-        Command command = AutoBuilder.pathfindToPose(
+        command = AutoBuilder.pathfindToPose(
             targetPose,
             constraints,
             0.0 // Goal end velocity in meters/sec
         );
 
-        command.addRequirements(instance);
-
         return command;
+    }
+
+    public synchronized boolean isFinished(){
+        return command.isFinished();
+    }
+
+    public synchronized void cancle(){
+        command.cancel();
     }
 }
