@@ -49,6 +49,24 @@ public class Constants {
 
             public static final int GYRO_CAN_ID = 20;
         }
+
+        public class Elevator{
+            public static final int ELEVATOR_LEFT_ID = 21;
+            public static final int ELEVATOR_RIGHT_ID = 22;
+        }
+
+        public class Angler{
+            public static final int ANGLER_ID = 23;
+            public static final int HATCHER_ID = 24;
+            public static final int INTAKE_ID = 25;
+        }
+
+        public class Sensor{
+            public static final int CORAL_SENSOR = 26;
+            public static final int ALGAE_SENSOR = 27;
+        }
+
+        public static final int CLIMBER_ID = 28;
     }
 
     public class TunedConstants{
@@ -63,17 +81,19 @@ public class Constants {
             public static double TURN_PID_P = 0.3;
             public static double TURN_PID_I = 0;
             public static double TURN_PID_D = 0;
+        }
 
-            public static double DRIVE_PID_P_SIM = 0;
-            public static double DRIVE_PID_I_SIM = 0;
-            public static double DRIVE_PID_D_SIM = 0;
+        public class Elevator{
+            public static double ELEVATOR_PID_P = 20.0;
+            public static double ELEVATOR_PID_I = 0;
+            public static double ELEVATOR_PID_D = 0;
 
-            public static double DRIVE_FF_KS_SIM = 0;
-            public static double DRIVE_FF_KV_SIM = 0;
-            
-            public static double TURN_PID_P_SIM = 0;
-            public static double TURN_PID_I_SIM = 0;
-            public static double TURN_PID_D_SIM = 0;
+            public static double ELEVATOR_FEED_FORWARD_KS = 0.16;
+            public static double ELEVATOR_FEED_FORWARD_KV = 1.6;
+            public static double ELEVATOR_FEED_FORWARD_KA = 0.12;
+
+            public static double ELEVATOR_MAX_VELOCITY = 6.0;
+            public static double ELEVATOR_MAX_ACCELERATION = 32.0;
         }
     }
 

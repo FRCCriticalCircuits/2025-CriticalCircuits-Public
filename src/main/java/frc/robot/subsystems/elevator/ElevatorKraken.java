@@ -9,6 +9,9 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import frc.robot.Constants.DeviceID;
+import frc.robot.Constants.TunedConstants;
+
 public class ElevatorKraken implements ElevatorIO {
     private TalonFX m_leftMotor;
     private TalonFX m_rightMotor;
@@ -17,8 +20,8 @@ public class ElevatorKraken implements ElevatorIO {
     private final MotionMagicVoltage m_MotionMagic = new MotionMagicVoltage(0).withSlot(0);
 
     public ElevatorKraken(){
-        m_leftMotor = new TalonFX(21);
-        m_rightMotor = new TalonFX(22);
+        m_leftMotor = new TalonFX(DeviceID.Elevator.ELEVATOR_LEFT_ID);
+        m_rightMotor = new TalonFX(DeviceID.Elevator.ELEVATOR_RIGHT_ID);
 
         elevatorConfig = new TalonFXConfiguration();
 
@@ -34,19 +37,19 @@ public class ElevatorKraken implements ElevatorIO {
         elevatorConfig.withSlot0(
             new Slot0Configs()
             .withGravityType(GravityTypeValue.Elevator_Static)
-            .withKS(0.16)
-            .withKV(1.6)
-            .withKA(0.12)
-            .withKP(20.0)           // Error Gain
-            .withKI(0.0)            // Error Intergral Gain
-            .withKD(0.0)            // Error Derivative Gain
+            .withKS(TunedConstants.Elevator.ELEVATOR_FEED_FORWARD_KS)
+            .withKV(TunedConstants.Elevator.ELEVATOR_FEED_FORWARD_KV)
+            .withKA(TunedConstants.Elevator.ELEVATOR_FEED_FORWARD_KA)
+            .withKP(TunedConstants.Elevator.ELEVATOR_PID_P)             // Error Gain
+            .withKI(TunedConstants.Elevator.ELEVATOR_PID_I)             // Error Intergral Gain
+            .withKD(TunedConstants.Elevator.ELEVATOR_PID_D)             // Error Derivative Gain
         );
 
         elevatorConfig.Voltage.PeakForwardVoltage = 8;
         elevatorConfig.Voltage.PeakReverseVoltage = -8;
 
-        elevatorConfig.MotionMagic.MotionMagicCruiseVelocity = 6.0; // 4.5  r/s
-        elevatorConfig.MotionMagic.MotionMagicAcceleration = 32.0;  // 10 r/s^2
+        elevatorConfig.MotionMagic.MotionMagicCruiseVelocity = TunedConstants.Elevator.ELEVATOR_MAX_VELOCITY;
+        elevatorConfig.MotionMagic.MotionMagicAcceleration = TunedConstants.Elevator.ELEVATOR_MAX_ACCELERATION; 
         m_rightMotor.getConfigurator().apply(elevatorConfig);
 
         elevatorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
