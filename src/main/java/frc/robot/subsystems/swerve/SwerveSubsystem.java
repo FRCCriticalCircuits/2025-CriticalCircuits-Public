@@ -165,7 +165,7 @@ public class SwerveSubsystem extends SubsystemBase{
             true
         );
 
-        resetGyro(0);
+        resetGyro(-0.5);
 
         frontLeft.resetEncoders();
         frontRight.resetEncoders();
@@ -217,7 +217,7 @@ public class SwerveSubsystem extends SubsystemBase{
         desireSwerveStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("/SwerveStates/DesiredState", SwerveModuleState.struct).publish();
 
         SmartDashboard.putData("Estimate Field", estimateField);
-        SmartDashboard.putData("Estimate Field", visionEst);
+        SmartDashboard.putData("Vision Estimate Field", visionEst);
     }
 
     public synchronized static SwerveSubsystem getInstance(){
@@ -326,7 +326,7 @@ public class SwerveSubsystem extends SubsystemBase{
      * update the {@link SwerveDrivePoseEstimator} with Vision Results
      */
     public synchronized void updatePoseEstimator(Pose2d visionEstimatedPose, double timeStampSeconds, Matrix<N3, N1> stdDevs) {
-        // poseEstimator.addVisionMeasurement(visionEstimatedPose, timeStampSeconds, stdDevs);
+        poseEstimator.addVisionMeasurement(visionEstimatedPose, timeStampSeconds, stdDevs);
         visionEst.setRobotPose(visionEstimatedPose);
     }
 

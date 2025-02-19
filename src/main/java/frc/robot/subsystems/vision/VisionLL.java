@@ -46,6 +46,6 @@ public class VisionLL implements VisionIO{
 
     @Override
     public Matrix<N3, N1> getEstimationStdDevs() {
-        return VecBuilder.fill(1, 1, 1);
+        return VecBuilder.fill(2, 2, 1);
     }
 }

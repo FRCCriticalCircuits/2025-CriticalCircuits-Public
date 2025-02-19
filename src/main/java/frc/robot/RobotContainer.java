@@ -83,7 +83,7 @@ public class RobotContainer {
               }, swerveSubsystem
             ),
             new ParallelDeadlineGroup(
-              new WaitCommand(1),
+              new WaitCommand(3),
               autoAimManager.getCommand()
             ),
             new InstantCommand(
