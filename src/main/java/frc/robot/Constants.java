@@ -56,17 +56,18 @@ public class Constants {
         }
 
         public class Angler{
-            public static final int ANGLER_ID = 23;
-            public static final int HATCHER_ID = 24;
-            public static final int INTAKE_ID = 25;
+            public static final int ANGLER_ID = 25;
+            public static final int HATCHER_ID = 26;
+            public static final int INTAKE_ID = 27;
         }
 
         public class Sensor{
-            public static final int CORAL_SENSOR = 26;
-            public static final int ALGAE_SENSOR = 27;
+            public static final int CORAL_SENSOR = 23;
+            public static final int ALGAE_SENSOR = 24;
+            public static final int ANGLER_ENCODER = 4;
         }
 
-        public static final int CLIMBER_ID = 28;
+        public static final int CLIMBER_ID = 29;
     }
 
     public class TunedConstants{
@@ -94,6 +95,19 @@ public class Constants {
 
             public static double ELEVATOR_MAX_VELOCITY = 5.0;
             public static double ELEVATOR_MAX_ACCELERATION = 35.0;
+        }
+
+        public class Arm{
+            public static double ARM_PID_P = 50.0;
+            public static double ARM_PID_I = 0;
+            public static double ARM_PID_D = 2.0;
+
+            public static double ARM_FEED_FORWARD_KS = 0.16;
+            public static double ARM_FEED_FORWARD_KV = 1.6;
+            public static double ARM_FEED_FORWARD_KA = 0.12;
+
+            public static double ARM_MAX_VELOCITY = 5.0;
+            public static double ARM_MAX_ACCELERATION = 35.0;
         }
     }
 
@@ -137,6 +151,7 @@ public class Constants {
                 public static int TURN_CURRENT_LIMIT = 30;
 
                 public static int ELEVATOR_CURRENT_LIMIT = 20;
+                public static int ANGLER_CURRENT_LIMIT = 20;
 
                 public static double DRIVE_LOOP_RAMP_RATE = 0.25;
             }
