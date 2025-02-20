@@ -1,4 +1,4 @@
-package frc.robot.subsystems.swerve;
+package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
 import frc.robot.utils.Math.AdvancedPose2D;
 import frc.robot.utils.structures.AutoAimSetting;
@@ -170,5 +171,14 @@ public class AutoAimManager{
 
     public synchronized void cancle(){
         command.cancel();
+    }
+
+    public synchronized AutoAimSetting getSetting(){
+        updateValues();
+        return this.setting;
+    }
+
+    public synchronized void updateSetting(AutoAimSetting setting){
+        server.updateSetting(setting);
     }
 }

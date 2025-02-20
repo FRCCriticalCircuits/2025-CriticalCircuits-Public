@@ -84,16 +84,16 @@ public class Constants {
         }
 
         public class Elevator{
-            public static double ELEVATOR_PID_P = 20.0;
+            public static double ELEVATOR_PID_P = 50.0;
             public static double ELEVATOR_PID_I = 0;
-            public static double ELEVATOR_PID_D = 0;
+            public static double ELEVATOR_PID_D = 2.0;
 
             public static double ELEVATOR_FEED_FORWARD_KS = 0.16;
             public static double ELEVATOR_FEED_FORWARD_KV = 1.6;
             public static double ELEVATOR_FEED_FORWARD_KA = 0.12;
 
-            public static double ELEVATOR_MAX_VELOCITY = 6.0;
-            public static double ELEVATOR_MAX_ACCELERATION = 32.0;
+            public static double ELEVATOR_MAX_VELOCITY = 5.0;
+            public static double ELEVATOR_MAX_ACCELERATION = 35.0;
         }
     }
 
@@ -135,6 +135,8 @@ public class Constants {
             public class CurrentLimits{
                 public static int DRIVE_CURRENT_LIMIT = 40;
                 public static int TURN_CURRENT_LIMIT = 30;
+
+                public static int ELEVATOR_CURRENT_LIMIT = 20;
 
                 public static double DRIVE_LOOP_RAMP_RATE = 0.25;
             }

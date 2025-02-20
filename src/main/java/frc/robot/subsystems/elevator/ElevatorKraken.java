@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.TunedConstants;
+import frc.robot.Constants.PhysicalConstants.DriveBase.CurrentLimits;
 
 public class ElevatorKraken implements ElevatorIO {
     private TalonFX m_leftMotor;
@@ -26,7 +27,7 @@ public class ElevatorKraken implements ElevatorIO {
         elevatorConfig = new TalonFXConfiguration();
 
         elevatorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        elevatorConfig.CurrentLimits.StatorCurrentLimit = 20;
+        elevatorConfig.CurrentLimits.StatorCurrentLimit = CurrentLimits.ELEVATOR_CURRENT_LIMIT;
         elevatorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         elevatorConfig.CurrentLimits.SupplyCurrentLimit = 40;
 

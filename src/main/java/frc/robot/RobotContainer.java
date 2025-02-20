@@ -23,8 +23,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.KeyBinding;
 import frc.robot.commands.teleopDrive;
+import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.Controller;
-import frc.robot.subsystems.swerve.AutoAimManager;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
