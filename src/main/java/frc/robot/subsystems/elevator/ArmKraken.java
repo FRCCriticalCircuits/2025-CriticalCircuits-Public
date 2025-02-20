@@ -59,6 +59,8 @@ public class ArmKraken implements ArmIO {
         m_anglerEncoder.setDutyCycleRange(0.0010, 0.9990); // 1μs & 1024μs out of 1025μs
 
         m_anglerMotor.setPosition(m_anglerEncoder.get());
+
+        m_MotionMagic.withPosition(m_anglerMotor.getPosition().getValueAsDouble());
     }
 
     @Override
