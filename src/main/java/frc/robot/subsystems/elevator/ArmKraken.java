@@ -10,7 +10,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants.DeviceID;
-import frc.robot.Constants.PhysicalConstants.DriveBase.CurrentLimits;
+import frc.robot.Constants.PhysicalConstants;
 import frc.robot.Constants.TunedConstants;
 
 public class ArmKraken implements ArmIO {
@@ -27,7 +27,7 @@ public class ArmKraken implements ArmIO {
         m_anglerEncoder = new DutyCycleEncoder(DeviceID.Sensor.ANGLER_ENCODER, 1.0, 0);
 
         anglerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        anglerConfig.CurrentLimits.StatorCurrentLimit = CurrentLimits.ANGLER_CURRENT_LIMIT;
+        anglerConfig.CurrentLimits.StatorCurrentLimit = PhysicalConstants.Elevator.CurrentLimits.ANGLER_CURRENT_LIMIT;
         anglerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         anglerConfig.CurrentLimits.SupplyCurrentLimit = 40;
 

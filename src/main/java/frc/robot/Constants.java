@@ -150,9 +150,6 @@ public class Constants {
                 public static int DRIVE_CURRENT_LIMIT = 40;
                 public static int TURN_CURRENT_LIMIT = 30;
 
-                public static int ELEVATOR_CURRENT_LIMIT = 20;
-                public static int ANGLER_CURRENT_LIMIT = 20;
-
                 public static double DRIVE_LOOP_RAMP_RATE = 0.25;
             }
 
@@ -172,6 +169,18 @@ public class Constants {
 
             public static double MAX_ANGULAR_SPEED_RAD = Math.PI * 2;
             public static double MAX_SPEED_METERS = 5.500;
+        }
+
+        public class Elevator{
+            public static double ELEVATOR_GEAR_RATIO = 15.0;
+            public static double ENCODER_ZERO_OFFSET = 0.0;
+
+            public class CurrentLimits{
+                public static int ELEVATOR_CURRENT_LIMIT = 20;
+                public static int ANGLER_CURRENT_LIMIT = 20;
+                public static int HATCHER_CURRENT_LIMIT = 20;
+                public static int INTAKE_CURRENT_LIMIT = 20;
+            }
         }
     }
 
