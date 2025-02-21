@@ -1,9 +1,11 @@
 package frc.robot.subsystems.swerve;
 
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-import com.ctre.phoenix6.SignalLogger;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -13,6 +15,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -21,31 +24,41 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import frc.robot.utils.DriveStationIO.DriveStationIO;
-import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PhysicalConstants;
 import frc.robot.subsystems.swerve.swerveIO.GyroIO;
 import frc.robot.subsystems.swerve.swerveIO.GyroRedux;
 import frc.robot.subsystems.swerve.swerveIO.GyroSim;
-import frc.robot.subsystems.swerve.swerveIO.SwerveModule;
+import frc.robot.subsystems.swerve.swerveIO.Module;
+import frc.robot.subsystems.swerve.swerveIO.ModuleIOSim;
+import frc.robot.subsystems.swerve.swerveIO.ModuleIOSpark;
+import frc.robot.subsystems.swerve.swerveIO.OdometryThread;
+import frc.robot.subsystems.swerve.swerveIO.GyroIO.GyroIOInputs;
 import frc.robot.Robot;
 
 public class SwerveSubsystem extends SubsystemBase{
     private static SwerveSubsystem instance;
 
     // Hardwares
-    private SwerveModule frontLeft, frontRight, rearLeft, rearRight;
+    private Module[] modules = new Module[4];
+
     private GyroIO gyro;
+    private GyroIOInputs gyroInputs = new GyroIOInputs();
+    private Rotation2d rawGyroRotation = Rotation2d.fromRotations(-0.5);
+
+    private SwerveModulePosition[] lastModulePositions = new SwerveModulePosition[] {
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition()
+    };
 
     // PoseEstimation
     private SwerveDrivePoseEstimator poseEstimator;
@@ -55,129 +68,43 @@ public class SwerveSubsystem extends SubsystemBase{
     private StructArrayPublisher<SwerveModuleState> currentSwerveStatePublisher;
     private StructArrayPublisher<SwerveModuleState> desireSwerveStatePublisher;
 
-    // SysId
-    public SysIdRoutine routineLinear = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            Volts.of(1).per(Seconds),
-            Volts.of(6),
-            Seconds.of(10),
-            (state) -> SignalLogger.writeString("sysId-Linear", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(this::voltageDriveLinear, null, this)
-    );
+    private static SwerveDriveSimulation driveSimulation;
 
-    public SysIdRoutine routineAngular = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            Volts.of(0.5).per(Seconds),
-            Volts.of(6),
-            Seconds.of(20),
-            (state) -> SignalLogger.writeString("sysId-Angular", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(this::voltageDriveAngular, null, this)
-    );
-
-    public synchronized void voltageDriveLinear(Voltage volt){
-        double voltage = volt.magnitude();
-
-        frontLeft.setDriveVoltage(voltage);
-        frontRight.setDriveVoltage(voltage);
-        rearLeft.setDriveVoltage(voltage);
-        rearRight.setDriveVoltage(voltage);
-        
-        frontLeft.setTurn(0);
-        frontRight.setTurn(0);
-        rearLeft.setTurn(0);
-        rearRight.setTurn(0);
-    }
-
-    public synchronized void voltageDriveAngular(Voltage volt){
-        double voltage = volt.magnitude();
-        
-        frontLeft.setDriveVoltage(voltage);
-        frontRight.setDriveVoltage(voltage);
-        rearLeft.setDriveVoltage(voltage);
-        rearRight.setDriveVoltage(voltage);
-        
-        frontLeft.setTurn(Rotation2d.fromDegrees(135).getRadians());
-        frontRight.setTurn(Rotation2d.fromDegrees(45).getRadians());
-        rearLeft.setTurn(Rotation2d.fromDegrees(-135).getRadians());
-        rearRight.setTurn(Rotation2d.fromDegrees(-45).getRadians());
-    }
-
-    public synchronized Command sysIdLinearQuasistatic(SysIdRoutine.Direction direction) {
-        return routineLinear.quasistatic(direction);
-    }
-
-    public synchronized Command sysIdLinearDynamic(SysIdRoutine.Direction direction) {
-        return routineLinear.dynamic(direction);
-    }
-
-    public synchronized Command sysIdAngularQuasistatic(SysIdRoutine.Direction direction) {
-        return routineAngular.quasistatic(direction);
-    }
-
-    public synchronized Command sysIdAngularDynamic(SysIdRoutine.Direction direction) {
-        return routineAngular.dynamic(direction);
-    }
+    public static final Lock odometryLock = new ReentrantLock();
 
     private SwerveSubsystem(){
+        driveSimulation = new SwerveDriveSimulation(
+            PhysicalConstants.DriveBase.SIMULATION_CONFIG,
+            DriveStationIO.isBlue()   ? FieldConstants.INIT_POSE_BLUE 
+                                      : FieldConstants.INIT_POSE_BLUE.horizontallyFlip()
+        );
+
         if(Robot.isReal()) {
             gyro = new GyroRedux();
+
+            for (int i = 0; i < 4; i++) {
+                modules[i] = new Module(new ModuleIOSpark(i), i);
+            }
         }
         else {
-            gyro = new GyroSim();
+            SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
+            gyro = new GyroSim(driveSimulation.getGyroSimulation());
+
+            for(int i = 0; i < 4; i++){
+                modules[i] = new Module(new ModuleIOSim(driveSimulation.getModules()[i]), i);
+            }
         }
-        
-        // Swerve Modules
-        frontLeft = new SwerveModule(
-            DeviceID.DriveBase.FRONT_LEFT_CANCODER_ID, 
-            PhysicalConstants.DriveBase.CANCoder.FRONT_LEFT_OFFSET, 
-            DeviceID.DriveBase.FRONT_LEFT_DRIVE_ID, 
-            true,
-            DeviceID.DriveBase.FRONT_LEFT_TURN_ID,
-            true
-        );
 
-        frontRight = new SwerveModule(
-            DeviceID.DriveBase.FRONT_RIGHT_CANCODER_ID, 
-            PhysicalConstants.DriveBase.CANCoder.FRONT_RIGHT_OFFSET, 
-            DeviceID.DriveBase.FRONT_RIGHT_DRIVE_ID, 
-            false,
-            DeviceID.DriveBase.FRONT_RIGHT_TURN_ID, 
-            true
-        );
-
-        rearLeft = new SwerveModule(
-            DeviceID.DriveBase.REAR_LEFT_CANCODER_ID, 
-            PhysicalConstants.DriveBase.CANCoder.REAR_LEFT_OFFSET, 
-            DeviceID.DriveBase.REAR_LEFT_DRIVE_ID, 
-            true,
-            DeviceID.DriveBase.REAR_LEFT_TURN_ID, 
-            true
-        );
-
-        rearRight = new SwerveModule(
-            DeviceID.DriveBase.REAR_RIGHT_CANCODER_ID, 
-            PhysicalConstants.DriveBase.CANCoder.REAR_RIGHT_OFFSET,
-            DeviceID.DriveBase.REAR_RIGHT_DRIVE_ID,
-            false,
-            DeviceID.DriveBase.REAR_RIGHT_TURN_ID,
-            true
-        );
-
-        resetGyro(-0.5);
-
-        frontLeft.resetEncoders();
-        frontRight.resetEncoders();
-        rearLeft.resetEncoders();
-        rearRight.resetEncoders();
+        resetGyro(rawGyroRotation.getRotations());
         
         Timer.delay(0.1); // 100ms delay
+
+        OdometryThread.getInstance().start();
 
         // Pose Estimator
         poseEstimator = new SwerveDrivePoseEstimator(
             PhysicalConstants.DriveBase.KINEMATICS, 
-            getGyroRotation2D(),
+            rawGyroRotation,
             getSwerveModulePositions(),
             DriveStationIO.isBlue()   ? FieldConstants.INIT_POSE_BLUE 
                                       : FieldConstants.INIT_POSE_BLUE.horizontallyFlip()
@@ -215,9 +142,6 @@ public class SwerveSubsystem extends SubsystemBase{
         // Telemetry
         currentSwerveStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("/SwerveStates/CurrentState", SwerveModuleState.struct).publish();
         desireSwerveStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("/SwerveStates/DesiredState", SwerveModuleState.struct).publish();
-
-        SmartDashboard.putData("Estimate Field", estimateField);
-        SmartDashboard.putData("Vision Estimate Field", visionEst);
     }
 
     public synchronized static SwerveSubsystem getInstance(){
@@ -226,7 +150,7 @@ public class SwerveSubsystem extends SubsystemBase{
     }
 
     public synchronized Rotation2d getGyroRotation2D(){
-        return gyro.getGyroRotation2D();
+        return rawGyroRotation;
     }
 
     public synchronized void resetGyro(double yaw){
@@ -238,12 +162,11 @@ public class SwerveSubsystem extends SubsystemBase{
      * @return the position in {@link SwerveModulePosition} 
      */
     public synchronized SwerveModulePosition[] getSwerveModulePositions() {
-        return new SwerveModulePosition[]{
-            frontLeft.getModulePosition(),
-            frontRight.getModulePosition(),
-            rearLeft.getModulePosition(),
-            rearRight.getModulePosition()
-        }; 
+        SwerveModulePosition[] states = new SwerveModulePosition[4];
+        for (int i = 0; i < 4; i++) {
+            states[i] = modules[i].getPosition();
+        }
+        return states;
     }
 
     /**
@@ -251,12 +174,11 @@ public class SwerveSubsystem extends SubsystemBase{
      * @return the position in {@link SwerveModuleState} 
      */
     public synchronized SwerveModuleState[] getSwerveModuleStates() {
-        return new SwerveModuleState[]{
-            frontLeft.getModuleState(),
-            frontRight.getModuleState(),
-            rearLeft.getModuleState(),
-            rearRight.getModuleState()
-        };
+        SwerveModuleState[] states = new SwerveModuleState[4];
+        for (int i = 0; i < 4; i++) {
+            states[i] = modules[i].getState();
+        }
+        return states;
     }
 
     /**
@@ -273,38 +195,27 @@ public class SwerveSubsystem extends SubsystemBase{
      * @param states the desired {@link SwerveModuleState} array
      * @param isOpenLoop true for openLoop control (for drive motor)
      */
-    private void setModuleStates(SwerveModuleState[] states, boolean isOpenLoop){
+    private void setModuleStates(SwerveModuleState[] states){
         // normalize wheelspeed to make it smaller than the maximum speed
         SwerveDriveKinematics.desaturateWheelSpeeds(states, PhysicalConstants.DriveBase.MAX_SPEED_METERS);
 
         // apply speeds to each Swerve Module
-        frontLeft.setState(states[0], isOpenLoop);
-        frontRight.setState(states[1], isOpenLoop);
-        rearLeft.setState(states[2], isOpenLoop);
-        rearRight.setState(states[3], isOpenLoop);
+        for (int i = 0; i < 4; i++) {
+            modules[i].setState(states[i]);
+        }
 
         // telemetry
-        if(DriveStationIO.isTest()) desireSwerveStatePublisher.set(states);
+        desireSwerveStatePublisher.set(states);
     }
 
     /**
      * set the state of four modules with a {@link ChassisSpeeds} object
      * @param speeds the desired {@link ChassisSpeeds} speed
-     * @param isOpenLoop true for openLoop control (for drive motor)
-     */
-    public synchronized void setModuleStates(ChassisSpeeds speeds, boolean isOpenLoop){
-        speeds = ChassisSpeeds.discretize(speeds, 0.02);
-        SwerveModuleState states[] = PhysicalConstants.DriveBase.KINEMATICS.toSwerveModuleStates(speeds);
-        setModuleStates(states, isOpenLoop);
-    }
-
-    /**
-     * set the state of four modules with a {@link ChassisSpeeds} object
-     * @param states the desired {@link ChassisSpeeds} speed
-     * @apiNote closeloop by defualt, uses for pathplanner
      */
     public synchronized void setModuleStates(ChassisSpeeds speeds){
-        setModuleStates(speeds, false);
+        speeds = ChassisSpeeds.discretize(speeds, 0.02);
+        SwerveModuleState states[] = PhysicalConstants.DriveBase.KINEMATICS.toSwerveModuleStates(speeds);
+        setModuleStates(states);
     }
 
     /**
@@ -319,7 +230,33 @@ public class SwerveSubsystem extends SubsystemBase{
      * update the {@link SwerveDrivePoseEstimator}
      */
     public synchronized void updatePoseEstimator() {
-        poseEstimator.update(getGyroRotation2D(), getSwerveModulePositions());
+        double[] sampleTimestamps = modules[0].getOdometryTimestamps(); // All signals are sampled together
+        int sampleCount = sampleTimestamps.length;
+        for (int i = 0; i < sampleCount; i++) {
+            // Read wheel positions and deltas from each module
+            SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
+            SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
+            for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
+                modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
+                moduleDeltas[moduleIndex] = new SwerveModulePosition(
+                        modulePositions[moduleIndex].distanceMeters - lastModulePositions[moduleIndex].distanceMeters,
+                        modulePositions[moduleIndex].angle);
+                lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
+            }
+
+            // Update gyro angle
+            if (gyroInputs.connected) {
+                // Use the real gyro angle
+                rawGyroRotation = gyroInputs.odometryYawPositions[i];
+            } else {
+                // Use the angle delta from the kinematics and module deltas
+                Twist2d twist = PhysicalConstants.DriveBase.KINEMATICS.toTwist2d(moduleDeltas);
+                rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
+            }
+
+            // Apply update
+            poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+        }
     }
 
     /**
@@ -335,20 +272,38 @@ public class SwerveSubsystem extends SubsystemBase{
      * @param pose new position in {@link Pose2d}
      */
     public synchronized void resetPoseEstimate(Pose2d pose) {
-        poseEstimator.resetPosition(getGyroRotation2D(), getSwerveModulePositions(), pose);
+        driveSimulation.setSimulationWorldPose(pose);
+        poseEstimator.resetPosition(rawGyroRotation, getSwerveModulePositions(), pose);
     }
 
     @Override
     public synchronized void periodic(){
+        odometryLock.lock(); // Prevents odometry updates while reading data
+        
+        gyro.updateInputs(gyroInputs);
+
+        for (Module module : modules) {
+            module.periodic();
+        }
+        
+        odometryLock.unlock();
+
+        if (DriverStation.isDisabled()) {
+            for (var module : modules) {
+                module.stop();
+            }
+        }
+
         // Pose Estimator
         updatePoseEstimator();
 
         // Telemetry
         estimateField.setRobotPose(getPoseEstimate());
 
-        if(DriveStationIO.isTest()) {
-            SmartDashboard.putNumber("Gyro", getGyroRotation2D().getRadians());
-            currentSwerveStatePublisher.set(getSwerveModuleStates());
-        }
+        SmartDashboard.putNumber("Gyro", rawGyroRotation.getRadians());
+        currentSwerveStatePublisher.set(getSwerveModuleStates());
+
+        SmartDashboard.putData("Estimate Field", estimateField);
+        SmartDashboard.putData("Vision Estimate Field", visionEst);
     }
 }

@@ -82,6 +82,20 @@ public class Constants {
             public static double TURN_PID_P = 0.3;
             public static double TURN_PID_I = 0;
             public static double TURN_PID_D = 0;
+
+            public class Simulation{
+                public static double DRIVE_PID_P = 3.0;
+                public static double DRIVE_PID_I = 0;
+                public static double DRIVE_PID_D = 0;
+    
+                public static double DRIVE_FEED_FORWARD_KS = 0.017;
+                public static double DRIVE_FEED_FORWARD_KV = 0.7;
+                public static double DRIVE_FEED_FORWARD_KA = 0;
+    
+                public static double TURN_PID_P = 30;
+                public static double TURN_PID_I = 0;
+                public static double TURN_PID_D = 0;
+            }
         }
 
         public class Elevator{
@@ -112,7 +126,8 @@ public class Constants {
     }
 
     public class PhysicalConstants {
-        public static double NOMINAL_VOLTAGE = 12;
+        public static double NOMINAL_VOLTAGE = 12.0;
+        public static double ODOMETRY_FREQUENCY = 100.0;
         
         public class DriveBase {
             // drivetrain simulation configuration
@@ -124,8 +139,8 @@ public class Constants {
                 COTS.ofMark4i(
                         DCMotor.getKrakenX60(1), // Drive motor is a Kraken X60
                         DCMotor.getNEO(1), // Steer motor is a NEO
-                        2, // estimate COF for 3D-printed Wheels
-                        2 // L2 Gear Ratio
+                        1.3, // estimate COF for 3D-printed Wheels
+                        3 // L3 Gear Ratio
                     )
                 )
                 // Configures the track length and track width (spacing between swerve modules)
@@ -138,6 +153,7 @@ public class Constants {
 
                 public static double DRIVE_WHEEL_DIAMETER_INCHES = 4;
                 public static double DRIVE_WHEEL_DIAMETER_METERS = Units.inchesToMeters(DRIVE_WHEEL_DIAMETER_INCHES);
+                public static double DRIVE_WHEEL_RADIUS_METERS = DRIVE_WHEEL_DIAMETER_METERS / 2;
                 public static double DRIVE_WHEEL_CIRCUMFERENCE = DRIVE_WHEEL_DIAMETER_METERS * Math.PI;
             }
 
@@ -156,7 +172,7 @@ public class Constants {
             public class CANCoder{
                 public static double FRONT_LEFT_OFFSET = -0.3;
                 public static double FRONT_RIGHT_OFFSET = 0.468;
-                public static double REAR_LEFT_OFFSET = -0.3403;
+                public static double REAR_LEFT_OFFSET = 0.299;
                 public static double REAR_RIGHT_OFFSET = -0.210;
             }
 

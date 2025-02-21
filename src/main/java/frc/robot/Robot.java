@@ -29,7 +29,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    if(Robot.isSimulation()) m_robotContainer.resetSimulationField();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -76,5 +78,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testExit() {
+  }
+
+  @Override
+  public void simulationPeriodic() {
+      m_robotContainer.updateSimulation();
   }
 }

@@ -50,6 +50,7 @@ public class AutoAimManager{
         this.LTSupplier = LTSupplier;
         this.RTSupplier = RTSupplier;
 
+        notifier.setName("Autoaim Thread");
         notifier.startPeriodic(0.05);
     }
     
@@ -112,10 +113,12 @@ public class AutoAimManager{
      * @return {@link AdvancedPose2D} for pathplanning
      */
     private AdvancedPose2D estimateAimPos(AutoAimSetting setting, Translation2d manualTranslation){
+        Pose2d currentPos = SwerveSubsystem.getInstance().getPoseEstimate();
+
         if(setting.getMode() == Mode.CORAL_INTAKE){
-            return cloestCoralStation(SwerveSubsystem.getInstance().getPoseEstimate().getTranslation());
+            return cloestCoralStation(currentPos.getTranslation());
         }else{
-            Station station = estimateStation(SwerveSubsystem.getInstance().getPoseEstimate().getRotation().getDegrees());
+            Station station = estimateStation(currentPos.getRotation().getDegrees());
             AdvancedPose2D aimPose = DriveStationIO.isBlue() ? FieldConstants.AutoAim.STATION_BLUE.get(station) : FieldConstants.AutoAim.STATION_RED.get(station);
 
             if(setting.getSpot() == Spot.L){

@@ -7,6 +7,7 @@ package frc.robot;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.ironmaple.simulation.SimulatedArena;
 import org.json.simple.parser.ParseException;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -21,12 +22,14 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.KeyBinding;
 import frc.robot.commands.teleopDrive;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.Controller;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.utils.DriveStationIO.DriveStationIO;
 
 
 public class RobotContainer {
@@ -41,6 +44,27 @@ public class RobotContainer {
   private AutoAimManager autoAimManager = AutoAimManager.getInstance(
     () -> controller.getDriverLT(),
     () -> controller.getDriverRT()
+  );
+
+  private Command autoaim = new InstantCommand(
+    ()  -> {
+      new SequentialCommandGroup(
+        new InstantCommand(
+          () -> {
+            teleopDrive.manualEnable = false;
+          }, swerveSubsystem
+        ),
+        new ParallelDeadlineGroup(
+          new WaitCommand(2.5),
+          autoAimManager.getCommand()
+        ),
+        new InstantCommand(
+          () -> {
+            teleopDrive.manualEnable = true;
+          }, swerveSubsystem
+        )
+      ).schedule();
+    }, swerveSubsystem
   );
 
   public RobotContainer() {
@@ -74,26 +98,7 @@ public class RobotContainer {
     );    
 
     driveController.a().debounce(0.02).onTrue(
-      new InstantCommand(
-        ()  -> {
-          new SequentialCommandGroup(
-            new InstantCommand(
-              () -> {
-                teleopDrive.manualEnable = false;
-              }, swerveSubsystem
-            ),
-            new ParallelDeadlineGroup(
-              new WaitCommand(3),
-              autoAimManager.getCommand()
-            ),
-            new InstantCommand(
-              () -> {
-                teleopDrive.manualEnable = true;
-              }, swerveSubsystem
-            )
-          ).schedule();
-        }, swerveSubsystem
-      )
+      autoaim
     );
 
     driveController.x().debounce(0.02).onTrue(
@@ -128,5 +133,17 @@ public class RobotContainer {
       ),
       AutoBuilder.buildAuto(autoChooser.getSelected())
     );
+  }
+
+  public void resetSimulationField() {
+    swerveSubsystem.resetPoseEstimate(
+      DriveStationIO.isBlue()   ? FieldConstants.INIT_POSE_BLUE 
+                                : FieldConstants.INIT_POSE_BLUE.horizontallyFlip()
+    );
+    SimulatedArena.getInstance().resetFieldForAuto();
+  }
+  
+  public void updateSimulation() {
+    SimulatedArena.getInstance().simulationPeriodic();
   }
 }

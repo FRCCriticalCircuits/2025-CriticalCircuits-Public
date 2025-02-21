@@ -22,12 +22,14 @@ public class VisionSubsystem extends SubsystemBase{
         if(Robot.isReal()){
             // this.cam_1 = VisionOPI.getInstance("cam_1");
             // this.cam_2 = VisionOPI.getInstance("cam_2");
-            // this.cam_3 = VisionLL.getInstance("limelight");
+            this.cam_3 = VisionLL.getInstance("limelight");
         }
+
+        this.notifier.setName("Vision");
     }
 
     public void start(){
-        this.notifier.startPeriodic(0.01);
+        if(Robot.isReal()) this.notifier.startPeriodic(0.01);
     }
 
     private void update(){

@@ -15,6 +15,7 @@ package frc.robot.utils;
 
 import static edu.wpi.first.units.Units.Seconds;
 
+import com.ctre.phoenix6.StatusCode;
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase;
 import edu.wpi.first.wpilibj.Timer;
@@ -24,7 +25,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.ironmaple.simulation.SimulatedArena;
 
-public class SparkUtil {
+public class MotorUtil {
     /** Stores whether any error was has been detected by other utility methods. */
     public static boolean sparkStickyFault = false;
 
@@ -60,6 +61,14 @@ public class SparkUtil {
             } else {
                 sparkStickyFault = true;
             }
+        }
+    }
+
+    /** Attempts to run the command until no error is produced. */
+    public static void tryUntilOk(int maxAttempts, Supplier<StatusCode> command) {
+        for (int i = 0; i < maxAttempts; i++) {
+            var error = command.get();
+            if (error.isOK()) break;
         }
     }
 

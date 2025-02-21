@@ -95,7 +95,7 @@ public class teleopDrive extends Command{
             rotSpeed = omegaLimiter.calculate(rotSpeed) * PhysicalConstants.DriveBase.MAX_ANGULAR_SPEED_RAD;
 
             ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2D());
-            swerveSubsystem.setModuleStates(speeds, false);
+            swerveSubsystem.setModuleStates(speeds);
         }       
     } 
 
