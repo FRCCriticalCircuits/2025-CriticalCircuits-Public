@@ -234,7 +234,7 @@ public class ModuleIOSpark implements ModuleIO {
 
         // Create odometry queues
         timestampQueue = OdometryThread.getInstance().makeTimestampQueue();
-        drivePositionQueue = OdometryThread.getInstance().registerSignal(() -> driveMotor.getPosition().getValueAsDouble());
+        drivePositionQueue = OdometryThread.getInstance().registerSignal(() -> Units.rotationsToRadians(driveMotor.getPosition().getValueAsDouble()));
         turnPositionQueue = OdometryThread.getInstance().registerSignal(turnEncoder::getPosition);
     }
 
@@ -271,6 +271,7 @@ public class ModuleIOSpark implements ModuleIO {
         inputs.odometryTurnPositions = turnPositionQueue.stream()
                 .map((Double value) -> new Rotation2d(value))
                 .toArray(Rotation2d[]::new);
+
         timestampQueue.clear();
         drivePositionQueue.clear();
         turnPositionQueue.clear();

@@ -30,7 +30,7 @@ public class VisionLL implements VisionIO{
 
     @Override
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(camName);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue(camName);
         return Optional.of(
             new EstimatedRobotPose(
                 new Pose3d(

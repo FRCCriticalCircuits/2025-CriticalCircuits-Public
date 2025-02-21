@@ -229,7 +229,7 @@ public class SwerveSubsystem extends SubsystemBase{
     /**
      * update the {@link SwerveDrivePoseEstimator}
      */
-    public synchronized void updatePoseEstimator() {
+    public void updatePoseEstimator() {
         double[] sampleTimestamps = modules[0].getOdometryTimestamps(); // All signals are sampled together
         int sampleCount = sampleTimestamps.length;
         for (int i = 0; i < sampleCount; i++) {
@@ -296,6 +296,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
         // Pose Estimator
         updatePoseEstimator();
+        
 
         // Telemetry
         estimateField.setRobotPose(getPoseEstimate());
