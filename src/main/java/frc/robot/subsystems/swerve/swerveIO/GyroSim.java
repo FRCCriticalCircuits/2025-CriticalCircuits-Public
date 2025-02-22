@@ -2,13 +2,12 @@ package frc.robot.subsystems.swerve.swerveIO;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.Queue;
-
 import org.ironmaple.simulation.drivesims.GyroSimulation;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.utils.MotorUtil;
+
 public class GyroSim implements GyroIO{
     private final GyroSimulation gyroSimulation;
 

@@ -12,10 +12,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.DoubleSupplier;
 
 public class OdometryThread {
-    private List<DoubleSupplier> signals = new ArrayList<>();
-    private List<Queue<Double>> queues = new ArrayList<>();
+    private final List<DoubleSupplier> signals = new ArrayList<>();
+    private final List<Queue<Double>> queues = new ArrayList<>();
 
-    private List<Queue<Double>> timestampQueues = new ArrayList<>();
+    private final List<Queue<Double>> timestampQueues = new ArrayList<>();
 
     private static OdometryThread instance = null;
     private Notifier notifier = new Notifier(this::run);
@@ -32,9 +32,7 @@ public class OdometryThread {
     }
 
     public void start() {
-        // if (!timestampQueues.isEmpty()) {
-            notifier.startPeriodic(1.0 / PhysicalConstants.ODOMETRY_FREQUENCY);
-        // }
+        if(!timestampQueues.isEmpty()) notifier.startPeriodic(1.0 / PhysicalConstants.ODOMETRY_FREQUENCY);
     }
 
     /** Registers a generic signal to be read from the thread. */

@@ -15,14 +15,12 @@ package frc.robot.utils;
 
 import static edu.wpi.first.units.Units.Seconds;
 
-import com.ctre.phoenix6.StatusCode;
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase;
 import edu.wpi.first.wpilibj.Timer;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 import org.ironmaple.simulation.SimulatedArena;
 
 public class MotorUtil {
@@ -50,26 +48,6 @@ public class MotorUtil {
             }
         }
         consumer.accept(values);
-    }
-
-    /** Attempts to run the command until no error is produced. */
-    public static void tryUntilOk(SparkBase spark, int maxAttempts, Supplier<REVLibError> command) {
-        for (int i = 0; i < maxAttempts; i++) {
-            var error = command.get();
-            if (error == REVLibError.kOk) {
-                break;
-            } else {
-                sparkStickyFault = true;
-            }
-        }
-    }
-
-    /** Attempts to run the command until no error is produced. */
-    public static void tryUntilOk(int maxAttempts, Supplier<StatusCode> command) {
-        for (int i = 0; i < maxAttempts; i++) {
-            var error = command.get();
-            if (error.isOK()) break;
-        }
     }
 
     public static double[] getSimulationOdometryTimeStamps() {

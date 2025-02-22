@@ -112,14 +112,4 @@ public class Module {
     public double[] getOdometryTimestamps() {
         return inputs.odometryTimestamps;
     }
-
-    /** Returns the module position in radians. */
-    public double getWheelRadiusCharacterizationPosition() {
-        return inputs.drivePositionRad;
-    }
-
-    /** Returns the module velocity in rotations/sec (Phoenix native units). */
-    public double getFFCharacterizationVelocity() {
-        return Units.radiansToRotations(inputs.driveVelocityRadPerSec);
-    }
 }

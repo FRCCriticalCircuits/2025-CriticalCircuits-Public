@@ -136,10 +136,13 @@ public class RobotContainer {
   }
 
   public void resetSimulationField() {
-    swerveSubsystem.resetPoseEstimate(
-      DriveStationIO.isBlue()   ? FieldConstants.INIT_POSE_BLUE 
-                                : FieldConstants.INIT_POSE_BLUE.horizontallyFlip()
+    swerveSubsystem.resetPoseEstimate
+    (
+      DriveStationIO.isBlue() ? FieldConstants.INIT_POSE_BLUE 
+                              : FieldConstants.INIT_POSE_BLUE.flip()
     );
+    
+    swerveSubsystem.resetGyro(-0.5);
     SimulatedArena.getInstance().resetFieldForAuto();
   }
   

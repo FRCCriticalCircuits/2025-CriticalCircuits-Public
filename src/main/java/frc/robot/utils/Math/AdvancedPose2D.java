@@ -28,6 +28,20 @@ public class AdvancedPose2D extends Pose2d{
         );
     }
 
+    public AdvancedPose2D flip(){
+        return new AdvancedPose2D(
+            new Translation2d(
+                FieldConstants.FIELD_LENGTH - this.getTranslation().getX(),
+                FieldConstants.FIELD_WIDTH - this.getTranslation().getY()
+            ),
+            Rotation2d.fromDegrees(
+                (this.getRotation().getDegrees() > 0) ?
+                180 - this.getRotation().getDegrees() :
+                -(180 + this.getRotation().getDegrees())
+            )
+        );
+    }
+
     /**
      * Apply a rotated transfromation to the {@link AdvancedPose2D} object
      * @param direction the direction of the translation

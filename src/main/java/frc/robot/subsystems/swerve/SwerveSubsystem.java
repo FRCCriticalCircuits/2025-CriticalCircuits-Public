@@ -76,7 +76,7 @@ public class SwerveSubsystem extends SubsystemBase{
         driveSimulation = new SwerveDriveSimulation(
             PhysicalConstants.DriveBase.SIMULATION_CONFIG,
             DriveStationIO.isBlue()   ? FieldConstants.INIT_POSE_BLUE 
-                                      : FieldConstants.INIT_POSE_BLUE.horizontallyFlip()
+                                      : FieldConstants.INIT_POSE_BLUE.flip()
         );
 
         if(Robot.isReal()) {
@@ -95,7 +95,7 @@ public class SwerveSubsystem extends SubsystemBase{
             }
         }
 
-        resetGyro(rawGyroRotation.getRotations());
+        resetGyro(-0.5);
         
         Timer.delay(0.1); // 100ms delay
 
@@ -107,7 +107,7 @@ public class SwerveSubsystem extends SubsystemBase{
             rawGyroRotation,
             getSwerveModulePositions(),
             DriveStationIO.isBlue()   ? FieldConstants.INIT_POSE_BLUE 
-                                      : FieldConstants.INIT_POSE_BLUE.horizontallyFlip()
+                                      : FieldConstants.INIT_POSE_BLUE.flip()
         );
 
         RobotConfig config = null;
@@ -272,7 +272,7 @@ public class SwerveSubsystem extends SubsystemBase{
      * @param pose new position in {@link Pose2d}
      */
     public synchronized void resetPoseEstimate(Pose2d pose) {
-        driveSimulation.setSimulationWorldPose(pose);
+        if(Robot.isSimulation()) driveSimulation.setSimulationWorldPose(pose);
         poseEstimator.resetPosition(rawGyroRotation, getSwerveModulePositions(), pose);
     }
 
@@ -296,7 +296,6 @@ public class SwerveSubsystem extends SubsystemBase{
 
         // Pose Estimator
         updatePoseEstimator();
-        
 
         // Telemetry
         estimateField.setRobotPose(getPoseEstimate());

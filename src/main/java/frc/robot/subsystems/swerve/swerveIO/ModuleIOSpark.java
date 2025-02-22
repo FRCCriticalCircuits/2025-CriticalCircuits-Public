@@ -64,9 +64,9 @@ public class ModuleIOSpark implements ModuleIO {
     private SimpleMotorFeedforward driveFeedForward = new SimpleMotorFeedforward(0, 0); // CloseLoop Feedforward
 
     // Queue inputs from odometry thread
-    private Queue<Double> timestampQueue;
-    private Queue<Double> drivePositionQueue;
-    private Queue<Double> turnPositionQueue;
+    private final Queue<Double> timestampQueue;
+    private final Queue<Double> drivePositionQueue;
+    private final Queue<Double> turnPositionQueue;
 
     // Connection debouncers
     private Debouncer driveConnectedDebounce = new Debouncer(0.5);
@@ -172,8 +172,6 @@ public class ModuleIOSpark implements ModuleIO {
             // No need for kG because it's not arm/elevator
         );
 
-        // BaseStatusSignal.setUpdateFrequencyForAll(60, driveMotor.getVelocity(), driveMotor.getPosition());
-
         /* Apply Settings */
         driveMotor.getConfigurator().apply(driveConfig);
 
@@ -192,6 +190,18 @@ public class ModuleIOSpark implements ModuleIO {
         /* Gear Ratio */
         encoderConfig.positionConversionFactor((1.0 / PhysicalConstants.DriveBase.GearRatios.TURN_GEAR_RATIO) * Math.PI * 2);
         encoderConfig.velocityConversionFactor((60.0 / PhysicalConstants.DriveBase.GearRatios.TURN_GEAR_RATIO) * Math.PI * 2);
+
+        turnConfig
+            .signals
+            .primaryEncoderPositionAlwaysOn(true)
+            .primaryEncoderPositionPeriodMs((int) (1000.0 / PhysicalConstants.ODOMETRY_FREQUENCY))
+            .primaryEncoderVelocityAlwaysOn(true)
+            .primaryEncoderVelocityPeriodMs(20)
+            .appliedOutputPeriodMs(20)
+            .busVoltagePeriodMs(20)
+            .outputCurrentPeriodMs(20);
+
+        encoderConfig.quadratureAverageDepth(2);
 
         /* PID Constructor */
         turnPID = new PIDController(
@@ -220,10 +230,9 @@ public class ModuleIOSpark implements ModuleIO {
         driveAppliedVolts = driveMotor.getMotorVoltage();
         driveCurrent = driveMotor.getStatorCurrent();
 
-        BaseStatusSignal.setUpdateFrequencyForAll(PhysicalConstants.ODOMETRY_FREQUENCY, drivePosition);
+        BaseStatusSignal.setUpdateFrequencyForAll(PhysicalConstants.ODOMETRY_FREQUENCY, driveVelocity, drivePosition);
         BaseStatusSignal.setUpdateFrequencyForAll(
             50.0,
-            driveVelocity,
             driveAppliedVolts,
             driveCurrent
         );
@@ -234,7 +243,7 @@ public class ModuleIOSpark implements ModuleIO {
 
         // Create odometry queues
         timestampQueue = OdometryThread.getInstance().makeTimestampQueue();
-        drivePositionQueue = OdometryThread.getInstance().registerSignal(() -> Units.rotationsToRadians(driveMotor.getPosition().getValueAsDouble()));
+        drivePositionQueue = OdometryThread.getInstance().registerSignal(() -> Units.rotationsToRadians(drivePosition.getValueAsDouble()));
         turnPositionQueue = OdometryThread.getInstance().registerSignal(turnEncoder::getPosition);
     }
 
@@ -251,26 +260,46 @@ public class ModuleIOSpark implements ModuleIO {
 
         // Update turn inputs
         sparkStickyFault = false;
-        ifOk(
-                turnMotor,
-                turnEncoder::getPosition,
-                (value) -> inputs.turnPosition = new Rotation2d(value));
-        ifOk(turnMotor, turnEncoder::getVelocity, (value) -> inputs.turnVelocityRadPerSec = value);
+
         ifOk(
             turnMotor,
-                new DoubleSupplier[] {turnMotor::getAppliedOutput, turnMotor::getBusVoltage},
-                (values) -> inputs.turnAppliedVolts = values[0] * values[1]);
-        ifOk(turnMotor, turnMotor::getOutputCurrent, (value) -> inputs.turnCurrentAmps = value);
+            turnEncoder::getPosition,
+            (value) -> inputs.turnPosition = new Rotation2d(value)
+        );
+        
+        ifOk(
+            turnMotor,
+            turnEncoder::getVelocity,
+            (value) -> inputs.turnVelocityRadPerSec = value
+        );
+        
+        ifOk(
+            turnMotor,
+            new DoubleSupplier[] {turnMotor::getAppliedOutput, turnMotor::getBusVoltage},
+            (values) -> inputs.turnAppliedVolts = values[0] * values[1]
+        );
+
+        ifOk(
+            turnMotor,
+            turnMotor::getOutputCurrent,
+            (value) -> inputs.turnCurrentAmps = value
+        );
+
         inputs.turnConnected = turnConnectedDebounce.calculate(!sparkStickyFault); 
 
         // Update odometry inputs
         inputs.odometryTimestamps =
-                timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+                timestampQueue.stream()
+                    .mapToDouble((Double value) -> value)
+                    .toArray();
         inputs.odometryDrivePositionsRad =
-                drivePositionQueue.stream().mapToDouble((Double value) -> value).toArray();
-        inputs.odometryTurnPositions = turnPositionQueue.stream()
-                .map((Double value) -> new Rotation2d(value))
-                .toArray(Rotation2d[]::new);
+                drivePositionQueue.stream()
+                    .mapToDouble((Double value) -> value)
+                    .toArray();
+        inputs.odometryTurnPositions = 
+                turnPositionQueue.stream()
+                    .map((Double value) -> new Rotation2d(value))
+                    .toArray(Rotation2d[]::new);
 
         timestampQueue.clear();
         drivePositionQueue.clear();
