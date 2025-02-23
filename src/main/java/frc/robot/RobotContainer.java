@@ -11,6 +11,7 @@ import org.ironmaple.simulation.SimulatedArena;
 import org.json.simple.parser.ParseException;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -30,7 +31,9 @@ import frc.robot.subsystems.Controller;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
-
+import frc.robot.utils.structures.AutoAimSetting;
+import frc.robot.utils.structures.DataStrcutures.Mode;
+import frc.robot.utils.web.WebServer;
 
 public class RobotContainer {
   private SwerveSubsystem swerveSubsystem = SwerveSubsystem.getInstance();
@@ -46,22 +49,13 @@ public class RobotContainer {
     () -> controller.getDriverRT()
   );
 
-  private Command autoaim = new InstantCommand(
-    ()  -> {
+  private Command autoaim = new InstantCommand
+  (
+    () -> {
       new SequentialCommandGroup(
-        new InstantCommand(
-          () -> {
-            teleopDrive.manualEnable = false;
-          }, swerveSubsystem
-        ),
         new ParallelDeadlineGroup(
           new WaitCommand(2.5),
           autoAimManager.getCommand()
-        ),
-        new InstantCommand(
-          () -> {
-            teleopDrive.manualEnable = true;
-          }, swerveSubsystem
         )
       ).schedule();
     }, swerveSubsystem
@@ -81,7 +75,6 @@ public class RobotContainer {
     );
 
     autoChooser.setDefaultOption("1", "Auto 0");
-    autoChooser.addOption("test", "Auto 1");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -89,6 +82,27 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    NamedCommands.registerCommand(
+      "setModeCoral",
+      new InstantCommand(
+        () -> {
+          AutoAimSetting settings = WebServer.getInstance().getAutoAimSettings();
+          settings.setMode(Mode.CORAL_PLACE);
+          WebServer.getInstance().updateSetting(settings);
+        }
+      )
+    );
+    NamedCommands.registerCommand(
+      "setModeIntake",
+      new InstantCommand(
+        () -> {
+          AutoAimSetting settings = WebServer.getInstance().getAutoAimSettings();
+          settings.setMode(Mode.CORAL_INTAKE);
+          WebServer.getInstance().updateSetting(settings);
+        }
+      )
+    );
+
     driveController.button(KeyBinding.GYRO_RESET).debounce(0.02).onTrue(
       new InstantCommand(
         () -> {

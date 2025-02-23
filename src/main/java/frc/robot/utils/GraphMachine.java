@@ -4,14 +4,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.math.Pair;
 
 /**
  * a graph class can find a path between two nodes (states).
@@ -22,9 +19,7 @@ public class GraphMachine {
 
     public GraphMachine() {}
 
-    public void addNode(String name, Command commands, Subsystem... requirements) {
-        Command commandToAdd = commands;
-        commandToAdd.addRequirements(requirements);
+    public void addNode(String name, Pair<Double, Double> commands) {
         nodes.put(name, new Node(name, commands));
         edges.putIfAbsent(name, new HashSet<>());
     }
@@ -36,9 +31,9 @@ public class GraphMachine {
         }
     }
 
-    public List<Command> findPath(String originNode, String targetNode) {
+    public Pair<String, Pair<Double, Double>> findPath(String originNode, String targetNode) {
         if (!nodes.containsKey(originNode) || !nodes.containsKey(targetNode)) {
-            return Collections.emptyList();
+            throw new IllegalArgumentException("Node does not exist");
         }
 
         Map<String, String> predecessors = new HashMap<>();
@@ -63,7 +58,7 @@ public class GraphMachine {
         }
 
         if (!predecessors.containsKey(targetNode)) {
-            return Collections.emptyList();
+            throw new IllegalArgumentException("No path found, check your edges");
         }
 
         LinkedList<String> path = new LinkedList<>();
@@ -73,9 +68,8 @@ public class GraphMachine {
             current = predecessors.get(current);
         }
 
-        return path.stream()
-                .map(nodeName -> nodes.get(nodeName).getCommands())
-                .collect(Collectors.toList());
+        if(path.size() > 1) return new Pair<String, Pair<Double, Double>>(path.get(1), nodes.get(path.get(1)).getCommands());
+        else return new Pair<String, Pair<Double, Double>>(path.get(0), nodes.get(path.get(0)).getCommands());
     }
 
     public Node getNode(String name) {
@@ -84,14 +78,10 @@ public class GraphMachine {
 
     public static class Node {
         private final String name;
-        private Command commands;
+        private Pair<Double, Double> commands;
 
-        public Node(String name, Command commands) {
+        public Node(String name, Pair<Double, Double> commands) {
             this.name = name;
-            this.commands = commands;
-        }
-
-        public void editCommand(Command commands) {
             this.commands = commands;
         }
 
@@ -99,7 +89,7 @@ public class GraphMachine {
             return name;
         }
 
-        public Command getCommands() {
+        public Pair<Double, Double> getCommands() {
             return commands;
         }
     }

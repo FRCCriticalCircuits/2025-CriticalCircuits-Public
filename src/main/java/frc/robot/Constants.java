@@ -211,7 +211,7 @@ public class Constants {
         public static AdvancedPose2D REEF_CENTER_BLUE = new AdvancedPose2D(4.48945, FIELD_WIDTH / 2, Rotation2d.fromDegrees(0));
 
         public class AutoAim{
-            public static double REEF_CENTER_TO_ROBOT = Units.inchesToMeters(32.75) + Units.inchesToMeters(27) / 2 + 0.01; // 118.475
+            public static double REEF_CENTER_TO_ROBOT = 1.45;
             public static double CORAL_STATION_TO_ROBOT = Units.inchesToMeters(27) / 2;
             public static double AUTO_TRANSLATION_OFFSET_X = 0.2; // Shift for L/R coral
             public static double MANUAL_TRANSLATION_RANGE = 0.4; // Plus Minus .4m 

@@ -16,7 +16,6 @@ package frc.robot.subsystems.swerve.swerveIO;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.robot.Constants.PhysicalConstants;
@@ -24,7 +23,7 @@ import frc.robot.subsystems.swerve.swerveIO.ModuleIO.ModuleIOInputs;
 
 public class Module {
     private ModuleIO io;
-    private ModuleIOInputs inputs = new ModuleIOInputs();
+    private final ModuleIOInputs inputs = new ModuleIOInputs();
 
     private Alert driveDisconnectedAlert;
     private Alert turnDisconnectedAlert;

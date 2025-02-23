@@ -7,6 +7,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants.DeviceID;
@@ -17,6 +19,10 @@ public class ArmKraken implements ArmIO {
     private TalonFX m_anglerMotor;
     private TalonFXConfiguration anglerConfig;
     private DutyCycleEncoder m_anglerEncoder;
+
+    TimeOfFlight coralSensor, algaeSensor;
+
+    private double targetRotation = 0.0;
 
     private final MotionMagicVoltage m_MotionMagic = new MotionMagicVoltage(0).withSlot(0);
 
@@ -61,10 +67,28 @@ public class ArmKraken implements ArmIO {
         m_anglerMotor.setPosition(m_anglerEncoder.get());
 
         m_MotionMagic.withPosition(m_anglerMotor.getPosition().getValueAsDouble());
+
+        coralSensor = new TimeOfFlight(DeviceID.Sensor.CORAL_SENSOR);
+        algaeSensor = new TimeOfFlight(DeviceID.Sensor.ALGAE_SENSOR);
+
+        coralSensor.setRangingMode(RangingMode.Short, 30);
+        algaeSensor.setRangingMode(RangingMode.Short, 30);
     }
 
     @Override
-    public void setPosition(double rotation) {
-        m_anglerMotor.setControl(m_MotionMagic.withPosition(rotation));
+    public void updateInputs(ArmIOInputs inputs) {
+        inputs.rotation = m_anglerMotor.getPosition().getValueAsDouble();
+        inputs.targetRotation = targetRotation;
+        
+        inputs.algaeDetected = algaeSensor.isRangeValid() && algaeSensor.getRange() < 30;
+        inputs.coralDetected = coralSensor.isRangeValid() && coralSensor.getRange() < 30;
+
+        m_anglerMotor.setControl(m_MotionMagic.withPosition(targetRotation));
+    }
+
+    @Override
+    public void setRotation(double rotation) {
+        this.targetRotation = rotation;
+       
     }
 }

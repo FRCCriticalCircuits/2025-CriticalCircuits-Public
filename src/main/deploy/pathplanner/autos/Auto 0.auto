@@ -13,45 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "setModeReef"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "execAutoAim"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "execCoralPlace"
-                }
-              }
-            ]
+            "name": "setModeCoral"
           }
         },
         {
@@ -67,22 +29,27 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "execAutoAim"
-                }
-              }
-            ]
+            "pathName": "0 - Path 3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setModeCoral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "0 - Path 4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setModeIntake"
           }
         },
         {
@@ -94,45 +61,7 @@
         {
           "type": "named",
           "data": {
-            "name": "setModeReef"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "execAutoAim"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "execCoralPlace"
-                }
-              }
-            ]
+            "name": "setModeCoral"
           }
         }
       ]

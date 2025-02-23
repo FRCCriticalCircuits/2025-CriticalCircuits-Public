@@ -1,0 +1,17 @@
+ArmKraken.java:
+Line 63/33: m_anglerEncoder: whats zeroPosition? / do we need invert?
+Line 83:
+(Test with Timed Robot [Prototyping])
+try find a proper range (it was like 30mm-60mm for coral)
+try if the isValid() function work when there's nothing infront of sensor
+
+ElevatorSubsystem.java:
+Try find Proper value for:
+    Debouncer armAtGoal = new Debouncer(0.2);
+    Debouncer elevatorAtGoal = new Debouncer(0.2);     
+    Debouncer coralDebouncer = new Debouncer(0.1);
+    Debouncer algaeDebouncer = new Debouncer(0.1);
+as well as max error tolorance
+
+Swerve:
+Does position shows up in advantagescope? 

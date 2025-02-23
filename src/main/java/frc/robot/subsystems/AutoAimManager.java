@@ -41,7 +41,7 @@ public class AutoAimManager{
     
     private PathConstraints constraints = new PathConstraints(
         1.3,
-        2,
+        5,
         Math.PI / 4,
         Math.PI / 2
     );

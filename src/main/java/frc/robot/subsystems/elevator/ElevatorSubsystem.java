@@ -1,78 +1,82 @@
 package frc.robot.subsystems.elevator;
 
-import java.util.HashMap;
-
+import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.elevator.ArmIO.ArmIOInputs;
+import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
+import frc.robot.utils.GraphMachine;
 
 public class ElevatorSubsystem extends SubsystemBase {
     private static ElevatorSubsystem instance;
-    private static ELEVATOR_STATES states;
 
     private ElevatorIO elevatorIO = new ElevatorKraken();
+    private final ElevatorIOInputs elevatorInputs = new ElevatorIOInputs();
+
+    private ArmIO armIO = new ArmKraken();
+    private final ArmIOInputs armInputs = new ArmIOInputs();
+
+    public String curState = "preMatch", targetState = "preMatch";
+
+    Debouncer armAtGoal = new Debouncer(0.2);
+    Debouncer elevatorAtGoal = new Debouncer(0.2);
+
+    Debouncer coralDebouncer = new Debouncer(0.1);
+    Debouncer algaeDebouncer = new Debouncer(0.1);
+
+    boolean atGoal, coralDetected, algaeDetected;
+
+    GraphMachine graphMachine = new GraphMachine();
+    Pair<String, Pair<Double, Double>> nextState;
     
-    public ElevatorSubsystem(){
-        states = ELEVATOR_STATES.LEVEL_1;
+    public ElevatorSubsystem() {
+        // State Nodes
+        graphMachine.addNode("preMatch", new Pair<Double, Double>(Units.degreesToRotations(20), 0.0));
+        graphMachine.addNode("L1coral", new Pair<Double, Double>(Units.degreesToRotations(10), 1.0));
+        graphMachine.addNode("L4coral", new Pair<Double, Double>(Units.degreesToRotations(10), 5.0));
+
+        // Transition Nodes
+        graphMachine.addNode("tn-1", new Pair<Double, Double>(Units.degreesToRotations(10), 0.0));
+        graphMachine.addNode("tn-2", new Pair<Double, Double>(0.0, 0.0));
+        graphMachine.addNode("tn-3", new Pair<Double, Double>(0.0, 5.0));
+
+        graphMachine.addEdge("preMatch", "tn-1");
+        graphMachine.addEdge("preMatch", "tn-2");
+        graphMachine.addEdge("tn-1", "L1coral");
+        graphMachine.addEdge("tn-1", "tn-2");
+        graphMachine.addEdge("tn-2", "tn-3");
+        graphMachine.addEdge("tn-3", "L4coral");
     }
 
-    public ElevatorSubsystem getInstance(){
+    public static ElevatorSubsystem getInstance(){
         if(instance == null) instance = new ElevatorSubsystem();
         return instance;
     }
 
     @Override
     public void periodic() {
-        switch(states){
-            case LEVEL_1:
-                elevatorIO.setPosition(0.0);
-                break;
-            case LEVEL_2:
-                elevatorIO.setPosition(1.0);
-                break;
-            case LEVEL_3:
-                elevatorIO.setPosition(2.0);
-                break;
-            case LEVEL_4:
-                elevatorIO.setPosition(3.0);
-                break;
-            default:
-                // Handle unexpected states
-                break;
-        }
-    }
+        elevatorIO.updateInputs(elevatorInputs);
+        armIO.updateInputs(armInputs);
 
-    public enum ELEVATOR_STATES {
-        LEVEL_1(0),
-        LEVEL_2(1),
-        LEVEL_3(2),
-        LEVEL_4(3);
+        // false if osilating
+        atGoal =    elevatorAtGoal.calculate(Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) < 0.1) &&
+                    armAtGoal.calculate(Math.abs(armInputs.rotation - armInputs.targetRotation) < 0.1);
+        
+        // false if error is too big
+        atGoal =    (
+                        (Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) > 0.1) &&
+                        (Math.abs(armInputs.rotation - armInputs.targetRotation) > 0.1)
+                    ) ? false 
+                      : atGoal;
 
-        public final int value;
+        algaeDetected = algaeDebouncer.calculate(armInputs.algaeDetected);
+        coralDetected = coralDebouncer.calculate(armInputs.coralDetected);
 
-        ELEVATOR_STATES(int initValue)
-        {
-            this.value = initValue;
-        }
+        nextState = graphMachine.findPath(curState, targetState);
+        armIO.setRotation(nextState.getSecond().getFirst());
+        elevatorIO.setPosition(nextState.getSecond().getSecond());
 
-        private static HashMap<Integer, ELEVATOR_STATES> _map = null;
-        static
-        {
-            _map = new HashMap<Integer, ELEVATOR_STATES>();
-            for (ELEVATOR_STATES type : ELEVATOR_STATES.values())
-            {
-                _map.put(type.value, type);
-            }
-        }
- 
-        /**
-         * Gets {@link ELEVATOR_STATES} from specified value
-         * @param value Value of Spot
-         * @return Spot of specified value
-         */
-        public static ELEVATOR_STATES valueOf(int value)
-        {
-            ELEVATOR_STATES retval = _map.get(value);
-            if (retval != null) return retval;
-            return ELEVATOR_STATES.values()[0];
-        }
+        if(atGoal) curState = nextState.getFirst();
     }
 }

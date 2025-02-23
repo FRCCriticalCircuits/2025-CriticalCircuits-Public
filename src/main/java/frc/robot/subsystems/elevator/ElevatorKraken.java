@@ -18,6 +18,8 @@ public class ElevatorKraken implements ElevatorIO {
     private TalonFX m_rightMotor;
     private TalonFXConfiguration elevatorConfig;
 
+    private double targetRotation = 0.0;
+
     private final MotionMagicVoltage m_MotionMagic = new MotionMagicVoltage(0).withSlot(0);
 
     public ElevatorKraken(){
@@ -62,7 +64,15 @@ public class ElevatorKraken implements ElevatorIO {
     }
 
     @Override
+    public void updateInputs(ElevatorIOInputs inputs) {
+        inputs.position = m_rightMotor.getPosition().getValueAsDouble();
+        inputs.targetPosition = targetRotation;
+
+        m_rightMotor.setControl(m_MotionMagic.withPosition(targetRotation));
+    }
+
+    @Override
     public void setPosition(double rotation) {
-        m_rightMotor.setControl(m_MotionMagic.withPosition(rotation));
+        this.targetRotation = rotation;
     }
 }
