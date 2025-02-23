@@ -41,6 +41,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         graphMachine.addNode("tn-2", new Pair<Double, Double>(0.0, 0.0));
         graphMachine.addNode("tn-3", new Pair<Double, Double>(0.0, 5.0));
 
+        // Edges
         graphMachine.addEdge("preMatch", "tn-1");
         graphMachine.addEdge("preMatch", "tn-2");
         graphMachine.addEdge("tn-1", "L1coral");
