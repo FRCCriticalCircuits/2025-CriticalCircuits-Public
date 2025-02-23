@@ -1,14 +1,16 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public interface ArmIO {
     public static class ArmIOInputs {
-        public double rotation;
-        public double targetRotation;
+        public Rotation2d ioRotation;
+        public Rotation2d targetRotation;
         
         public boolean coralDetected;
         public boolean algaeDetected;
     }
 
     public default void updateInputs(ArmIOInputs inputs) {}
-    public void setRotation(double rotation);
+    public void setRotation(Rotation2d rotation);
 }

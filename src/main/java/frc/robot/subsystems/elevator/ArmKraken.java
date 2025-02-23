@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DeviceID;
@@ -21,9 +22,9 @@ public class ArmKraken implements ArmIO {
     private TalonFXConfiguration anglerConfig;
     private DutyCycleEncoder m_anglerEncoder;
 
-    TimeOfFlight coralSensor, algaeSensor;
+    private TimeOfFlight coralSensor, algaeSensor;
 
-    private double targetRotation = 0.0;
+    private Rotation2d ioRotation;
 
     private final MotionMagicVoltage m_MotionMagic = new MotionMagicVoltage(0).withSlot(0);
 
@@ -31,7 +32,7 @@ public class ArmKraken implements ArmIO {
         m_anglerMotor = new TalonFX(DeviceID.Angler.ANGLER_ID);
         anglerConfig = new TalonFXConfiguration();
 
-        m_anglerEncoder = new DutyCycleEncoder(DeviceID.Sensor.ANGLER_ENCODER, 1.0, 0);
+        m_anglerEncoder = new DutyCycleEncoder(DeviceID.Sensor.ANGLER_ENCODER, 1.0, PhysicalConstants.Arm.ENCODER_ZERO_OFFSET);
 
         anglerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         anglerConfig.CurrentLimits.StatorCurrentLimit = PhysicalConstants.Elevator.CurrentLimits.ANGLER_CURRENT_LIMIT;
@@ -64,6 +65,7 @@ public class ArmKraken implements ArmIO {
 
         m_anglerEncoder.setAssumedFrequency(975.609756); // 1s / 1025μs
         m_anglerEncoder.setDutyCycleRange(0.0010, 0.9990); // 1μs & 1024μs out of 1025μs
+        m_anglerEncoder.setInverted(false);
 
         m_anglerMotor.setPosition(m_anglerEncoder.get());
 
@@ -76,10 +78,18 @@ public class ArmKraken implements ArmIO {
         algaeSensor.setRangingMode(RangingMode.Short, 25);
     }
 
+    private Rotation2d toTalonRotation(Rotation2d ioRotation){
+        return ioRotation.plus(PhysicalConstants.Arm.OFFSET_CENTER_GRAVITY);
+    }
+    
+    private Rotation2d toIORotation(Rotation2d talonRotation){
+        return talonRotation.minus(PhysicalConstants.Arm.OFFSET_CENTER_GRAVITY);
+    }
+
     @Override
     public void updateInputs(ArmIOInputs inputs) {
-        inputs.rotation = m_anglerMotor.getPosition().getValueAsDouble();
-        inputs.targetRotation = targetRotation;
+        inputs.ioRotation = toIORotation(Rotation2d.fromRotations(m_anglerMotor.getPosition().getValueAsDouble()));
+        inputs.targetRotation = this.ioRotation;
         
         inputs.algaeDetected = algaeSensor.isRangeValid() && algaeSensor.getRange() < 30;
         inputs.coralDetected = coralSensor.isRangeValid() && coralSensor.getRange() < 30;
@@ -90,14 +100,24 @@ public class ArmKraken implements ArmIO {
         SmartDashboard.putNumber("coralRange", coralSensor.getRange());
         SmartDashboard.putNumber("algaeRange", algaeSensor.getRange());
         SmartDashboard.putNumber("absoluteSensor", m_anglerEncoder.get());
+        SmartDashboard.putNumber("absoluteSensor(converted)", encoderConversion(m_anglerEncoder.get()));
 
         // debug
-        // m_anglerMotor.setControl(m_MotionMagic.withPosition(targetRotation));
+        // m_anglerMotor.setControl(m_MotionMagic.withPosition(toTalonRotation(ioRotation).getRotations()));
+    }
+
+    /**
+     * Converts encoder rotation from [0, 1] to (-0.5, 0.5]
+     * @apiNote arm should be CCW positive
+     * @param rotation encoder rotation
+     * @return converted encoder rotation
+     */
+    private double encoderConversion(double rotation){
+        return (rotation > 0.5) ? rotation : rotation;
     }
 
     @Override
-    public void setRotation(double rotation) {
-        this.targetRotation = rotation;
-       
+    public void setRotation(Rotation2d ioRotation) {
+        this.ioRotation = ioRotation;
     }
 }

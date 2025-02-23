@@ -26,7 +26,8 @@ public class VisionSubsystem extends SubsystemBase{
     }
 
     public void start(){
-        if(Robot.isReal()) this.notifier.startPeriodic(0.01);
+        // debug
+        // if(Robot.isReal()) this.notifier.startPeriodic(0.01);
     }
 
     private void update(){

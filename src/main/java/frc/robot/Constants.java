@@ -189,7 +189,6 @@ public class Constants {
 
         public class Elevator{
             public static double ELEVATOR_GEAR_RATIO = 15.0;
-            public static double ENCODER_ZERO_OFFSET = 0.0;
 
             public class CurrentLimits{
                 public static int ELEVATOR_CURRENT_LIMIT = 20;
@@ -197,6 +196,11 @@ public class Constants {
                 public static int HATCHER_CURRENT_LIMIT = 20;
                 public static int INTAKE_CURRENT_LIMIT = 20;
             }
+        }
+
+        public class Arm{
+            public static Rotation2d OFFSET_CENTER_GRAVITY = Rotation2d.fromDegrees(-0.05);
+            public static double ENCODER_ZERO_OFFSET = 0.0;
         }
     }
 

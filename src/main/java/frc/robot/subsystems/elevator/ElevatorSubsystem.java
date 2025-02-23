@@ -2,6 +2,7 @@ package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -63,12 +64,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // false if osilating
         atGoal =    elevatorAtGoal.calculate(Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) < 0.02) &&
-                    armAtGoal.calculate(Math.abs(armInputs.rotation - armInputs.targetRotation) < 0.02);
+                    armAtGoal.calculate(Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) < 0.02);
         
         // false if error is too big
         atGoal =    (
                         (Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) > 0.02) ||
-                        (Math.abs(armInputs.rotation - armInputs.targetRotation) > 0.02)
+                        (Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) > 0.02)
                     ) ? false 
                       : atGoal;
 
@@ -76,7 +77,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         coralDetected = coralDebouncer.calculate(armInputs.coralDetected);
 
         nextState = graphMachine.findPath(curState, targetState);
-        armIO.setRotation(nextState.getSecond().getFirst());
+        armIO.setRotation(Rotation2d.fromRotations(nextState.getSecond().getFirst()));
         elevatorIO.setPosition(nextState.getSecond().getSecond());
 
         // debug
