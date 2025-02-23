@@ -3,6 +3,7 @@ package frc.robot.subsystems.elevator;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.elevator.ArmIO.ArmIOInputs;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
@@ -61,13 +62,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         armIO.updateInputs(armInputs);
 
         // false if osilating
-        atGoal =    elevatorAtGoal.calculate(Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) < 0.1) &&
-                    armAtGoal.calculate(Math.abs(armInputs.rotation - armInputs.targetRotation) < 0.1);
+        atGoal =    elevatorAtGoal.calculate(Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) < 0.02) &&
+                    armAtGoal.calculate(Math.abs(armInputs.rotation - armInputs.targetRotation) < 0.02);
         
         // false if error is too big
         atGoal =    (
-                        (Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) > 0.1) &&
-                        (Math.abs(armInputs.rotation - armInputs.targetRotation) > 0.1)
+                        (Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) > 0.02) ||
+                        (Math.abs(armInputs.rotation - armInputs.targetRotation) > 0.02)
                     ) ? false 
                       : atGoal;
 
@@ -77,6 +78,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         nextState = graphMachine.findPath(curState, targetState);
         armIO.setRotation(nextState.getSecond().getFirst());
         elevatorIO.setPosition(nextState.getSecond().getSecond());
+
+        // debug
+        SmartDashboard.putString("targetState", nextState.getFirst() + "(arm, elev): " + nextState.getSecond().getFirst() + ", " + nextState.getSecond().getSecond());
+        SmartDashboard.putBoolean("algae", algaeDetected);
+        SmartDashboard.putBoolean("coral", coralDetected);
+        SmartDashboard.putBoolean("atGoal", atGoal);
 
         if(atGoal) curState = nextState.getFirst();
     }

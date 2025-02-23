@@ -11,6 +11,7 @@ import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.PhysicalConstants;
 import frc.robot.Constants.TunedConstants;
@@ -71,8 +72,8 @@ public class ArmKraken implements ArmIO {
         coralSensor = new TimeOfFlight(DeviceID.Sensor.CORAL_SENSOR);
         algaeSensor = new TimeOfFlight(DeviceID.Sensor.ALGAE_SENSOR);
 
-        coralSensor.setRangingMode(RangingMode.Short, 30);
-        algaeSensor.setRangingMode(RangingMode.Short, 30);
+        coralSensor.setRangingMode(RangingMode.Short, 25);
+        algaeSensor.setRangingMode(RangingMode.Short, 25);
     }
 
     @Override
@@ -83,7 +84,15 @@ public class ArmKraken implements ArmIO {
         inputs.algaeDetected = algaeSensor.isRangeValid() && algaeSensor.getRange() < 30;
         inputs.coralDetected = coralSensor.isRangeValid() && coralSensor.getRange() < 30;
 
-        m_anglerMotor.setControl(m_MotionMagic.withPosition(targetRotation));
+        // debug
+        SmartDashboard.putBoolean("coralValid", coralSensor.isRangeValid());
+        SmartDashboard.putBoolean("algae", algaeSensor.isRangeValid());
+        SmartDashboard.putNumber("coralRange", coralSensor.getRange());
+        SmartDashboard.putNumber("algaeRange", algaeSensor.getRange());
+        SmartDashboard.putNumber("absoluteSensor", m_anglerEncoder.get());
+
+        // debug
+        // m_anglerMotor.setControl(m_MotionMagic.withPosition(targetRotation));
     }
 
     @Override
