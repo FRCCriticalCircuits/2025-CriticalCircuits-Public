@@ -1,23 +1,24 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 
-public class setElevator extends Command{
+public class waitElevator extends Command{
     private ElevatorSubsystem elevatorSubsystem;
-    private String finalState;
     
-    public setElevator(String finalState){
+    public waitElevator(){
         elevatorSubsystem = ElevatorSubsystem.getInstance();
+        addRequirements(elevatorSubsystem);
     }
 
     @Override
     public void initialize() {
-        elevatorSubsystem.targetState = finalState;
+        Timer.delay(0.1);
     }
 
     @Override
     public boolean isFinished() {
-        return elevatorSubsystem.curState == finalState;
+        return elevatorSubsystem.curState == elevatorSubsystem.targetState;
     }
 }

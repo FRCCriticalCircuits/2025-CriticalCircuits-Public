@@ -19,23 +19,26 @@ public class AutoAimSetting{
         return this.spot;
     }
 
-    public void setSpot(Spot spot){
+    public AutoAimSetting withSpot(Spot spot){
         this.spot = spot;
+        return this;
     }
 
     public Level getLevel(){
         return this.level;
     }
 
-    public void setLevel(Level level){
+    public AutoAimSetting withLevel(Level level){
         this.level = level;
+        return this;
     }
 
     public Mode getMode(){
         return this.mode;
     }
 
-    public void setMode(Mode mode){
+    public AutoAimSetting withMode(Mode mode){
         this.mode = mode;
+        return this;
     }
 }

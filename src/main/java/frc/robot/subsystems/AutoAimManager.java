@@ -31,7 +31,7 @@ public class AutoAimManager{
 
     private Command command;
 
-    private AutoAimSetting setting;
+    private AutoAimSetting settingTemp;
     private Supplier<Double> LTSupplier, RTSupplier;
 
     private Pose2d targetPose = new Pose2d();
@@ -54,6 +54,11 @@ public class AutoAimManager{
         notifier.startPeriodic(0.05);
     }
     
+    public synchronized static AutoAimManager getInstance(){
+        if(instance == null) throw new NullPointerException("AutoAimManager is not initialized");
+        return instance;
+    }
+
     public synchronized static AutoAimManager getInstance(Supplier<Double> LTSupplier, Supplier<Double> RTSupplier){
         if(instance == null) instance = new AutoAimManager(LTSupplier, RTSupplier);
         return instance;
@@ -117,7 +122,7 @@ public class AutoAimManager{
 
         if(setting.getMode() == Mode.CORAL_INTAKE){
             return cloestCoralStation(currentPos.getTranslation());
-        }else{
+        }else if (setting.getMode() == Mode.CORAL_PLACE){
             Station station = estimateStation(currentPos.getRotation().getDegrees());
             AdvancedPose2D aimPose = DriveStationIO.isBlue() ? FieldConstants.AutoAim.STATION_BLUE.get(station) : FieldConstants.AutoAim.STATION_RED.get(station);
 
@@ -128,6 +133,10 @@ public class AutoAimManager{
             }else{
                 return aimPose.withRobotRelativeTransformation(manualTranslation);
             }
+        }else{
+            Station station = estimateStation(currentPos.getRotation().getDegrees());
+            AdvancedPose2D aimPose = DriveStationIO.isBlue() ? FieldConstants.AutoAim.STATION_BLUE.get(station) : FieldConstants.AutoAim.STATION_RED.get(station);
+            return aimPose.withRobotRelativeTransformation(manualTranslation);
         }
     }
 
@@ -135,10 +144,10 @@ public class AutoAimManager{
      * a perodic funtion (0.05s) updates values from WebSocket, save/send Estimate Target Pose
      */
     private void updateValues() {
-        setting = server.getAutoAimSettings();
+        settingTemp = server.getAutoAimSettings();
 
         targetPose = estimateAimPos(
-            setting,
+            settingTemp,
             new Translation2d
             (
                 FieldConstants.AutoAim.MANUAL_TRANSLATION_RANGE * (LTSupplier.get() - RTSupplier.get()),
@@ -177,11 +186,23 @@ public class AutoAimManager{
     }
 
     public synchronized AutoAimSetting getSetting(){
-        updateValues();
-        return this.setting;
+        return server.getAutoAimSettings();
     }
 
-    public synchronized void updateSetting(AutoAimSetting setting){
-        server.updateSetting(setting);
+    public synchronized void updateSetting(AutoAimSetting desireSetting){
+        this.settingTemp = desireSetting;
+        server.updateSetting(desireSetting);
+    }
+
+    public synchronized void updateSpot(Spot spot){
+        updateSetting(server.getAutoAimSettings().withSpot(spot));
+    }
+
+    public synchronized void updateMode(Mode mode){
+        updateSetting(server.getAutoAimSettings().withMode(mode));
+    }
+
+    public synchronized void updateLevel(Level level){
+        updateSetting(server.getAutoAimSettings().withLevel(level));
     }
 }

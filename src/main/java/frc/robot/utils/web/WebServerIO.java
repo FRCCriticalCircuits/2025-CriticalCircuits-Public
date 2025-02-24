@@ -25,7 +25,7 @@ public class WebServerIO extends WebSocketServer {
 		super(address);
 	}
 
-	public AutoAimSetting getSettings(){
+	public synchronized AutoAimSetting getSettings(){
 		return this.settings;
 	}
 

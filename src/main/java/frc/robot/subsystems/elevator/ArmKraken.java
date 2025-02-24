@@ -22,8 +22,6 @@ public class ArmKraken implements ArmIO {
     private TalonFXConfiguration anglerConfig;
     private DutyCycleEncoder m_anglerEncoder;
 
-    private TimeOfFlight coralSensor, algaeSensor;
-
     private Rotation2d ioRotation;
 
     private final MotionMagicVoltage m_MotionMagic = new MotionMagicVoltage(0).withSlot(0);
@@ -70,12 +68,6 @@ public class ArmKraken implements ArmIO {
         m_anglerMotor.setPosition(m_anglerEncoder.get());
 
         m_MotionMagic.withPosition(m_anglerMotor.getPosition().getValueAsDouble());
-
-        coralSensor = new TimeOfFlight(DeviceID.Sensor.CORAL_SENSOR);
-        algaeSensor = new TimeOfFlight(DeviceID.Sensor.ALGAE_SENSOR);
-
-        coralSensor.setRangingMode(RangingMode.Short, 25);
-        algaeSensor.setRangingMode(RangingMode.Short, 25);
     }
 
     private Rotation2d toTalonRotation(Rotation2d ioRotation){
@@ -91,14 +83,7 @@ public class ArmKraken implements ArmIO {
         inputs.ioRotation = toIORotation(Rotation2d.fromRotations(m_anglerMotor.getPosition().getValueAsDouble()));
         inputs.targetRotation = this.ioRotation;
         
-        inputs.algaeDetected = algaeSensor.isRangeValid() && algaeSensor.getRange() < 30;
-        inputs.coralDetected = coralSensor.isRangeValid() && coralSensor.getRange() < 30;
-
         // debug
-        SmartDashboard.putBoolean("coralValid", coralSensor.isRangeValid());
-        SmartDashboard.putBoolean("algae", algaeSensor.isRangeValid());
-        SmartDashboard.putNumber("coralRange", coralSensor.getRange());
-        SmartDashboard.putNumber("algaeRange", algaeSensor.getRange());
         SmartDashboard.putNumber("absoluteSensor", m_anglerEncoder.get());
         SmartDashboard.putNumber("absoluteSensor(converted)", encoderConversion(m_anglerEncoder.get()));
 

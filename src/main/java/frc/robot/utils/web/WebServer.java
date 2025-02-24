@@ -51,7 +51,7 @@ public class WebServer {
         return wsServer.getSolverResult();
     }
 
-    public AutoAimSetting getAutoAimSettings(){
+    public synchronized AutoAimSetting getAutoAimSettings(){
         return wsServer.getSettings();
     }
 

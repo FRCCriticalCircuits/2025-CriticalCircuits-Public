@@ -25,15 +25,18 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.KeyBinding;
+import frc.robot.commands.intakeCoral;
+import frc.robot.commands.shootCoral;
 import frc.robot.commands.teleopDrive;
+import frc.robot.commands.waitElevator;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.Controller;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
-import frc.robot.utils.structures.AutoAimSetting;
+import frc.robot.utils.structures.DataStrcutures.Level;
 import frc.robot.utils.structures.DataStrcutures.Mode;
-import frc.robot.utils.web.WebServer;
+import frc.robot.utils.structures.DataStrcutures.Spot;
 
 public class RobotContainer {
   private SwerveSubsystem swerveSubsystem = SwerveSubsystem.getInstance();
@@ -47,18 +50,6 @@ public class RobotContainer {
   private AutoAimManager autoAimManager = AutoAimManager.getInstance(
     () -> controller.getDriverLT(),
     () -> controller.getDriverRT()
-  );
-
-  private Command autoaim = new InstantCommand
-  (
-    () -> {
-      new SequentialCommandGroup(
-        new ParallelDeadlineGroup(
-          new WaitCommand(2.5),
-          autoAimManager.getCommand()
-        )
-      ).schedule();
-    }, swerveSubsystem
   );
 
   public RobotContainer() {
@@ -86,36 +77,82 @@ public class RobotContainer {
       "setModeCoral",
       new InstantCommand(
         () -> {
-          AutoAimSetting settings = WebServer.getInstance().getAutoAimSettings();
-          settings.setMode(Mode.CORAL_PLACE);
-          WebServer.getInstance().updateSetting(settings);
+          autoAimManager.updateMode(Mode.CORAL_PLACE);
         }
       )
     );
+
     NamedCommands.registerCommand(
       "setModeIntake",
       new InstantCommand(
         () -> {
-          AutoAimSetting settings = WebServer.getInstance().getAutoAimSettings();
-          settings.setMode(Mode.CORAL_INTAKE);
-          WebServer.getInstance().updateSetting(settings);
+          autoAimManager.updateMode(Mode.CORAL_INTAKE);
         }
       )
+    );
+
+    NamedCommands.registerCommand(
+      "setL3",
+      new InstantCommand(
+        () -> {
+          autoAimManager.updateLevel(Level.L3);
+        }
+      )
+    );
+
+    NamedCommands.registerCommand(
+      "setLeft",
+      new InstantCommand(
+        () -> {
+          autoAimManager.updateSpot(Spot.L);
+        }
+      )
+    );
+
+    NamedCommands.registerCommand(
+      "setRight",
+      new InstantCommand(
+        () -> {
+          autoAimManager.updateSpot(Spot.R);
+        }
+      )
+    );
+
+    NamedCommands.registerCommand(
+      "waitElevator",
+      new waitElevator()
+    );
+
+    NamedCommands.registerCommand(
+      "shootCoral",
+      new shootCoral(1)
+    );
+
+    NamedCommands.registerCommand(
+      "intakeCoral",
+      new intakeCoral(1)
     );
 
     driveController.button(KeyBinding.GYRO_RESET).debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
-          swerveSubsystem.resetGyro(0);
+          swerveSubsystem.resetGyro(-0.5);
         }
       )
     );    
 
-    driveController.a().debounce(0.02).onTrue(
-      autoaim
+    driveController.rightStick().debounce(0.02).onTrue(
+      new InstantCommand(
+        () -> {
+          new ParallelDeadlineGroup(
+            new WaitCommand(2.5),
+            autoAimManager.getCommand()
+          ).schedule();
+        }, swerveSubsystem
+      )
     );
 
-    driveController.x().debounce(0.02).onTrue(
+    driveController.leftStick().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
           autoAimManager.cancle();

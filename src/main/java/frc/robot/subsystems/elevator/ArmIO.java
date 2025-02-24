@@ -6,9 +6,6 @@ public interface ArmIO {
     public static class ArmIOInputs {
         public Rotation2d ioRotation;
         public Rotation2d targetRotation;
-        
-        public boolean coralDetected;
-        public boolean algaeDetected;
     }
 
     public default void updateInputs(ArmIOInputs inputs) {}
