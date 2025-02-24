@@ -87,7 +87,9 @@ public class RollerKraken implements RollerIO {
                 break;
             default:
                 if(hatcherEnabled) m_hatcherMotor.setVoltage(-0.2);
+                else m_hatcherMotor.stopMotor();
                 if(intakeEnabled) m_intakeMotor.setVoltage(-0.2);
+                else m_intakeMotor.stopMotor();
         }
     }
 

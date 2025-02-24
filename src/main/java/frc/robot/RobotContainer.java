@@ -26,11 +26,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.KeyBinding;
 import frc.robot.commands.intakeCoral;
-import frc.robot.commands.shootCoral;
+import frc.robot.commands.shoot;
 import frc.robot.commands.teleopDrive;
 import frc.robot.commands.waitElevator;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.Controller;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
@@ -42,6 +43,9 @@ public class RobotContainer {
   private SwerveSubsystem swerveSubsystem = SwerveSubsystem.getInstance();
   private VisionSubsystem visionSubsystem = new VisionSubsystem();
 
+  @SuppressWarnings("unused")
+  private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
+
   private SendableChooser<String> autoChooser = new SendableChooser<>();
 
   private Controller controller = Controller.getInstance();
@@ -51,6 +55,8 @@ public class RobotContainer {
     () -> controller.getDriverLT(),
     () -> controller.getDriverRT()
   );
+
+  private int mode = 1;
 
   public RobotContainer() {
     visionSubsystem.start();
@@ -73,6 +79,146 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    /*
+     * Gyro Reset
+     */
+    driveController.button(KeyBinding.GYRO_RESET).debounce(0.02).onTrue(
+      new InstantCommand(
+        () -> {
+          swerveSubsystem.resetGyro(-0.5);
+        }
+      )
+    ); 
+
+    /*
+     * AutoAim
+     */   
+    driveController.rightStick().debounce(0.02).onTrue(
+      new InstantCommand(
+        () -> {
+          new ParallelDeadlineGroup(
+            new WaitCommand(2.5),
+            autoAimManager.getCommand()
+          ).schedule();
+        }, swerveSubsystem
+      )
+    );
+
+    driveController.leftStick().debounce(0.02).onTrue(
+      new InstantCommand(
+        () -> {
+          autoAimManager.cancle();
+          teleopDrive.manualEnable = true;
+        }, swerveSubsystem
+      )
+    );
+
+    /*
+     * AutoAim Settings
+     */
+    driveController.a().debounce(0.02).onTrue(
+      new InstantCommand(
+        () -> {
+          autoAimManager.updateLevel(Level.L1);
+          autoAimManager.updateSpot(Spot.MID);
+        }
+      )
+    );
+
+    driveController.b().debounce(0.02).onTrue(
+      new InstantCommand(
+        () -> {
+          autoAimManager.updateLevel(Level.L2);
+        }
+      )
+    );
+
+    driveController.x().debounce(0.02).onTrue(
+      new InstantCommand(
+        () -> {
+          autoAimManager.updateLevel(Level.L3);
+        }
+      )
+    );
+
+    driveController.y().debounce(0.02).onTrue(
+      new InstantCommand(
+        () -> {
+          autoAimManager.updateLevel(Level.L4);
+        }
+      )
+    );
+
+    driveController.povLeft().debounce(0.02).onTrue(
+      new InstantCommand(
+        () -> {
+          autoAimManager.updateSpot(Spot.L);    
+        }
+      )
+    );
+
+    driveController.povRight().debounce(0.02).onTrue(
+      new InstantCommand(
+        () -> {
+          autoAimManager.updateSpot(Spot.R);    
+        }
+      )
+    );
+
+    driveController.leftBumper().debounce(0.02).onTrue(
+      new InstantCommand(
+        () -> {
+          mode--;
+          if(mode < 0) mode = 2;
+          autoAimManager.updateMode(Mode.valueOf(mode));
+        }
+      )
+    );
+
+    driveController.rightBumper().debounce(0.02).onTrue(
+      new InstantCommand(
+        () -> {
+          mode++;
+          if(mode > 2) mode = 0;
+          autoAimManager.updateMode(Mode.valueOf(mode));
+        }
+      )
+    );
+
+    driveController.povUp().debounce(0.02).onTrue(
+      new intakeCoral(15)
+    );
+
+    driveController.povDown().debounce(0.02).onTrue(
+      new shoot(0.7)
+    );
+  }
+
+  public Command getAutonomousCommand() {
+    return new SequentialCommandGroup(
+      new InstantCommand(
+        () -> {
+          Optional<Pose2d> initialPose;
+          try {
+            initialPose = PathPlannerAuto.getPathGroupFromAutoFile(autoChooser.getSelected()).get(0).getStartingHolonomicPose();
+          } catch (IOException | ParseException e) {
+            throw new RuntimeException("[Pathplanner] No auto file found");
+          }
+
+          if(initialPose.isEmpty()) {
+            throw new RuntimeException("[Pathplanner] No starting pose found in auto file");
+          }else{
+            swerveSubsystem.resetPoseEstimate(
+              initialPose.get()
+            );
+          }
+        }, swerveSubsystem
+      ),
+      AutoBuilder.buildAuto(autoChooser.getSelected())
+    );
+  }
+
+  public void registerCommands(){
     NamedCommands.registerCommand(
       "setModeCoral",
       new InstantCommand(
@@ -124,65 +270,13 @@ public class RobotContainer {
     );
 
     NamedCommands.registerCommand(
-      "shootCoral",
-      new shootCoral(1)
+      "outTake",
+      new shoot(1)
     );
 
     NamedCommands.registerCommand(
       "intakeCoral",
       new intakeCoral(1)
-    );
-
-    driveController.button(KeyBinding.GYRO_RESET).debounce(0.02).onTrue(
-      new InstantCommand(
-        () -> {
-          swerveSubsystem.resetGyro(-0.5);
-        }
-      )
-    );    
-
-    driveController.rightStick().debounce(0.02).onTrue(
-      new InstantCommand(
-        () -> {
-          new ParallelDeadlineGroup(
-            new WaitCommand(2.5),
-            autoAimManager.getCommand()
-          ).schedule();
-        }, swerveSubsystem
-      )
-    );
-
-    driveController.leftStick().debounce(0.02).onTrue(
-      new InstantCommand(
-        () -> {
-          autoAimManager.cancle();
-          teleopDrive.manualEnable = true;
-        }, swerveSubsystem
-      )
-    );
-  }
-
-  public Command getAutonomousCommand() {
-    return new SequentialCommandGroup(
-      new InstantCommand(
-        () -> {
-          Optional<Pose2d> initialPose;
-          try {
-            initialPose = PathPlannerAuto.getPathGroupFromAutoFile(autoChooser.getSelected()).get(0).getStartingHolonomicPose();
-          } catch (IOException | ParseException e) {
-            throw new RuntimeException("[Pathplanner] No auto file found");
-          }
-
-          if(initialPose.isEmpty()) {
-            throw new RuntimeException("[Pathplanner] No starting pose found in auto file");
-          }else{
-            swerveSubsystem.resetPoseEstimate(
-              initialPose.get()
-            );
-          }
-        }, swerveSubsystem
-      ),
-      AutoBuilder.buildAuto(autoChooser.getSelected())
     );
   }
 

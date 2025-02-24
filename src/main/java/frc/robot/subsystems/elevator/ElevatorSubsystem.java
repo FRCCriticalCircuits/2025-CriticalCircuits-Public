@@ -122,6 +122,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // debug
         SmartDashboard.putString("targetState", nextState.getFirst() + "(arm, elev): " + nextState.getSecond().getFirst() + ", " + nextState.getSecond().getSecond());
+        SmartDashboard.putString("curState", curState + "(arm, elev): " + armInputs.ioRotation + ", " + elevatorInputs.position);
+        
         SmartDashboard.putBoolean("atGoal", atGoal);
 
         if(atGoal) curState = nextState.getFirst();
