@@ -20,7 +20,7 @@ public class ArmKraken implements ArmIO {
     private TalonFXConfiguration anglerConfig;
     private DutyCycleEncoder m_anglerEncoder;
 
-    private Rotation2d ioRotation;
+    private Rotation2d targetIORotation = Rotation2d.fromDegrees(-83.8);
 
     private final MotionMagicVoltage m_MotionMagic = new MotionMagicVoltage(0).withSlot(0);
 
@@ -63,7 +63,7 @@ public class ArmKraken implements ArmIO {
         m_anglerEncoder.setDutyCycleRange(0.0010, 0.9990); // 1μs & 1024μs out of 1025μs
         m_anglerEncoder.setInverted(false);
 
-        m_anglerMotor.setPosition(m_anglerEncoder.get());
+        m_anglerMotor.setPosition(encoderConversion(m_anglerEncoder.get()));
 
         m_MotionMagic.withPosition(m_anglerMotor.getPosition().getValueAsDouble());
     }
@@ -79,7 +79,7 @@ public class ArmKraken implements ArmIO {
     @Override
     public void updateInputs(ArmIOInputs inputs) {
         inputs.ioRotation = toIORotation(Rotation2d.fromRotations(m_anglerMotor.getPosition().getValueAsDouble()));
-        inputs.targetRotation = this.ioRotation;
+        inputs.targetRotation = this.targetIORotation;
         
         // debug
         SmartDashboard.putNumber("absoluteSensor", m_anglerEncoder.get());
@@ -90,17 +90,17 @@ public class ArmKraken implements ArmIO {
     }
 
     /**
-     * Converts encoder rotation from [0, 1] to (-0.5, 0.5]
-     * @apiNote arm should be CCW positive
+     * Converts encoder rotation from [0, 1] to [-0.5, 0.5)
+     * @apiNote arm should be CCW positive from left-view
      * @param rotation encoder rotation
      * @return converted encoder rotation
      */
     private double encoderConversion(double rotation){
-        return (rotation > 0.5) ? rotation : rotation;
+        return (rotation > 0.5) ? 1.0 - rotation : -rotation;
     }
 
     @Override
     public void setRotation(Rotation2d ioRotation) {
-        this.ioRotation = ioRotation;
+        this.targetIORotation = ioRotation;
     }
 }

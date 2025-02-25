@@ -2,6 +2,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
+import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
 import frc.robot.subsystems.elevator.RollerSubsystem;
 
 public class intakeCoral extends Command{
@@ -22,6 +24,13 @@ public class intakeCoral extends Command{
     @Override
     public void end(boolean interrupted) {
         rollerSubsystem.idle();
+        
+        if(Robot.isSimulation()){
+            RollerIOInputs newInputs = new RollerIOInputs();
+            newInputs.algaeDetected = false;
+            newInputs.coralDetected = true;
+            rollerSubsystem.overrideSimStates(newInputs);
+        }
     }
 
     @Override

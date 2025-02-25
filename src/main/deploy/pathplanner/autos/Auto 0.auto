@@ -13,7 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "setL2"
+            "name": "setL1"
           }
         },
         {
@@ -30,6 +30,12 @@
                 "type": "named",
                 "data": {
                   "name": "waitElevator"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeCoral"
                 }
               }
             ]
@@ -81,7 +87,7 @@
         {
           "type": "named",
           "data": {
-            "name": "setL3"
+            "name": "setL4"
           }
         },
         {
@@ -153,7 +159,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "0 - Path 3"
+                  "pathName": "0 - Path 5"
                 }
               },
               {

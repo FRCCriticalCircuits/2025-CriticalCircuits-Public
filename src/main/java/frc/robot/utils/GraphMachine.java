@@ -33,7 +33,7 @@ public class GraphMachine {
 
     public Pair<String, Pair<Double, Double>> findPath(String originNode, String targetNode) {
         if (!nodes.containsKey(originNode) || !nodes.containsKey(targetNode)) {
-            throw new IllegalArgumentException("Node does not exist");
+            throw new IllegalArgumentException("Node does not exist: " + originNode + "," + targetNode);
         }
 
         Map<String, String> predecessors = new HashMap<>();

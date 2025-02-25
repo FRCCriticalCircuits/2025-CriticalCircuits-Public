@@ -189,6 +189,7 @@ public class Constants {
 
         public class Elevator{
             public static double ELEVATOR_GEAR_RATIO = 15.0;
+            public static double GEAR_CIRCUMFERENCE_METERS = 0.725 / 5.1355; // 0.14117418
 
             public class CurrentLimits{
                 public static int ELEVATOR_CURRENT_LIMIT = 20;
@@ -198,7 +199,7 @@ public class Constants {
         }
 
         public class Arm{
-            public static Rotation2d OFFSET_CENTER_GRAVITY = Rotation2d.fromDegrees(-0.05);
+            public static Rotation2d OFFSET_CENTER_GRAVITY = Rotation2d.fromDegrees(5);
             public static double ENCODER_ZERO_OFFSET = 0.0;
         }
     }
@@ -217,8 +218,9 @@ public class Constants {
         public class AutoAim{
             public static double REEF_CENTER_TO_ROBOT = 1.45;
             public static double CORAL_STATION_TO_ROBOT = Units.inchesToMeters(27) / 2;
-            public static double AUTO_TRANSLATION_OFFSET_X = 0.2; // Shift for L/R coral
-            public static double MANUAL_TRANSLATION_RANGE = 0.4; // Plus Minus .4m 
+            public static double AUTO_TRANSLATION = 0.16; // Shift for L/R coral
+            public static double AUTO_TRANSLATION_OFFSET = 0.04; // Offset for L/R coral
+            public static double MANUAL_TRANSLATION_RANGE = 0.2; // Plus Minus .4m 
 
             public static HashMap<Station, AdvancedPose2D> STATION_BLUE = new HashMap<Station, AdvancedPose2D>(){{
                 put(Station.A, REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(0), new Translation2d(-REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(0)));

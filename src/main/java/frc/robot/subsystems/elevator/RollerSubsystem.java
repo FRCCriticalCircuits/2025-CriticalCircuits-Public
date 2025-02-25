@@ -1,6 +1,7 @@
 package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
 import frc.robot.subsystems.elevator.RollerIO.RollerMode;
 
@@ -8,10 +9,14 @@ public class RollerSubsystem extends SubsystemBase{
     private static RollerSubsystem instance;
 
     private RollerIO rollerIO;
-    private RollerIOInputs inputs;
+    private RollerIOInputs inputs = new RollerIOInputs();
 
     public RollerSubsystem(){
-        this.rollerIO = new RollerKraken();
+        if(Robot.isReal()){
+            this.rollerIO = new RollerKraken();
+        }else{
+            this.rollerIO = new RollerSim();
+        }
     }
 
     public static RollerSubsystem getInstance() {
@@ -19,6 +24,11 @@ public class RollerSubsystem extends SubsystemBase{
             instance = new RollerSubsystem();
         }
         return instance;
+    }
+
+    public void overrideSimStates(RollerIOInputs desireInputs){
+        inputs = desireInputs;
+        rollerIO.overrideStates(desireInputs);
     }
 
     public Boolean algaeDetected(){

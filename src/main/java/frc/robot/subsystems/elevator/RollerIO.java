@@ -2,8 +2,8 @@ package frc.robot.subsystems.elevator;
 
 public interface RollerIO {
     public static class RollerIOInputs {
-        public boolean coralDetected;
-        public boolean algaeDetected;
+        public boolean coralDetected = false; 
+        public boolean algaeDetected = false;
     }
 
     public enum RollerMode{
@@ -12,9 +12,9 @@ public interface RollerIO {
     }
 
     public default void updateInputs(RollerIOInputs inputs) {}
+    public default void overrideStates(RollerIOInputs inputs) {};
 
-    public void setHatcher(Boolean enable);
-    public void setIntake(Boolean enable);
-
-    public void setMode(RollerMode mode);
+    public default void setHatcher(Boolean enable) {};
+    public default void setIntake(Boolean enable) {};
+    public default void setMode(RollerMode mode) {};
 }

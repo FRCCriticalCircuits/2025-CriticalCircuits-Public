@@ -32,6 +32,7 @@ import frc.robot.commands.waitElevator;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.Controller;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
+import frc.robot.subsystems.elevator.RollerSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
@@ -45,6 +46,8 @@ public class RobotContainer {
 
   @SuppressWarnings("unused")
   private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
+  @SuppressWarnings("unused")
+  private RollerSubsystem rollerSubsystem = new RollerSubsystem();
 
   private SendableChooser<String> autoChooser = new SendableChooser<>();
 
@@ -186,7 +189,7 @@ public class RobotContainer {
     );
 
     driveController.povUp().debounce(0.02).onTrue(
-      new intakeCoral(15)
+      new intakeCoral(1.5)
     );
 
     driveController.povDown().debounce(0.02).onTrue(
@@ -195,6 +198,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    registerCommands();
+    
     return new SequentialCommandGroup(
       new InstantCommand(
         () -> {
@@ -238,10 +243,19 @@ public class RobotContainer {
     );
 
     NamedCommands.registerCommand(
-      "setL3",
+      "setL1",
       new InstantCommand(
         () -> {
-          autoAimManager.updateLevel(Level.L3);
+          autoAimManager.updateLevel(Level.L1);
+        }
+      )
+    );
+
+    NamedCommands.registerCommand(
+      "setL4",
+      new InstantCommand(
+        () -> {
+          autoAimManager.updateLevel(Level.L4);
         }
       )
     );
@@ -271,12 +285,12 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
       "outTake",
-      new shoot(1)
+      new shoot(0.7)
     );
 
     NamedCommands.registerCommand(
       "intakeCoral",
-      new intakeCoral(1)
+      new intakeCoral(1.4)
     );
   }
 

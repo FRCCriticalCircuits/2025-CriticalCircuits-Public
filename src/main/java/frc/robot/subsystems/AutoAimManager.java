@@ -7,10 +7,10 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
@@ -37,7 +37,8 @@ public class AutoAimManager{
     private Pose2d targetPose = new Pose2d();
     private double[] BOUNDARIES = {-180.0, -150.0, -90.0, -30.0, 30.0, 90.0, 150.0, 180.0}; 
     private Station[] STATIONS = {Station.D, Station.E, Station.F, Station.A, Station.B, Station.C, Station.D};
-    private Field2d field2d = new Field2d();
+
+    private StructPublisher<Pose2d> autoAimPositionPublisher;
     
     private PathConstraints constraints = new PathConstraints(
         1.3,
@@ -52,6 +53,8 @@ public class AutoAimManager{
 
         notifier.setName("Autoaim Thread");
         notifier.startPeriodic(0.05);
+
+        autoAimPositionPublisher = NetworkTableInstance.getDefault().getStructTopic("/AutoAim/estimatedPosition", Pose2d.struct).publish();
     }
     
     public synchronized static AutoAimManager getInstance(){
@@ -127,9 +130,9 @@ public class AutoAimManager{
             AdvancedPose2D aimPose = DriveStationIO.isBlue() ? FieldConstants.AutoAim.STATION_BLUE.get(station) : FieldConstants.AutoAim.STATION_RED.get(station);
 
             if(setting.getSpot() == Spot.L){
-                return aimPose.withRobotRelativeTransformation(new Translation2d(-FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET_X, 0));
+                return aimPose.withRobotRelativeTransformation(new Translation2d(-FieldConstants.AutoAim.AUTO_TRANSLATION + FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET, 0));
             }else if(setting.getSpot() == Spot.R){
-                return aimPose.withRobotRelativeTransformation(new Translation2d(FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET_X, 0));
+                return aimPose.withRobotRelativeTransformation(new Translation2d(FieldConstants.AutoAim.AUTO_TRANSLATION + FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET, 0));
             }else{
                 return aimPose.withRobotRelativeTransformation(manualTranslation);
             }
@@ -155,9 +158,7 @@ public class AutoAimManager{
             )
         );
         
-        field2d.setRobotPose(targetPose);
-
-        SmartDashboard.putData("Swerve AutoAim", field2d);
+        autoAimPositionPublisher.set(targetPose);
     }
 
     /**
@@ -168,21 +169,21 @@ public class AutoAimManager{
         updateValues();
 
         // Since AutoBuilder is configured, we can use it to build pathfinding commands
-        command = AutoBuilder.pathfindToPose(
+        this.command = AutoBuilder.pathfindToPose(
             targetPose,
             constraints,
             0.0 // Goal end velocity in meters/sec
         );
 
-        return command;
+        return this.command;
     }
 
     public synchronized boolean isFinished(){
-        return command.isFinished();
+        return this.command.isFinished();
     }
 
     public synchronized void cancle(){
-        command.cancel();
+        this.command.cancel();
     }
 
     public synchronized AutoAimSetting getSetting(){

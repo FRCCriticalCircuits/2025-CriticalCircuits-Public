@@ -4,8 +4,13 @@
 
 package frc.robot;
 
+import org.ironmaple.simulation.SimulatedArena;
+
 import com.ctre.phoenix6.SignalLogger;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -15,8 +20,14 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
+  // Game Pieces Publisher
+  StructArrayPublisher<Pose3d> coralPublisher, algaePublisher;
+
   public Robot() {
     m_robotContainer = new RobotContainer();
+
+    coralPublisher = NetworkTableInstance.getDefault().getStructArrayTopic("/simulationGamePieces/coral", Pose3d.struct).publish();
+    algaePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("/simulationGamePieces/coral", Pose3d.struct).publish();
   }
 
   @Override
@@ -84,5 +95,8 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {
       m_robotContainer.updateSimulation();
+
+      algaePublisher.set(SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+      coralPublisher.set(SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
   }
 }

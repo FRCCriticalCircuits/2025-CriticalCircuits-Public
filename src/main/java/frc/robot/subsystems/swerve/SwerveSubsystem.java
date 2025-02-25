@@ -24,9 +24,9 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -64,11 +64,11 @@ public class SwerveSubsystem extends SubsystemBase{
     private SwerveDrivePoseEstimator poseEstimator;
 
     // telemetry
-    private Field2d estimateField = new Field2d(), visionEst = new Field2d();
     private StructArrayPublisher<SwerveModuleState> currentSwerveStatePublisher;
     private StructArrayPublisher<SwerveModuleState> desireSwerveStatePublisher;
+    private StructPublisher<Pose2d> estimateFieldPublisher, visionEstimatePublisher; 
 
-    private static SwerveDriveSimulation driveSimulation;
+    public static SwerveDriveSimulation driveSimulation;
 
     public static final Lock odometryLock = new ReentrantLock();
 
@@ -142,6 +142,8 @@ public class SwerveSubsystem extends SubsystemBase{
         // Telemetry
         currentSwerveStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("/SwerveStates/CurrentState", SwerveModuleState.struct).publish();
         desireSwerveStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("/SwerveStates/DesiredState", SwerveModuleState.struct).publish();
+        estimateFieldPublisher = NetworkTableInstance.getDefault().getStructTopic("/PoseEstimate/estimatedField", Pose2d.struct).publish();
+        visionEstimatePublisher = NetworkTableInstance.getDefault().getStructTopic("/PoseEstimate/visionField", Pose2d.struct).publish();
     }
 
     public synchronized static SwerveSubsystem getInstance(){
@@ -264,7 +266,7 @@ public class SwerveSubsystem extends SubsystemBase{
      */
     public synchronized void updatePoseEstimator(Pose2d visionEstimatedPose, double timeStampSeconds, Matrix<N3, N1> stdDevs) {
         poseEstimator.addVisionMeasurement(visionEstimatedPose, timeStampSeconds, stdDevs);
-        visionEst.setRobotPose(visionEstimatedPose);
+        visionEstimatePublisher.set(visionEstimatedPose);
     }
 
     /**
@@ -298,12 +300,9 @@ public class SwerveSubsystem extends SubsystemBase{
         updatePoseEstimator();
 
         // Telemetry
-        estimateField.setRobotPose(getPoseEstimate());
+        estimateFieldPublisher.set(getPoseEstimate());
 
         SmartDashboard.putNumber("Gyro", rawGyroRotation.getRadians());
         currentSwerveStatePublisher.set(getSwerveModuleStates());
-
-        SmartDashboard.putData("Estimate Field", estimateField);
-        SmartDashboard.putData("Vision Estimate Field", visionEst);
     }
 }

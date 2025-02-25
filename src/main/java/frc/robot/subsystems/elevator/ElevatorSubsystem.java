@@ -2,62 +2,105 @@ package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.robot.Robot;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.elevator.ArmIO.ArmIOInputs;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
-import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
 import frc.robot.utils.GraphMachine;
 import frc.robot.utils.structures.AutoAimSetting;
+import frc.robot.Constants.PhysicalConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
     private static ElevatorSubsystem instance;
 
-    private ElevatorIO elevatorIO = new ElevatorKraken();
+    private ElevatorIO elevatorIO;
     private final ElevatorIOInputs elevatorInputs = new ElevatorIOInputs();
 
-    private ArmIO armIO = new ArmKraken();
+    private ArmIO armIO;
     private final ArmIOInputs armInputs = new ArmIOInputs();
-
-    private RollerIO rollerIO = new RollerKraken();
-    private final RollerIOInputs rollerInputs = new RollerIOInputs();
 
     public String curState = "preMatch", targetState = "preMatch";
 
-    Debouncer armAtGoal = new Debouncer(0.2);
-    Debouncer elevatorAtGoal = new Debouncer(0.2);
-
-    boolean atGoal;
+    private Debouncer armAtGoal = new Debouncer(0.2);
+    private Debouncer elevatorAtGoal = new Debouncer(0.2);
+ 
+    private boolean atGoal;
 
     GraphMachine graphMachine = new GraphMachine();
     Pair<String, Pair<Double, Double>> nextState;
+
+    private StructPublisher<Pose3d> wristPose;
+    private Pose3d wristPose3d = new Pose3d();
     
     public ElevatorSubsystem() {
+        if(Robot.isSimulation()){
+            elevatorIO = new ElevatorSim();
+            armIO = new ArmSim();
+        }else{
+            elevatorIO = new ElevatorKraken();
+            armIO = new ArmKraken();
+        }
+
         // State Nodes
-        graphMachine.addNode("preMatch", new Pair<Double, Double>(Units.degreesToRotations(20), 0.0));
-        graphMachine.addNode("L1coral", new Pair<Double, Double>(Units.degreesToRotations(10), 1.0));
-        graphMachine.addNode("L4coral", new Pair<Double, Double>(Units.degreesToRotations(10), 5.0));
+        graphMachine.addNode("preMatch", new Pair<Double, Double>(Units.degreesToRotations(83.8), 0.0));    // 83.8 deg,    0 cm
+        graphMachine.addNode("L1coral", new Pair<Double, Double>(Units.degreesToRotations(40), 0.15));      // 40.0 deg,    2 cm
+        graphMachine.addNode("L4coral", new Pair<Double, Double>(Units.degreesToRotations(83), 5.0));       // 80.0 deg,    70.5cm
+        graphMachine.addNode("coralIntake", new Pair<Double, Double>(Units.degreesToRotations(30), 3.55));  // 30.0 deg,    50.5cm
 
         // Transition Nodes
-        graphMachine.addNode("tn-1", new Pair<Double, Double>(Units.degreesToRotations(10), 0.0));
-        graphMachine.addNode("tn-2", new Pair<Double, Double>(0.0, 0.0));
-        graphMachine.addNode("tn-3", new Pair<Double, Double>(0.0, 5.0));
+        graphMachine.addNode("tn-1", new Pair<Double, Double>(Units.degreesToRotations(0), 0.0));    // 00.0 deg,    0 cm
+        graphMachine.addNode("tn-2", new Pair<Double, Double>(Units.degreesToRotations(0), 5.0));    // 00.0 deg,    70.5 cm
+        graphMachine.addNode("tn-3", new Pair<Double, Double>(Units.degreesToRotations(0), 3.55));   // 00.0 deg,    50.5cm
+
 
         // Edges
-        graphMachine.addEdge("preMatch", "tn-1");
-        graphMachine.addEdge("preMatch", "tn-2");
+        graphMachine.addEdge("tn-1", "preMatch");
         graphMachine.addEdge("tn-1", "L1coral");
+        graphMachine.addEdge("L1coral", "preMatch");
         graphMachine.addEdge("tn-1", "tn-2");
+        graphMachine.addEdge("tn-2", "L4coral");
+        graphMachine.addEdge("coralIntake", "tn-3");
+        graphMachine.addEdge("tn-1", "tn-3");
         graphMachine.addEdge("tn-2", "tn-3");
-        graphMachine.addEdge("tn-3", "L4coral");
+
+        wristPose = NetworkTableInstance.getDefault().getStructTopic("/Arm/wristRelativePos", Pose3d.struct).publish();
     }
 
     public static ElevatorSubsystem getInstance(){
         if(instance == null) instance = new ElevatorSubsystem();
         return instance;
+    }
+
+    public void visualize(){
+         wristPose.set(
+            this.wristPose3d
+        );
+    }
+
+    private void updateRollerTranslation(double elevatorRotation, Rotation2d armRotation2d){
+        this.wristPose3d = new Pose3d(
+                0.2383,
+                0,
+                0.4704 + (elevatorRotation * PhysicalConstants.Elevator.GEAR_CIRCUMFERENCE_METERS),
+                new Rotation3d(
+                    0,
+                    -armRotation2d.getRadians(),
+                    0
+                )
+        );
+    }
+
+    public Pose3d getRollerTransltaion(){
+        return this.wristPose3d;
     }
 
     @Override
@@ -103,7 +146,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         elevatorIO.updateInputs(elevatorInputs);
         armIO.updateInputs(armInputs);
-        rollerIO.updateInputs(rollerInputs);
 
         // false if osilating
         atGoal =    elevatorAtGoal.calculate(Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) < 0.02) &&
@@ -117,13 +159,16 @@ public class ElevatorSubsystem extends SubsystemBase {
                       : atGoal;
 
         nextState = graphMachine.findPath(curState, targetState);
+        
         armIO.setRotation(Rotation2d.fromRotations(nextState.getSecond().getFirst()));
         elevatorIO.setPosition(nextState.getSecond().getSecond());
+
+        updateRollerTranslation(elevatorInputs.position, armInputs.ioRotation);
+        visualize();
 
         // debug
         SmartDashboard.putString("targetState", nextState.getFirst() + "(arm, elev): " + nextState.getSecond().getFirst() + ", " + nextState.getSecond().getSecond());
         SmartDashboard.putString("curState", curState + "(arm, elev): " + armInputs.ioRotation + ", " + elevatorInputs.position);
-        
         SmartDashboard.putBoolean("atGoal", atGoal);
 
         if(atGoal) curState = nextState.getFirst();
