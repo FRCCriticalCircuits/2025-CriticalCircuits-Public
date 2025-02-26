@@ -219,7 +219,7 @@ public class Constants {
             public static double REEF_CENTER_TO_ROBOT = 1.45;
             public static double CORAL_STATION_TO_ROBOT = Units.inchesToMeters(27) / 2;
             public static double AUTO_TRANSLATION = 0.16; // Shift for L/R coral
-            public static double AUTO_TRANSLATION_OFFSET = 0.04; // Offset for L/R coral
+            public static double AUTO_TRANSLATION_OFFSET = 0; // Offset for L/R coral
             public static double MANUAL_TRANSLATION_RANGE = 0.2; // Plus Minus .4m 
 
             public static HashMap<Station, AdvancedPose2D> STATION_BLUE = new HashMap<Station, AdvancedPose2D>(){{

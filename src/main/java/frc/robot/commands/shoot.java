@@ -46,7 +46,7 @@ public class shoot extends Command{
                         SwerveSubsystem.driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
                         SwerveSubsystem.driveSimulation.getSimulatedDriveTrainPose().getRotation(),
                         wristTranslation.getMeasureZ(),
-                        MetersPerSecond.of(4.75),
+                        MetersPerSecond.of(2.5),
                         wristTranslation.getRotation().getMeasureY().times(-1)
                     ).enableBecomesGamePieceOnFieldAfterTouchGround()
                 );
