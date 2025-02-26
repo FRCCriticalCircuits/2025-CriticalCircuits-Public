@@ -51,9 +51,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
 
         // State Nodes
-        graphMachine.addNode("preMatch", new Pair<Double, Double>(Units.degreesToRotations(83.8), 0.0));    // 83.8 deg,    0 cm
+        graphMachine.addNode("preMatch", new Pair<Double, Double>(Units.degreesToRotations(56), 0.0));      // 56.0 deg,    0 cm
         graphMachine.addNode("L1coral", new Pair<Double, Double>(Units.degreesToRotations(40), 0.15));      // 40.0 deg,    2 cm
-        graphMachine.addNode("L4coral", new Pair<Double, Double>(Units.degreesToRotations(83), 5.0));       // 80.0 deg,    70.5cm
+        graphMachine.addNode("L4coral", new Pair<Double, Double>(Units.degreesToRotations(56), 5.0));       // 56.0 deg,    70.5cm
         graphMachine.addNode("coralIntake", new Pair<Double, Double>(Units.degreesToRotations(30), 3.55));  // 30.0 deg,    50.5cm
 
         // Transition Nodes
@@ -149,12 +149,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // false if osilating
         atGoal =    elevatorAtGoal.calculate(Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) < 0.1) &&
-                    armAtGoal.calculate(Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) < 0.02);
+                    armAtGoal.calculate(Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) < 0.03);
         
         // false if error is too big
         atGoal =    (
                         (Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) > 0.1) ||
-                        (Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) > 0.02)
+                        (Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) > 0.03)
                     ) ? false 
                       : atGoal;
 

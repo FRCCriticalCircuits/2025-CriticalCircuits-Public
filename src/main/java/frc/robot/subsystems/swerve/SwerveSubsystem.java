@@ -300,7 +300,7 @@ public class SwerveSubsystem extends SubsystemBase{
         updatePoseEstimator();
 
         // Telemetry
-        estimateFieldPublisher.set(getPoseEstimate());
+        estimateFieldPublisher.set(getPoseEstimate()); 
 
         SmartDashboard.putNumber("Gyro", rawGyroRotation.getRadians());
         currentSwerveStatePublisher.set(getSwerveModuleStates());

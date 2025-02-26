@@ -21,8 +21,8 @@ public class RollerKraken implements RollerIO {
     private TimeOfFlight coralSensor, algaeSensor;
     private Boolean hatcherEnabled = false, intakeEnabled = false;
     
-    private Debouncer coralDebouncer = new Debouncer(0.1);
-    private Debouncer algaeDebouncer = new Debouncer(0.1);
+    private Debouncer coralDebouncer = new Debouncer(0.06);
+    private Debouncer algaeDebouncer = new Debouncer(0.06);
 
     private RollerMode mode = RollerMode.IN;
 
@@ -46,7 +46,7 @@ public class RollerKraken implements RollerIO {
 
         // intake
         rollerConfiguration.Feedback.SensorToMechanismRatio = 2.0;
-        rollerConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        rollerConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         m_intakeMotor.getConfigurator().apply(rollerConfiguration);
 
         coralSensor = new TimeOfFlight(DeviceID.Sensor.CORAL_SENSOR);
@@ -58,8 +58,15 @@ public class RollerKraken implements RollerIO {
 
     @Override
     public void updateInputs(RollerIOInputs inputs) {
-        if(algaeSensor.isRangeValid()) inputs.algaeDetected = algaeDebouncer.calculate(algaeSensor.getRange() < 50);
-        if(coralSensor.isRangeValid()) inputs.coralDetected = coralDebouncer.calculate(coralSensor.getRange() < 50);
+        inputs.algaeDetected = algaeDebouncer.calculate(
+            algaeSensor.isRangeValid() &&
+            algaeSensor.getRange() < 80
+        );
+        
+        inputs.coralDetected = coralDebouncer.calculate(
+            coralSensor.isRangeValid() &&
+            coralSensor.getRange() < 50
+        );
 
         SmartDashboard.putBoolean("algae", inputs.algaeDetected);
         SmartDashboard.putBoolean("coral", inputs.coralDetected);

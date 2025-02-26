@@ -1,11 +1,1 @@
-ArmKraken.java:
-Line 63/33: m_anglerEncoder: whats zeroPosition? / need invert?
-Line 83: range for algae
-
-ElevatorSubsystem.java:
-Try find Proper value for:
-    Debouncer armAtGoal = new Debouncer(0.2);
-    Debouncer elevatorAtGoal = new Debouncer(0.2);     
-    Debouncer coralDebouncer = new Debouncer(0.1);
-    Debouncer algaeDebouncer = new Debouncer(0.1);
-as well as max error tolorance
+4. LimeLight Pose Estimation

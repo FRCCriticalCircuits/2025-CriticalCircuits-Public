@@ -64,7 +64,7 @@ public class Constants {
         public class Sensor{
             public static final int CORAL_SENSOR = 23;
             public static final int ALGAE_SENSOR = 24;
-            public static final int ANGLER_ENCODER = 4;
+            public static final int ANGLER_ENCODER = 0;
         }
 
         public static final int CLIMBER_ID = 29;
@@ -112,13 +112,13 @@ public class Constants {
         }
 
         public class Arm{
-            public static double ARM_PID_P = 50.0;
+            public static double ARM_PID_P = 20.0;
             public static double ARM_PID_I = 0;
-            public static double ARM_PID_D = 2.0;
+            public static double ARM_PID_D = 0.0;
 
-            public static double ARM_FEED_FORWARD_KS = 0.16;
-            public static double ARM_FEED_FORWARD_KV = 1.6;
-            public static double ARM_FEED_FORWARD_KA = 0.12;
+            public static double ARM_FEED_FORWARD_KS = 0.0;
+            public static double ARM_FEED_FORWARD_KV = 0.0;
+            public static double ARM_FEED_FORWARD_KA = 0.0;
 
             public static double ARM_MAX_VELOCITY = 5.0;
             public static double ARM_MAX_ACCELERATION = 35.0;
@@ -199,8 +199,7 @@ public class Constants {
         }
 
         public class Arm{
-            public static Rotation2d OFFSET_CENTER_GRAVITY = Rotation2d.fromDegrees(5);
-            public static double ENCODER_ZERO_OFFSET = 0.0;
+            public static double ENCODER_ZERO_OFFSET = -0.947;
         }
     }
 

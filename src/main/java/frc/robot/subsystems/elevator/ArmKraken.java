@@ -10,7 +10,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.PhysicalConstants;
 import frc.robot.Constants.TunedConstants;
@@ -20,7 +19,7 @@ public class ArmKraken implements ArmIO {
     private TalonFXConfiguration anglerConfig;
     private DutyCycleEncoder m_anglerEncoder;
 
-    private Rotation2d targetIORotation = Rotation2d.fromDegrees(-83.8);
+    private Rotation2d targetIORotation = Rotation2d.fromDegrees(55);
 
     private final MotionMagicVoltage m_MotionMagic = new MotionMagicVoltage(0).withSlot(0);
 
@@ -61,42 +60,26 @@ public class ArmKraken implements ArmIO {
 
         m_anglerEncoder.setAssumedFrequency(975.609756); // 1s / 1025μs
         m_anglerEncoder.setDutyCycleRange(0.0010, 0.9990); // 1μs & 1024μs out of 1025μs
-        m_anglerEncoder.setInverted(false);
+        m_anglerEncoder.setInverted(true);
 
         m_anglerMotor.setPosition(encoderConversion(m_anglerEncoder.get()));
-
-        m_MotionMagic.withPosition(m_anglerMotor.getPosition().getValueAsDouble());
-    }
-
-    private Rotation2d toTalonRotation(Rotation2d ioRotation){
-        return ioRotation.plus(PhysicalConstants.Arm.OFFSET_CENTER_GRAVITY);
-    }
-    
-    private Rotation2d toIORotation(Rotation2d talonRotation){
-        return talonRotation.minus(PhysicalConstants.Arm.OFFSET_CENTER_GRAVITY);
     }
 
     @Override
     public void updateInputs(ArmIOInputs inputs) {
-        inputs.ioRotation = toIORotation(Rotation2d.fromRotations(m_anglerMotor.getPosition().getValueAsDouble()));
+        inputs.ioRotation = Rotation2d.fromRotations(m_anglerMotor.getPosition().getValueAsDouble());
         inputs.targetRotation = this.targetIORotation;
-        
-        // debug
-        SmartDashboard.putNumber("absoluteSensor", m_anglerEncoder.get());
-        SmartDashboard.putNumber("absoluteSensor(converted)", encoderConversion(m_anglerEncoder.get()));
 
-        // debug
-        // m_anglerMotor.setControl(m_MotionMagic.withPosition(toTalonRotation(ioRotation).getRotations()));
+        m_anglerMotor.setControl(m_MotionMagic.withPosition(this.targetIORotation.getRotations()));
     }
 
     /**
      * Converts encoder rotation from [0, 1] to [-0.5, 0.5)
-     * @apiNote arm should be CCW positive from left-view
      * @param rotation encoder rotation
      * @return converted encoder rotation
      */
     private double encoderConversion(double rotation){
-        return (rotation > 0.5) ? 1.0 - rotation : -rotation;
+        return (rotation > 0.5) ? rotation - 1.0 : rotation;
     }
 
     @Override
