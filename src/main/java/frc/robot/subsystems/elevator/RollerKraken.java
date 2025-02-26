@@ -58,8 +58,8 @@ public class RollerKraken implements RollerIO {
 
     @Override
     public void updateInputs(RollerIOInputs inputs) {
-        inputs.algaeDetected = algaeDebouncer.calculate(algaeSensor.isRangeValid() && algaeSensor.getRange() < 50);
-        inputs.coralDetected = coralDebouncer.calculate(coralSensor.isRangeValid() && coralSensor.getRange() > 40);
+        if(algaeSensor.isRangeValid()) inputs.algaeDetected = algaeDebouncer.calculate(algaeSensor.getRange() < 50);
+        if(coralSensor.isRangeValid()) inputs.coralDetected = coralDebouncer.calculate(coralSensor.getRange() < 50);
 
         SmartDashboard.putBoolean("algae", inputs.algaeDetected);
         SmartDashboard.putBoolean("coral", inputs.coralDetected);

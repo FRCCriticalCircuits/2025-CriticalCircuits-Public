@@ -148,12 +148,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         armIO.updateInputs(armInputs);
 
         // false if osilating
-        atGoal =    elevatorAtGoal.calculate(Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) < 0.02) &&
+        atGoal =    elevatorAtGoal.calculate(Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) < 0.1) &&
                     armAtGoal.calculate(Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) < 0.02);
         
         // false if error is too big
         atGoal =    (
-                        (Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) > 0.02) ||
+                        (Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) > 0.1) ||
                         (Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) > 0.02)
                     ) ? false 
                       : atGoal;
