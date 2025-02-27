@@ -33,7 +33,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private Debouncer armAtGoal = new Debouncer(0.2);
     private Debouncer elevatorAtGoal = new Debouncer(0.2);
  
-    private boolean atGoal = false;
+    private boolean atGoal = false, reachAlgae = false;
 
     GraphMachine graphMachine = new GraphMachine();
     Pair<String, Pair<Double, Double>> nextState;
@@ -53,8 +53,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         // State Nodes
         graphMachine.addNode("preMatch", new Pair<Double, Double>(Units.degreesToRotations(56), 0.0));      // 56.0 deg,    0 cm
         graphMachine.addNode("L1coral", new Pair<Double, Double>(Units.degreesToRotations(40), 0.15));      // 40.0 deg,    2 cm
-        graphMachine.addNode("L4coral", new Pair<Double, Double>(Units.degreesToRotations(56), 5.0));       // 56.0 deg,    70.5cm
         graphMachine.addNode("coralIntake", new Pair<Double, Double>(Units.degreesToRotations(30), 3.55));  // 30.0 deg,    50.5cm
+
+        // Nodes with 0 deg
+        graphMachine.addNode("L2coral", new Pair<Double, Double>(Units.degreesToRotations(0), 2.0));        // 00.0 deg,    28.2cm
+        graphMachine.addNode("L3coral", new Pair<Double, Double>(Units.degreesToRotations(0), 5.0));        // 00.0 deg,    70.5cm
 
         // Transition Nodes
         graphMachine.addNode("0n-1", new Pair<Double, Double>(0.0, 0.0));    // 00.0 deg,    0    cm
@@ -66,7 +69,17 @@ public class ElevatorSubsystem extends SubsystemBase {
         graphMachine.addEdge("0n-1", "preMatch");
         graphMachine.addEdge("0n-2", "L1coral");
         graphMachine.addEdge("0n-3", "coralIntake");
-        graphMachine.addEdge("0n-4", "L4coral");
+
+        // Edges (Nodes with 0 deg)
+        graphMachine.addEdge("0n-1", "L3coral");
+        graphMachine.addEdge("0n-2", "L3coral");
+        graphMachine.addEdge("0n-3", "L3coral");
+        graphMachine.addEdge("0n-4", "L3coral");
+
+        graphMachine.addEdge("0n-1", "L2coral");
+        graphMachine.addEdge("0n-2", "L2coral");
+        graphMachine.addEdge("0n-3", "L2coral");
+        graphMachine.addEdge("0n-4", "L2coral");
 
         // Transition Edges with angle 0
         graphMachine.addEdge("0n-1", "0n-2");
@@ -124,7 +137,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                         this.targetState = "L3coral"; // L/R
                         break;
                     default:
-                        this.targetState = "L4coral"; // L/R
+                        this.targetState = "L3coral"; // L/R
                         break;
                 }
                 break;
@@ -140,10 +153,12 @@ public class ElevatorSubsystem extends SubsystemBase {
                         this.targetState = "processorAlgae"; // No AutoAim
                         break;
                     case L3:
-                        this.targetState = "algaeL1"; // Mid
+                        if(reachAlgae) this.targetState = "algaeL1-in"; // Mid
+                        else this.targetState = "algaeL1"; // Mid
                         break;
                     default:
-                        this.targetState = "algaeL2"; // Mid
+                        if(reachAlgae) this.targetState = "algaeL2-in"; // Mid
+                        else this.targetState = "algaeL2"; // Mid
                         break;
                 }
         }

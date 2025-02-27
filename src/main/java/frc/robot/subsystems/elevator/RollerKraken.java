@@ -8,6 +8,7 @@ import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.PhysicalConstants;
@@ -37,7 +38,7 @@ public class RollerKraken implements RollerIO {
         rollerConfiguration.CurrentLimits.StatorCurrentLimit = PhysicalConstants.Elevator.CurrentLimits.ROLLER_CURRENT_LIMIT;
         rollerConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
         rollerConfiguration.CurrentLimits.SupplyCurrentLimit = 40;
-        rollerConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        rollerConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         // hatcher
         rollerConfiguration.Feedback.SensorToMechanismRatio = 3.86;
@@ -70,32 +71,32 @@ public class RollerKraken implements RollerIO {
 
         SmartDashboard.putBoolean("algae", inputs.algaeDetected);
         SmartDashboard.putBoolean("coral", inputs.coralDetected);
-        SmartDashboard.putBoolean("coralValid", coralSensor.isRangeValid());
-        SmartDashboard.putBoolean("algaeValid", algaeSensor.isRangeValid());
-        SmartDashboard.putNumber("coralRange", coralSensor.getRange());
-        SmartDashboard.putNumber("algaeRange", algaeSensor.getRange());
+        SmartDashboard.putBoolean("hatcherEnable", hatcherEnabled);
+        SmartDashboard.putBoolean("intakeEnable", intakeEnabled);
+        SmartDashboard.putNumber("Timer.getFPGATimestamp()", Timer.getFPGATimestamp());
+        SmartDashboard.putBoolean("RollerMode", mode == RollerMode.IN);
 
         switch (mode) {
             case IN:
                 if(hatcherEnabled){
-                    if(inputs.coralDetected) m_hatcherMotor.setVoltage(0.1);
-                    else m_hatcherMotor.setVoltage(0.2);
-                }else{
-                    m_hatcherMotor.stopMotor();
-                }
-        
-                if(intakeEnabled){
-                    if(inputs.algaeDetected) m_intakeMotor.setVoltage(0.2);
-                    else m_intakeMotor.setVoltage(0.4);
+                    if(inputs.coralDetected) m_hatcherMotor.setVoltage(0.5);
+                    else m_hatcherMotor.setVoltage(3.0);
                 }else{
                     m_hatcherMotor.stopMotor();
                 }
 
+                if(intakeEnabled){
+                    if(inputs.algaeDetected) m_intakeMotor.setVoltage(1.0);
+                    else m_intakeMotor.setVoltage(5.0);
+                }else{
+                    m_intakeMotor.stopMotor();
+                }
+                
                 break;
-            default:
-                if(hatcherEnabled) m_hatcherMotor.setVoltage(-0.2);
+            case OUT:
+                if(hatcherEnabled) m_hatcherMotor.setVoltage(-12);
                 else m_hatcherMotor.stopMotor();
-                if(intakeEnabled) m_intakeMotor.setVoltage(-0.2);
+                if(intakeEnabled) m_intakeMotor.setVoltage(-12);
                 else m_intakeMotor.stopMotor();
         }
     }

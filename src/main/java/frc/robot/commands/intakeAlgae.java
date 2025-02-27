@@ -8,16 +8,17 @@ import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
 
 public class intakeAlgae extends Command{
     private RollerSubsystem rollerSubsystem;
-    private double timeEnds;
+    private double timeEnds, timeLimitSeconds;
     
     public intakeAlgae(double timeLimitSeconds){
         rollerSubsystem = RollerSubsystem.getInstance();
-        this.timeEnds = Timer.getFPGATimestamp() + timeLimitSeconds;
+        this.timeLimitSeconds = timeLimitSeconds;
 
         addRequirements(rollerSubsystem);
     }
 
     public void initialize(){
+        this.timeEnds = Timer.getFPGATimestamp() + timeLimitSeconds;
         rollerSubsystem.setIntakeAlgae();
     }
 

@@ -19,13 +19,13 @@ public class shoot extends Command{
     private RollerSubsystem rollerSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
 
-    private double timeEnds;
+    private double timeEnds, timeLimitSeconds;
     
     public shoot(double timeLimitSeconds){
         rollerSubsystem = RollerSubsystem.getInstance();
         elevatorSubsystem = ElevatorSubsystem.getInstance();
 
-        this.timeEnds = Timer.getFPGATimestamp() + timeLimitSeconds;
+        this.timeLimitSeconds = timeLimitSeconds;
 
         addRequirements(rollerSubsystem);
         addRequirements(elevatorSubsystem);
@@ -33,6 +33,7 @@ public class shoot extends Command{
     }
 
     public void initialize(){
+        this.timeEnds = Timer.getFPGATimestamp() + timeLimitSeconds;
         rollerSubsystem.outTake();
         
         if(Robot.isSimulation()){

@@ -46,6 +46,7 @@ public class RobotContainer {
 
   @SuppressWarnings("unused")
   private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
+
   @SuppressWarnings("unused")
   private RollerSubsystem rollerSubsystem = new RollerSubsystem();
 
@@ -53,6 +54,7 @@ public class RobotContainer {
 
   private Controller controller = Controller.getInstance();
   private CommandXboxController driveController = new CommandXboxController(0); 
+  private CommandXboxController operatorController = new CommandXboxController(1);
 
   private AutoAimManager autoAimManager = AutoAimManager.getInstance(
     () -> controller.getDriverLT(),
@@ -96,7 +98,7 @@ public class RobotContainer {
     /*
      * AutoAim
      */   
-    driveController.rightStick().debounce(0.02).onTrue(
+    driveController.a().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
           new ParallelDeadlineGroup(
@@ -107,7 +109,7 @@ public class RobotContainer {
       )
     );
 
-    driveController.leftStick().debounce(0.02).onTrue(
+    driveController.x().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
           autoAimManager.cancle();
@@ -119,7 +121,7 @@ public class RobotContainer {
     /*
      * AutoAim Settings
      */
-    driveController.a().debounce(0.02).onTrue(
+    operatorController.a().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
           autoAimManager.updateLevel(Level.L1);
@@ -128,7 +130,7 @@ public class RobotContainer {
       )
     );
 
-    driveController.b().debounce(0.02).onTrue(
+    operatorController.b().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
           autoAimManager.updateLevel(Level.L2);
@@ -136,7 +138,7 @@ public class RobotContainer {
       )
     );
 
-    driveController.x().debounce(0.02).onTrue(
+    operatorController.x().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
           autoAimManager.updateLevel(Level.L3);
@@ -144,7 +146,7 @@ public class RobotContainer {
       )
     );
 
-    driveController.y().debounce(0.02).onTrue(
+    operatorController.y().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
           autoAimManager.updateLevel(Level.L4);
@@ -152,7 +154,7 @@ public class RobotContainer {
       )
     );
 
-    driveController.povLeft().debounce(0.02).onTrue(
+    operatorController.povLeft().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
           autoAimManager.updateSpot(Spot.L);    
@@ -160,7 +162,7 @@ public class RobotContainer {
       )
     );
 
-    driveController.povRight().debounce(0.02).onTrue(
+    operatorController.povRight().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
           autoAimManager.updateSpot(Spot.R);    
@@ -168,7 +170,7 @@ public class RobotContainer {
       )
     );
 
-    driveController.leftBumper().debounce(0.02).onTrue(
+    operatorController.leftBumper().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
           mode--;
@@ -178,7 +180,7 @@ public class RobotContainer {
       )
     );
 
-    driveController.rightBumper().debounce(0.02).onTrue(
+    operatorController.rightBumper().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
           mode++;
@@ -188,11 +190,11 @@ public class RobotContainer {
       )
     );
 
-    driveController.povUp().debounce(0.02).onTrue(
+    operatorController.b().debounce(0.02).onTrue(
       new intakeCoral(1.5)
     );
 
-    driveController.povDown().debounce(0.02).onTrue(
+    operatorController.y().debounce(0.02).onTrue(
       new shoot(0.7)
     );
   }
