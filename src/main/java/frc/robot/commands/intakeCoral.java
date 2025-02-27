@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
@@ -25,8 +24,6 @@ public class intakeCoral extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        SmartDashboard.putNumber("Timer-timeEnds", timeEnds);
-
         rollerSubsystem.idle();
         
         if(Robot.isSimulation()){

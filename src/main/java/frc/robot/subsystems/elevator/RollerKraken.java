@@ -8,8 +8,6 @@ import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.PhysicalConstants;
 
@@ -69,17 +67,10 @@ public class RollerKraken implements RollerIO {
             coralSensor.getRange() < 50
         );
 
-        SmartDashboard.putBoolean("algae", inputs.algaeDetected);
-        SmartDashboard.putBoolean("coral", inputs.coralDetected);
-        SmartDashboard.putBoolean("hatcherEnable", hatcherEnabled);
-        SmartDashboard.putBoolean("intakeEnable", intakeEnabled);
-        SmartDashboard.putNumber("Timer.getFPGATimestamp()", Timer.getFPGATimestamp());
-        SmartDashboard.putBoolean("RollerMode", mode == RollerMode.IN);
-
         switch (mode) {
             case IN:
                 if(hatcherEnabled){
-                    if(inputs.coralDetected) m_hatcherMotor.setVoltage(0.5);
+                    if(inputs.coralDetected) m_hatcherMotor.setVoltage(1);
                     else m_hatcherMotor.setVoltage(3.0);
                 }else{
                     m_hatcherMotor.stopMotor();

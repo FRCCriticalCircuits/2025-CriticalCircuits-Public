@@ -64,7 +64,7 @@ public class RobotContainer {
   private int mode = 1;
 
   public RobotContainer() {
-    visionSubsystem.start();
+    // visionSubsystem.start();
     
     swerveSubsystem.setDefaultCommand(
       teleopDrive.getInstance(
@@ -190,11 +190,11 @@ public class RobotContainer {
       )
     );
 
-    operatorController.b().debounce(0.02).onTrue(
+    driveController.b().debounce(0.02).onTrue(
       new intakeCoral(1.5)
     );
 
-    operatorController.y().debounce(0.02).onTrue(
+    driveController.y().debounce(0.02).onTrue(
       new shoot(0.7)
     );
   }

@@ -45,14 +45,16 @@ public class VisionLL implements VisionIO{
     @Override
     public Optional<VisionResult> getEstimatedGlobalPose() {
         Optional<PoseEstimate> visionEst = Optional.of(LimelightHelpers.getBotPoseEstimate_wpiBlue(camName));
-        Optional<VisionResult> result = Optional.empty();
+        VisionResult result = new VisionResult();
         if(!visionEst.isEmpty()){
-            result.get().pose = visionEst.get().pose;
-            result.get().timestampSeconds = visionEst.get().timestampSeconds;
+            result.pose = visionEst.get().pose;
+            result.timestampSeconds = visionEst.get().timestampSeconds;
             updateEstimationStdDevs(visionEst);
-            result.get().stdDevs = curStdDevs;
+            result.stdDevs = curStdDevs;
+            return Optional.of(result);
+        }else{
+            return Optional.empty();
         }
-        return result;
     }
 
     /**
@@ -77,8 +79,8 @@ public class VisionLL implements VisionIO{
             } else {
                 // Decrease std devs if multiple targets are visible
                 if (numTags > 1) estStdDevs = kMultiTagStdDevs;
-                // Set std devs if too far (2 meters)
-                if (numTags == 1 && avgDist > 2)
+                // Set std devs if too far (3.5 meters)
+                if (numTags == 1 && avgDist > 3.5)
                     estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
                 else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 15));
                 curStdDevs = estStdDevs;

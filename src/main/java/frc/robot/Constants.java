@@ -194,7 +194,7 @@ public class Constants {
             public class CurrentLimits{
                 public static int ELEVATOR_CURRENT_LIMIT = 20;
                 public static int ANGLER_CURRENT_LIMIT = 20;
-                public static int ROLLER_CURRENT_LIMIT = 10;
+                public static int ROLLER_CURRENT_LIMIT = 60;
             }
         }
 
