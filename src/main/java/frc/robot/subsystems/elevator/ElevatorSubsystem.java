@@ -33,7 +33,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private Debouncer armAtGoal = new Debouncer(0.2);
     private Debouncer elevatorAtGoal = new Debouncer(0.2);
  
-    private boolean atGoal;
+    private boolean atGoal = false;
 
     GraphMachine graphMachine = new GraphMachine();
     Pair<String, Pair<Double, Double>> nextState;
@@ -57,20 +57,24 @@ public class ElevatorSubsystem extends SubsystemBase {
         graphMachine.addNode("coralIntake", new Pair<Double, Double>(Units.degreesToRotations(30), 3.55));  // 30.0 deg,    50.5cm
 
         // Transition Nodes
-        graphMachine.addNode("tn-1", new Pair<Double, Double>(Units.degreesToRotations(0), 0.0));    // 00.0 deg,    0 cm
-        graphMachine.addNode("tn-2", new Pair<Double, Double>(Units.degreesToRotations(0), 5.0));    // 00.0 deg,    70.5 cm
-        graphMachine.addNode("tn-3", new Pair<Double, Double>(Units.degreesToRotations(0), 3.55));   // 00.0 deg,    50.5cm
-
+        graphMachine.addNode("0n-1", new Pair<Double, Double>(0.0, 0.0));    // 00.0 deg,    0    cm
+        graphMachine.addNode("0n-2", new Pair<Double, Double>(0.0, 0.15));   // 00.0 deg,    2.0  cm
+        graphMachine.addNode("0n-3", new Pair<Double, Double>(0.0, 3.55));   // 00.0 deg,    50.5 cm
+        graphMachine.addNode("0n-4", new Pair<Double, Double>(0.0, 5.0));    // 00.0 deg,    70.5 cm
 
         // Edges
-        graphMachine.addEdge("tn-1", "preMatch");
-        graphMachine.addEdge("tn-1", "L1coral");
-        graphMachine.addEdge("L1coral", "preMatch");
-        graphMachine.addEdge("tn-1", "tn-2");
-        graphMachine.addEdge("tn-2", "L4coral");
-        graphMachine.addEdge("coralIntake", "tn-3");
-        graphMachine.addEdge("tn-1", "tn-3");
-        graphMachine.addEdge("tn-2", "tn-3");
+        graphMachine.addEdge("0n-1", "preMatch");
+        graphMachine.addEdge("0n-2", "L1coral");
+        graphMachine.addEdge("0n-3", "coralIntake");
+        graphMachine.addEdge("0n-4", "L4coral");
+
+        // Transition Edges with angle 0
+        graphMachine.addEdge("0n-1", "0n-2");
+        graphMachine.addEdge("0n-1", "0n-3");
+        graphMachine.addEdge("0n-1", "0n-4");
+        graphMachine.addEdge("0n-2", "0n-3");
+        graphMachine.addEdge("0n-2", "0n-4");
+        graphMachine.addEdge("0n-3", "0n-4");
 
         wristPose = NetworkTableInstance.getDefault().getStructTopic("/Arm/wristRelativePos", Pose3d.struct).publish();
     }
@@ -144,6 +148,11 @@ public class ElevatorSubsystem extends SubsystemBase {
                 }
         }
 
+        nextState = graphMachine.findPath(curState, targetState);
+        
+        armIO.setRotation(Rotation2d.fromRotations(nextState.getSecond().getFirst()));
+        elevatorIO.setPosition(nextState.getSecond().getSecond());
+
         elevatorIO.updateInputs(elevatorInputs);
         armIO.updateInputs(armInputs);
 
@@ -157,11 +166,6 @@ public class ElevatorSubsystem extends SubsystemBase {
                         (Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) > 0.03)
                     ) ? false 
                       : atGoal;
-
-        nextState = graphMachine.findPath(curState, targetState);
-        
-        armIO.setRotation(Rotation2d.fromRotations(nextState.getSecond().getFirst()));
-        elevatorIO.setPosition(nextState.getSecond().getSecond());
 
         updateRollerTranslation(elevatorInputs.position, armInputs.ioRotation);
         visualize();
