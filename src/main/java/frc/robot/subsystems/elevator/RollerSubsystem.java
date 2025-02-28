@@ -39,28 +39,20 @@ public class RollerSubsystem extends SubsystemBase{
         return inputs.coralDetected;
     }
 
-    public void setIntakeCoral(){
+    public void intake(){
         rollerIO.setMode(RollerMode.IN);
-        rollerIO.setHatcher(true);
-        rollerIO.setIntake(false);
-    }
-
-    public void setIntakeAlgae(){
-        rollerIO.setMode(RollerMode.IN);
-        rollerIO.setHatcher(false);
-        rollerIO.setIntake(true);
     }
 
     public void outTake(){
         rollerIO.setMode(RollerMode.OUT);
-        rollerIO.setHatcher(true);
-        rollerIO.setIntake(true);
+    }
+
+    public void hold(){
+        rollerIO.setMode(RollerMode.HOLD);
     }
 
     public void idle(){
-        rollerIO.setMode(RollerMode.IN);
-        rollerIO.setHatcher(false);
-        rollerIO.setIntake(false);
+        rollerIO.setMode(RollerMode.IDLE);
     }
 
     @Override

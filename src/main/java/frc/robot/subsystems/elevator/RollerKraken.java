@@ -18,7 +18,6 @@ public class RollerKraken implements RollerIO {
     private TalonFXConfiguration rollerConfiguration;
 
     private TimeOfFlight coralSensor, algaeSensor;
-    private Boolean hatcherEnabled = false, intakeEnabled = false;
     
     private Debouncer coralDebouncer = new Debouncer(0.06);
     private Debouncer algaeDebouncer = new Debouncer(0.06);
@@ -69,37 +68,19 @@ public class RollerKraken implements RollerIO {
 
         switch (mode) {
             case IN:
-                if(hatcherEnabled){
-                    if(inputs.coralDetected) m_hatcherMotor.setVoltage(1);
-                    else m_hatcherMotor.setVoltage(3.0);
-                }else{
-                    m_hatcherMotor.stopMotor();
-                }
-
-                if(intakeEnabled){
-                    if(inputs.algaeDetected) m_intakeMotor.setVoltage(1.0);
-                    else m_intakeMotor.setVoltage(5.0);
-                }else{
-                    m_intakeMotor.stopMotor();
-                }
-                
+                m_hatcherMotor.setVoltage(4.0);
+                m_intakeMotor.setVoltage(4.0);  
                 break;
             case OUT:
-                if(hatcherEnabled) m_hatcherMotor.setVoltage(-12);
-                else m_hatcherMotor.stopMotor();
-                if(intakeEnabled) m_intakeMotor.setVoltage(-12);
-                else m_intakeMotor.stopMotor();
+                m_hatcherMotor.setVoltage(-12);
+                m_intakeMotor.setVoltage(-12);
+            case HOLD:
+                m_hatcherMotor.setVoltage(0);
+                m_intakeMotor.setVoltage(0);
+            case IDLE:
+                m_hatcherMotor.stopMotor();
+                m_intakeMotor.stopMotor();;
         }
-    }
-
-    @Override
-    public void setHatcher(Boolean enable) {
-        this.hatcherEnabled = enable;
-    }
-
-    @Override
-    public void setIntake(Boolean enable) {
-        this.intakeEnabled = enable;
     }
 
     @Override

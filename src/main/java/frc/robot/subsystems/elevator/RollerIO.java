@@ -8,13 +8,13 @@ public interface RollerIO {
 
     public enum RollerMode{
         IN,
-        OUT
+        OUT,
+        HOLD,
+        IDLE
     }
 
     public default void updateInputs(RollerIOInputs inputs) {}
     public default void overrideStates(RollerIOInputs inputs) {};
 
-    public default void setHatcher(Boolean enable) {};
-    public default void setIntake(Boolean enable) {};
     public default void setMode(RollerMode mode) {};
 }

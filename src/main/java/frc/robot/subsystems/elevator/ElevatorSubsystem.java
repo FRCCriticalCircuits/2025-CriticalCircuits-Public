@@ -185,7 +185,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         updateRollerTranslation(elevatorInputs.position, armInputs.ioRotation);
         visualize();
 
-        // debug
         SmartDashboard.putString("targetState", nextState.getFirst() + "(arm, elev): " + nextState.getSecond().getFirst() + ", " + nextState.getSecond().getSecond());
         SmartDashboard.putString("curState", curState + "(arm, elev): " + armInputs.ioRotation + ", " + elevatorInputs.position);
         SmartDashboard.putBoolean("atGoal", atGoal);

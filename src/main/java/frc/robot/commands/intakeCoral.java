@@ -19,12 +19,13 @@ public class intakeCoral extends Command{
 
     public void initialize(){
         this.timeEnds = Timer.getFPGATimestamp() + timeLimitSeconds;
-        rollerSubsystem.setIntakeCoral();
+        rollerSubsystem.intake();
     }
 
     @Override
     public void end(boolean interrupted) {
-        rollerSubsystem.idle();
+        if(rollerSubsystem.coralDetected()) rollerSubsystem.hold();
+        else rollerSubsystem.idle();
         
         if(Robot.isSimulation()){
             RollerIOInputs newInputs = new RollerIOInputs();

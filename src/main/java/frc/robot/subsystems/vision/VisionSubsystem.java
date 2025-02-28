@@ -3,8 +3,6 @@ package frc.robot.subsystems.vision;
 import java.util.Optional;
 
 import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
@@ -40,7 +38,6 @@ public class VisionSubsystem extends SubsystemBase{
                 limelightResult.get().timestampSeconds,
                 limelightResult.get().stdDevs
             );
-            SmartDashboard.putNumber("timer", Timer.getFPGATimestamp());
         }
     }
 }

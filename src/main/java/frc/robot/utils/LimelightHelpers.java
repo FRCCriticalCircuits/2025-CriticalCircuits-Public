@@ -5,10 +5,14 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -1089,6 +1093,17 @@ public class LimelightHelpers {
      */
     public static String getJSONDump(String limelightName) {
         return getLimelightNTString(limelightName, "json");
+    }
+
+    /**
+     * get StdDev of the measurement
+     * @param limelightName
+     * @return
+     */
+    public static Matrix<N3, N1> getMT1StdDevs(String limelightName){
+        double[] stdDevs = getLimelightNTDoubleArray(limelightName, "stddevs");
+        if(stdDevs.length < 6) return VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+        else return VecBuilder.fill(stdDevs[0], stdDevs[1], stdDevs[5]);
     }
 
     /**

@@ -64,7 +64,7 @@ public class RobotContainer {
   private int mode = 1;
 
   public RobotContainer() {
-    // visionSubsystem.start();
+    visionSubsystem.start();
     
     swerveSubsystem.setDefaultCommand(
       teleopDrive.getInstance(

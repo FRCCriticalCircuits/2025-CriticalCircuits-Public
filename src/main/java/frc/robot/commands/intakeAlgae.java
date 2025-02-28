@@ -19,12 +19,14 @@ public class intakeAlgae extends Command{
 
     public void initialize(){
         this.timeEnds = Timer.getFPGATimestamp() + timeLimitSeconds;
-        rollerSubsystem.setIntakeAlgae();
+        rollerSubsystem.intake();
     }
 
     @Override
     public void end(boolean interrupted) {
-        rollerSubsystem.idle();
+        if(rollerSubsystem.algaeDetected()) rollerSubsystem.hold();
+        else rollerSubsystem.idle();
+
         if(Robot.isSimulation()){
             RollerIOInputs newInputs = new RollerIOInputs();
             newInputs.algaeDetected = true;
