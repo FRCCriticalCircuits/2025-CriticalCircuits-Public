@@ -57,7 +57,8 @@ public class shoot extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        rollerSubsystem.idle();
+        if(rollerSubsystem.coralDetected() || rollerSubsystem.algaeDetected()) rollerSubsystem.hold();
+        else rollerSubsystem.idle();
 
         if(Robot.isSimulation()){
             RollerIOInputs newInputs = new RollerIOInputs();

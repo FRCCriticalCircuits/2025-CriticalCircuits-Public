@@ -48,7 +48,7 @@ public class RobotContainer {
   private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
 
   @SuppressWarnings("unused")
-  private RollerSubsystem rollerSubsystem = new RollerSubsystem();
+  private RollerSubsystem rollerSubsystem = RollerSubsystem.getInstance();
 
   private SendableChooser<String> autoChooser = new SendableChooser<>();
 

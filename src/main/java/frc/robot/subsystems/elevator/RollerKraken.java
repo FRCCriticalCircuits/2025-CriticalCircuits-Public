@@ -79,8 +79,8 @@ public class RollerKraken implements RollerIO {
                 m_hatcherMotor.setVoltage(-5.0);
                 m_intakeMotor.setVoltage(-5.0);
             case HOLD:
-                m_hatcherMotor.setVoltage(0);
-                m_intakeMotor.setVoltage(0);
+                m_hatcherMotor.setVoltage(0.5);
+                m_intakeMotor.setVoltage(0.5);
             case IDLE:
                 m_hatcherMotor.stopMotor();
                 m_intakeMotor.stopMotor();
