@@ -33,7 +33,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private Debouncer armAtGoal = new Debouncer(0.2);
     private Debouncer elevatorAtGoal = new Debouncer(0.2);
  
-    private boolean atGoal = false, reachAlgae = false;
+    public boolean atGoal = false, fetchAlgae = false;
 
     GraphMachine graphMachine = new GraphMachine();
     Pair<String, Pair<Double, Double>> nextState;
@@ -153,11 +153,11 @@ public class ElevatorSubsystem extends SubsystemBase {
                         this.targetState = "processorAlgae"; // No AutoAim
                         break;
                     case L3:
-                        if(reachAlgae) this.targetState = "algaeL1-in"; // Mid
+                        if(fetchAlgae) this.targetState = "algaeL1-in"; // Mid
                         else this.targetState = "algaeL1"; // Mid
                         break;
                     default:
-                        if(reachAlgae) this.targetState = "algaeL2-in"; // Mid
+                        if(fetchAlgae) this.targetState = "algaeL2-in"; // Mid
                         else this.targetState = "algaeL2"; // Mid
                         break;
                 }

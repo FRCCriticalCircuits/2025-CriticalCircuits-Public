@@ -34,6 +34,7 @@ public class VisionLL implements VisionIO{
 
         if(LimelightHelpers.validPoseEstimate(visionEst)){
             VisionResult result = new VisionResult(); 
+            
             result.pose = visionEst.pose;
             result.timestampSeconds = visionEst.timestampSeconds;
             result.stdDevs = LimelightHelpers.getMT1StdDevs(camName);

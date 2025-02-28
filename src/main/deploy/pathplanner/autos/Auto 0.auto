@@ -7,13 +7,19 @@
         {
           "type": "named",
           "data": {
+            "name": "intakeCoral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "setModeCoral"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "setL1"
+            "name": "setL2"
           }
         },
         {
@@ -31,12 +37,6 @@
                 "data": {
                   "name": "waitElevator"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intakeCoral"
-                }
               }
             ]
           }
@@ -50,7 +50,13 @@
         {
           "type": "named",
           "data": {
-            "name": "setModeIntake"
+            "name": "setModeAlgae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setL3"
           }
         },
         {
@@ -75,6 +81,61 @@
         {
           "type": "named",
           "data": {
+            "name": "fetchAlgae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeAlgae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "fetchAlgae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "0 - Path 3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outTake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setModeIntake"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "0 - Path 4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "waitElevator"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "intakeCoral"
           }
         },
@@ -85,19 +146,13 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "setL1"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "0 - Path 3"
+                  "pathName": "0 - Path 5"
                 }
               },
               {
@@ -128,7 +183,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "0 - Path 4"
+                  "pathName": "0 - Path 6"
                 }
               },
               {

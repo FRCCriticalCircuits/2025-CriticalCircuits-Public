@@ -27,9 +27,7 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.utils.DriveStationIO.DriveStationIO;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PhysicalConstants;
@@ -302,7 +300,6 @@ public class SwerveSubsystem extends SubsystemBase{
         // Telemetry
         estimateFieldPublisher.set(getPoseEstimate()); 
 
-        SmartDashboard.putNumber("Gyro", rawGyroRotation.getRadians());
         currentSwerveStatePublisher.set(getSwerveModuleStates());
     }
 }

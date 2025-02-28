@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.KeyBinding;
+import frc.robot.commands.intakeAlgae;
 import frc.robot.commands.intakeCoral;
 import frc.robot.commands.shoot;
 import frc.robot.commands.teleopDrive;
@@ -44,7 +45,6 @@ public class RobotContainer {
   private SwerveSubsystem swerveSubsystem = SwerveSubsystem.getInstance();
   private VisionSubsystem visionSubsystem = new VisionSubsystem();
 
-  @SuppressWarnings("unused")
   private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
 
   @SuppressWarnings("unused")
@@ -76,7 +76,7 @@ public class RobotContainer {
       )
     );
 
-    autoChooser.setDefaultOption("1", "Auto 0");
+    autoChooser.setDefaultOption("Upper Coral", "Auto 0");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -176,6 +176,7 @@ public class RobotContainer {
           mode--;
           if(mode < 0) mode = 2;
           autoAimManager.updateMode(Mode.valueOf(mode));
+          if(mode == 2) elevatorSubsystem.fetchAlgae = false;
         }
       )
     );
@@ -186,16 +187,29 @@ public class RobotContainer {
           mode++;
           if(mode > 2) mode = 0;
           autoAimManager.updateMode(Mode.valueOf(mode));
+          if(mode == 2) elevatorSubsystem.fetchAlgae = false;
         }
       )
     );
 
+    driveController.leftBumper().debounce(0.02).onTrue(
+      new InstantCommand(
+        () -> {
+            elevatorSubsystem.fetchAlgae = !elevatorSubsystem.fetchAlgae;
+        }, elevatorSubsystem
+      )
+    );
+
+    driveController.rightBumper().debounce(0.02).onTrue(
+      new intakeAlgae(1.75)
+    );
+
     driveController.b().debounce(0.02).onTrue(
-      new intakeCoral(1.5)
+      new intakeCoral(1.75)
     );
 
     driveController.y().debounce(0.02).onTrue(
-      new shoot(0.7)
+      new shoot(0.75)
     );
   }
 
@@ -206,6 +220,7 @@ public class RobotContainer {
       new InstantCommand(
         () -> {
           Optional<Pose2d> initialPose;
+          
           try {
             initialPose = PathPlannerAuto.getPathGroupFromAutoFile(autoChooser.getSelected()).get(0).getStartingHolonomicPose();
           } catch (IOException | ParseException e) {
@@ -245,10 +260,37 @@ public class RobotContainer {
     );
 
     NamedCommands.registerCommand(
+      "setModeAlgae", 
+      new InstantCommand(
+        () -> {
+          autoAimManager.updateMode(Mode.ALGAE_PICK);
+        }
+      )
+    );
+
+    NamedCommands.registerCommand(
       "setL1",
       new InstantCommand(
         () -> {
           autoAimManager.updateLevel(Level.L1);
+        }
+      )
+    );
+
+    NamedCommands.registerCommand(
+      "setL2",
+      new InstantCommand(
+        () -> {
+          autoAimManager.updateLevel(Level.L2);
+        }
+      )
+    );
+
+    NamedCommands.registerCommand(
+      "setL3",
+      new InstantCommand(
+        () -> {
+          autoAimManager.updateLevel(Level.L3);
         }
       )
     );
@@ -293,6 +335,20 @@ public class RobotContainer {
     NamedCommands.registerCommand(
       "intakeCoral",
       new intakeCoral(1.4)
+    );
+
+    NamedCommands.registerCommand(
+      "intakeAlgae",
+      new intakeAlgae(1.4)
+    );
+
+    NamedCommands.registerCommand(
+      "fetchAlgae", 
+      new InstantCommand(
+        () -> {
+            elevatorSubsystem.fetchAlgae = !elevatorSubsystem.fetchAlgae;
+        }, elevatorSubsystem
+      )
     );
   }
 

@@ -8,6 +8,7 @@ import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.PhysicalConstants;
 
@@ -19,10 +20,10 @@ public class RollerKraken implements RollerIO {
 
     private TimeOfFlight coralSensor, algaeSensor;
     
-    private Debouncer coralDebouncer = new Debouncer(0.06);
-    private Debouncer algaeDebouncer = new Debouncer(0.06);
+    private Debouncer coralDebouncer = new Debouncer(0.1);
+    private Debouncer algaeDebouncer = new Debouncer(0.1);
 
-    private RollerMode mode = RollerMode.IN;
+    private RollerMode mode = RollerMode.HOLD;
 
     public RollerKraken(){
         m_hatcherMotor = new TalonFX(DeviceID.Angler.HATCHER_ID);
@@ -66,20 +67,23 @@ public class RollerKraken implements RollerIO {
             coralSensor.getRange() < 50
         );
 
+        SmartDashboard.putBoolean("algae", inputs.algaeDetected);
+        SmartDashboard.putBoolean("coral", inputs.coralDetected);
+
         switch (mode) {
             case IN:
                 m_hatcherMotor.setVoltage(4.0);
                 m_intakeMotor.setVoltage(4.0);  
                 break;
             case OUT:
-                m_hatcherMotor.setVoltage(-12);
-                m_intakeMotor.setVoltage(-12);
+                m_hatcherMotor.setVoltage(-5.0);
+                m_intakeMotor.setVoltage(-5.0);
             case HOLD:
                 m_hatcherMotor.setVoltage(0);
                 m_intakeMotor.setVoltage(0);
             case IDLE:
                 m_hatcherMotor.stopMotor();
-                m_intakeMotor.stopMotor();;
+                m_intakeMotor.stopMotor();
         }
     }
 

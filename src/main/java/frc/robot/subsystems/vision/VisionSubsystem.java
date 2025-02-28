@@ -32,7 +32,7 @@ public class VisionSubsystem extends SubsystemBase{
     private void update(){
         limelightResult = limelight.getEstimatedGlobalPose(); 
   
-        if(!limelightResult.isEmpty()){
+        if(!limelightResult.isEmpty() && limelightResult.get().pose != null){
             swerveSubsystem.updatePoseEstimator(
                 limelightResult.get().pose,
                 limelightResult.get().timestampSeconds,
