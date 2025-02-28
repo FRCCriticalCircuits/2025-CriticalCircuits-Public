@@ -38,7 +38,7 @@ public class RollerSubsystem extends SubsystemBase{
     public Boolean coralDetected(){
         return inputs.coralDetected;
     }
-
+    
     public void intake(){
         rollerIO.setMode(RollerMode.IN);
     }

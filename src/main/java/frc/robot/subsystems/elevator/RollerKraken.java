@@ -29,13 +29,17 @@ public class RollerKraken implements RollerIO {
         m_hatcherMotor = new TalonFX(DeviceID.Angler.HATCHER_ID);
         m_intakeMotor = new TalonFX(DeviceID.Angler.INTAKE_ID);
 
+
         rollerConfiguration = new TalonFXConfiguration();
 
         // common settings
         rollerConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
         rollerConfiguration.CurrentLimits.StatorCurrentLimit = PhysicalConstants.Elevator.CurrentLimits.ROLLER_CURRENT_LIMIT;
         rollerConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
-        rollerConfiguration.CurrentLimits.SupplyCurrentLimit = 40;
+        rollerConfiguration.CurrentLimits.SupplyCurrentLimit = 10;
+        rollerConfiguration.CurrentLimits.SupplyCurrentLowerLimit = 1;
+        rollerConfiguration.CurrentLimits.SupplyCurrentLowerTime = 0.1;
+
         rollerConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
         // hatcher
@@ -61,14 +65,17 @@ public class RollerKraken implements RollerIO {
             algaeSensor.isRangeValid() &&
             algaeSensor.getRange() < 80
         );
+
+        inputs.coralDetected = m_hatcherMotor.getSupplyCurrent().getValueAsDouble() > 0.5 &&  m_hatcherMotor.getSupplyCurrent().getValueAsDouble() < 3.0;
         
-        inputs.coralDetected = coralDebouncer.calculate(
-            coralSensor.isRangeValid() &&
-            coralSensor.getRange() < 50
-        );
+        // inputs.coralDetected = coralDebouncer.calculate(
+        //     coralSensor.isRangeValid() &&
+        //     coralSensor.getRange() < 50
+        // );
 
         SmartDashboard.putBoolean("algae", inputs.algaeDetected);
         SmartDashboard.putBoolean("coral", inputs.coralDetected);
+
 
         switch (mode) {
             case IN:
@@ -76,14 +83,17 @@ public class RollerKraken implements RollerIO {
                 m_intakeMotor.setVoltage(4.0);  
                 break;
             case OUT:
-                m_hatcherMotor.setVoltage(-5.0);
-                m_intakeMotor.setVoltage(-5.0);
+                m_hatcherMotor.setVoltage(-12.0);
+                m_intakeMotor.setVoltage(-12.0);
+                break;
             case HOLD:
-                m_hatcherMotor.setVoltage(0.5);
-                m_intakeMotor.setVoltage(0.5);
+                m_hatcherMotor.setVoltage(4);
+                m_intakeMotor.setVoltage(4);
+                break;
             case IDLE:
                 m_hatcherMotor.stopMotor();
                 m_intakeMotor.stopMotor();
+                break;
         }
     }
 
