@@ -6,11 +6,11 @@ import frc.robot.Robot;
 import frc.robot.subsystems.elevator.RollerSubsystem;
 import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
 
-public class intakeAlgae extends Command{
+public class IntakeAlgae extends Command{
     private RollerSubsystem rollerSubsystem;
     private double timeEnds, timeLimitSeconds;
     
-    public intakeAlgae(double timeLimitSeconds){
+    public IntakeAlgae(double timeLimitSeconds){
         rollerSubsystem = RollerSubsystem.getInstance();
         this.timeLimitSeconds = timeLimitSeconds;
 

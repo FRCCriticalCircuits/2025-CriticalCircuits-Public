@@ -15,13 +15,13 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.RollerSubsystem;
 
-public class shoot extends Command{
+public class Shoot extends Command{
     private RollerSubsystem rollerSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
 
     private double timeEnds, timeLimitSeconds;
     
-    public shoot(double timeLimitSeconds){
+    public Shoot(double timeLimitSeconds){
         rollerSubsystem = RollerSubsystem.getInstance();
         elevatorSubsystem = ElevatorSubsystem.getInstance();
 

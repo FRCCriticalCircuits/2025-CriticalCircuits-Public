@@ -6,11 +6,11 @@ import frc.robot.Robot;
 import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
 import frc.robot.subsystems.elevator.RollerSubsystem;
 
-public class intakeCoral extends Command{
+public class IntakeCoral extends Command{
     private RollerSubsystem rollerSubsystem;
     private double timeEnds, timeLimitSeconds;
     
-    public intakeCoral(double timeLimitSeconds){
+    public IntakeCoral(double timeLimitSeconds){
         rollerSubsystem = RollerSubsystem.getInstance();
         this.timeLimitSeconds = timeLimitSeconds;
 

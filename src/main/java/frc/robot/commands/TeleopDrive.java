@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.Constants.PhysicalConstants;
 
-public class teleopDrive extends Command{
-    public static teleopDrive instance;
+public class TeleopDrive extends Command{
+    public static TeleopDrive instance;
     public static boolean manualEnable = true;
 
     private SwerveSubsystem swerveSubsystem;
@@ -24,7 +24,7 @@ public class teleopDrive extends Command{
                             yLimiter,
                             omegaLimiter;
 
-    public teleopDrive
+    public TeleopDrive
     (
         Supplier<Double> verticalSpeed,
         Supplier<Double> horizontalSpeed,
@@ -47,7 +47,7 @@ public class teleopDrive extends Command{
         addRequirements(swerveSubsystem);
     }
 
-    public static teleopDrive getInstance
+    public static TeleopDrive getInstance
     (
         Supplier<Double> verticalSpeed,
         Supplier<Double> horizontalSpeed,
@@ -55,7 +55,7 @@ public class teleopDrive extends Command{
         Supplier<Double> scalingFactorA,
         Supplier<Double> scalingFactorB
     ){
-        if(instance == null) instance = new teleopDrive(verticalSpeed, horizontalSpeed, omegaSpeed, scalingFactorA, scalingFactorB);
+        if(instance == null) instance = new TeleopDrive(verticalSpeed, horizontalSpeed, omegaSpeed, scalingFactorA, scalingFactorB);
         return instance;
     }
 

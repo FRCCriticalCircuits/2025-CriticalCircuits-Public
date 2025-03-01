@@ -25,11 +25,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.KeyBinding;
-import frc.robot.commands.intakeAlgae;
-import frc.robot.commands.intakeCoral;
-import frc.robot.commands.shoot;
-import frc.robot.commands.teleopDrive;
-import frc.robot.commands.waitElevator;
+import frc.robot.commands.IntakeAlgae;
+import frc.robot.commands.IntakeCoral;
+import frc.robot.commands.Shoot;
+import frc.robot.commands.TeleopDrive;
+import frc.robot.commands.WaitElevator;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.Controller;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -67,7 +67,7 @@ public class RobotContainer {
     visionSubsystem.start();
     
     swerveSubsystem.setDefaultCommand(
-      teleopDrive.getInstance(
+      TeleopDrive.getInstance(
         () -> -controller.getDriverLY(),    // Left-Positive
         () -> -controller.getDriverLX(),    // Forward-Positive
         () -> -controller.getDriverRX(),    // CCW Positive
@@ -113,7 +113,7 @@ public class RobotContainer {
       new InstantCommand(
         () -> {
           autoAimManager.cancle();
-          teleopDrive.manualEnable = true;
+          TeleopDrive.manualEnable = true;
         }, swerveSubsystem
       )
     );
@@ -201,15 +201,15 @@ public class RobotContainer {
     );
 
     driveController.rightBumper().debounce(0.02).onTrue(
-      new intakeAlgae(1.75)
+      new IntakeAlgae(1.75)
     );
 
     driveController.b().debounce(0.02).onTrue(
-      new intakeCoral(1.75)
+      new IntakeCoral(1.75)
     );
 
     driveController.y().debounce(0.02).onTrue(
-      new shoot(0.75)
+      new Shoot(0.75)
     );
   }
 
@@ -324,22 +324,22 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
       "waitElevator",
-      new waitElevator()
+      new WaitElevator()
     );
 
     NamedCommands.registerCommand(
       "outTake",
-      new shoot(0.7)
+      new Shoot(0.7)
     );
 
     NamedCommands.registerCommand(
       "intakeCoral",
-      new intakeCoral(1.4)
+      new IntakeCoral(1.4)
     );
 
     NamedCommands.registerCommand(
       "intakeAlgae",
-      new intakeAlgae(1.4)
+      new IntakeAlgae(1.4)
     );
 
     NamedCommands.registerCommand(
