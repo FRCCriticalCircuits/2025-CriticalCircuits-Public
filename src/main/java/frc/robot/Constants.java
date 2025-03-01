@@ -72,11 +72,11 @@ public class Constants {
 
     public class TunedConstants{
         public class DriveBase{
-            public static double DRIVE_PID_P = 0.1;
+            public static double DRIVE_PID_P = 0;
             public static double DRIVE_PID_I = 0;
 
             public static double DRIVE_FEED_FORWARD_KS = 0.015;
-            public static double DRIVE_FEED_FORWARD_KV = 0.17;
+            public static double DRIVE_FEED_FORWARD_KV = 0.06;
             public static double DRIVE_FEED_FORWARD_KA = 0;
 
             public static double TURN_PID_P = 0.3;

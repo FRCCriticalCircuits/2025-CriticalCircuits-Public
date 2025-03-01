@@ -19,8 +19,7 @@ public class RollerKraken implements RollerIO {
     private TalonFXConfiguration rollerConfiguration;
 
     private TimeOfFlight coralSensor, algaeSensor;
-    
-    private Debouncer coralDebouncer = new Debouncer(0.1);
+
     private Debouncer algaeDebouncer = new Debouncer(0.1);
 
     private RollerMode mode = RollerMode.HOLD;
@@ -67,11 +66,6 @@ public class RollerKraken implements RollerIO {
         );
 
         inputs.coralDetected = m_hatcherMotor.getSupplyCurrent().getValueAsDouble() > 0.5 &&  m_hatcherMotor.getSupplyCurrent().getValueAsDouble() < 3.0;
-        
-        // inputs.coralDetected = coralDebouncer.calculate(
-        //     coralSensor.isRangeValid() &&
-        //     coralSensor.getRange() < 50
-        // );
 
         SmartDashboard.putBoolean("algae", inputs.algaeDetected);
         SmartDashboard.putBoolean("coral", inputs.coralDetected);

@@ -3,6 +3,7 @@ package frc.robot.subsystems.vision;
 import java.util.HashMap;
 import java.util.Optional;
 
+import edu.wpi.first.math.VecBuilder;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.LimelightHelpers.PoseEstimate;
 
@@ -37,7 +38,7 @@ public class VisionLL implements VisionIO{
             
             result.pose = visionEst.pose;
             result.timestampSeconds = visionEst.timestampSeconds;
-            result.stdDevs = LimelightHelpers.getMT1StdDevs(camName);
+            result.stdDevs = VecBuilder.fill(2, 2, 4);
             
             return Optional.of(result);
         }else{
