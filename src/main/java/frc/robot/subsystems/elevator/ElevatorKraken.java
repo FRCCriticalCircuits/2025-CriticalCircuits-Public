@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.PhysicalConstants;
 import frc.robot.Constants.TunedConstants;
@@ -67,6 +68,7 @@ public class ElevatorKraken implements ElevatorIO {
     public void updateInputs(ElevatorIOInputs inputs) {
         inputs.position = m_rightMotor.getPosition().getValueAsDouble();
         inputs.targetPosition = targetRotation;
+        SmartDashboard.putNumber("targetRot", targetRotation);
 
         m_rightMotor.setControl(m_MotionMagic.withPosition(targetRotation));
     }

@@ -51,18 +51,18 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
 
         // State Nodes
-        graphMachine.addNode("preMatch", new Pair<Double, Double>(Units.degreesToRotations(56), 0.0));      // 56.0 deg,    0 cm
-        graphMachine.addNode("groundAlgae", new Pair<Double, Double>(Units.degreesToRotations(-10), 0.0));
-        graphMachine.addNode("L1coral", new Pair<Double, Double>(Units.degreesToRotations(40), 0.15));      // 40.0 deg,    2 cm
-        graphMachine.addNode("coralIntake", new Pair<Double, Double>(Units.degreesToRotations(30), 3.55));  // 30.0 deg,    50.5cm
+        graphMachine.addNode("preMatch", new Pair<Double, Double>(Units.degreesToRotations(56), inchesToRotations(0)));      // 56.0 deg,    0 cm
+        graphMachine.addNode("groundAlgae", new Pair<Double, Double>(Units.degreesToRotations(-10), inchesToRotations(0)));
+        graphMachine.addNode("L1coral", new Pair<Double, Double>(Units.degreesToRotations(40), inchesToRotations(2)));      // 40.0 deg,    2 cm
+        graphMachine.addNode("coralIntake", new Pair<Double, Double>(Units.degreesToRotations(30), inchesToRotations(34)));  // 30.0 deg,    50.5cm
 
         // State Nodes with angle 0
-        graphMachine.addNode("L2coral", new Pair<Double, Double>(Units.degreesToRotations(0), 2.3));
-        graphMachine.addNode("L3coral", new Pair<Double, Double>(Units.degreesToRotations(0), 5.25));   
+        graphMachine.addNode("L2coral", new Pair<Double, Double>(Units.degreesToRotations(-7), inchesToRotations(24)));
+        graphMachine.addNode("L3coral", new Pair<Double, Double>(Units.degreesToRotations(-12), 5.3));   
         graphMachine.addNode("processorAlgae", new Pair<Double, Double>(Units.degreesToRotations(0), 0.0));
         graphMachine.addNode("algaeL1", new Pair<Double, Double>(Units.degreesToRotations(0), 2.35));
         graphMachine.addNode("algaeL2", new Pair<Double, Double>(Units.degreesToRotations(0), 5.3));
-
+    
         // Algae-Fetch Nodes
         graphMachine.addNode("algaeL1-in", new Pair<Double, Double>(Units.degreesToRotations(-25), 2.35));
         graphMachine.addNode("algaeL2-in", new Pair<Double, Double>(Units.degreesToRotations(-25), 5.3));
@@ -130,6 +130,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         return instance;
     }
 
+    private static double inchesToRotations(double inc) {
+        return inc / (2 * Math.PI * 1.751);
+    }
+
     public void visualize(){
          wristPose.set(
             this.wristPose3d
@@ -157,50 +161,73 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void periodic() {
         AutoAimSetting currentSettings = AutoAimManager.getInstance().getSetting();
 
-        switch(currentSettings.getMode()){
+        switch (currentSettings.getMode()) {
             case CORAL_PLACE:
                 switch (currentSettings.getLevel()) {
                     case L1:
-                        this.targetState = "L1coral"; // Mid
+                        this.targetState = "L1coral";
                         break;
                     case L2:
-                        this.targetState = "L2coral"; // L/R
+                        this.targetState = "L2coral";
                         break;
                     case L3:
-                        this.targetState = "L3coral"; // L/R
+                        this.targetState = "L3coral";
                         break;
-                    default:
-                        this.targetState = "L3coral"; // L/R
+                    case L4:
+                        this.targetState = "L3coral";
                         break;
+                    case LClimb:
+                        this.targetState = "processorAlgae";
                 }
-                break;
+                break;  
             case CORAL_INTAKE:
                 this.targetState = "coralIntake";
-                break;
-            default:
-                switch (currentSettings.getLevel()) {
-                    case L1:
-                        this.targetState = "groundAlgae"; // No AutoAim
-                        break;
-                    case L2:
-                        this.targetState = "processorAlgae"; // No AutoAim
-                        break;
-                    case L3:
-                        if(fetchAlgae) this.targetState = "algaeL1-in"; // Mid
-                        else this.targetState = "algaeL1"; // Mid
-                        break;
-                    default:
-                        if(fetchAlgae) this.targetState = "algaeL2-in"; // Mid
-                        else this.targetState = "algaeL2"; // Mid
-                        break;
-                }
+                   break;
         }
+
+        // switch(currentSettings.getMode()){
+        //     case CORAL_PLACE:
+        //         switch (currentSettings.getLevel()) {
+        //             case L1:
+        //                 this.targetState = "L1coral"; // Mid
+        //                 break;
+        //             case L2:
+        //                 this.targetState = "L2coral"; // L/R
+        //                 break;
+        //             case L3:
+        //                 this.targetState = "L3coral"; // L/R
+        //                 break;
+        //             default:
+        //                 this.targetState = "L3coral"; // L/R
+        //                 break;
+        //         }
+        //         break;
+        //     case CORAL_INTAKE:
+        //         this.targetState = "coralIntake";
+        //         break;
+        //     default:
+        //         switch (currentSettings.getLevel()) {
+        //             case L1:
+        //                 this.targetState = "groundAlgae"; // No AutoAim
+        //                 break;
+        //             case L2:
+        //                 this.targetState = "processorAlgae"; // No AutoAim
+        //                 break;
+        //             case L3:
+        //                 if(fetchAlgae) this.targetState = "algaeL1-in"; // Mid
+        //                 else this.targetState = "algaeL1"; // Mid
+        //                 break;
+        //             default:
+        //                 if(fetchAlgae) this.targetState = "algaeL2-in"; // Mid
+        //                 else this.targetState = "algaeL2"; // Mid
+        //                 break;
+        //         }
+        // }
 
         nextState = graphMachine.findPath(curState, targetState);
         
         armIO.setRotation(Rotation2d.fromRotations(nextState.getSecond().getFirst()));
         elevatorIO.setPosition(nextState.getSecond().getSecond());
-
         elevatorIO.updateInputs(elevatorInputs);
         armIO.updateInputs(armInputs);
 

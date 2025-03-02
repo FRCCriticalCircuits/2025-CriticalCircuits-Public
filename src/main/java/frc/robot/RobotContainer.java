@@ -30,8 +30,11 @@ import frc.robot.commands.IntakeCoral;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.WaitElevator;
+import frc.robot.commands.climber.WinchDownCommand;
+import frc.robot.commands.climber.WinchUpCommand;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.Controller;
+import frc.robot.subsystems.climber.WinchSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.RollerSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
@@ -46,6 +49,7 @@ public class RobotContainer {
   private VisionSubsystem visionSubsystem = new VisionSubsystem();
 
   private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
+  private WinchSubsystem winchSubsystem = WinchSubsystem.getInstance();
 
   @SuppressWarnings("unused")
   private RollerSubsystem rollerSubsystem = RollerSubsystem.getInstance();
@@ -193,6 +197,14 @@ public class RobotContainer {
       )
     );
 
+    operatorController.povUp().debounce(0.02).whileTrue(
+        new WinchUpCommand(winchSubsystem)
+    );
+
+    operatorController.povDown().debounce(0.02).whileTrue(
+        new WinchDownCommand(winchSubsystem)
+    );
+
     driveController.leftBumper().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
@@ -210,7 +222,7 @@ public class RobotContainer {
     );
 
     driveController.y().debounce(0.02).onTrue(
-      new Shoot(0.75)
+      new Shoot(5)
     );
   }
 
