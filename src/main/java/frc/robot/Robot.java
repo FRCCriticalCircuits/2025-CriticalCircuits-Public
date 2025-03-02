@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     coralPublisher = NetworkTableInstance.getDefault().getStructArrayTopic("/simulationGamePieces/coral", Pose3d.struct).publish();
-    algaePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("/simulationGamePieces/coral", Pose3d.struct).publish();
+    algaePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("/simulationGamePieces/algae", Pose3d.struct).publish();
   }
 
   @Override

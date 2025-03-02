@@ -1,0 +1,257 @@
+{
+  "hubs": [
+    {
+      "x": -8,
+      "y": -8,
+      "width": 2576,
+      "height": 1568,
+      "state": {
+        "sidebar": {
+          "width": 500,
+          "expanded": [
+            "/SmartDashboard/Field",
+            "/Phoenix6",
+            "/Phoenix6/TalonFX-1",
+            "/SmartDashboard/AimPosSwerve",
+            "/SmartDashboard/Estimate Field/Robot",
+            "/SmartDashboard/tar",
+            "/SmartDashboard/target",
+            "/SmartDashboard/Target",
+            "/SmartDashboard/Swerve AutoAim",
+            "/SmartDashboard/MapleArenaSimulation",
+            "/SwerveStates/CurrentState",
+            "/SwerveStates/CurrentState/0",
+            "/SwerveStates/DesiredState",
+            "/SwerveStates/DesiredState/0",
+            "/SwerveStates/CurrentState/0/angle",
+            "/SwerveStates/DesiredState/0/angle",
+            "/PathPlanner",
+            "/SmartDashboard/sample",
+            "/SmartDashboard/Vision Estimate Field",
+            "/SmartDashboard/Vision Estimate Field/Robot",
+            "/SmartDashboard/Swerve AutoAim/Robot",
+            "/SmartDashboard/SampleTimes",
+            "/PathPlanner/vel",
+            "/PoseEstimate",
+            "/Arm",
+            "/SmartDashboard",
+            "/AutoAim",
+            "/Arm/wristRelativePos",
+            "/SwerveStates",
+            "/simulationGamePieces",
+            "/PoseEstimate/estimatedField",
+            "/limelight/stddevs"
+          ]
+        },
+        "tabs": {
+          "selected": 2,
+          "tabs": [
+            {
+              "type": 0,
+              "title": "",
+              "controller": null,
+              "controllerUUID": "e1e61ovbt2jw7jru7eqpdl69krvc4t0b",
+              "renderer": "#/",
+              "controlsHeight": 0
+            },
+            {
+              "type": 9,
+              "title": "Swerve",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "states",
+                    "logKey": "NT:/SwerveStates/CurrentState",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff0000",
+                      "arrangement": "0,1,2,3"
+                    }
+                  },
+                  {
+                    "type": "states",
+                    "logKey": "NT:/SwerveStates/DesiredState",
+                    "logType": "SwerveModuleState[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#0000ff",
+                      "arrangement": "0,1,2,3"
+                    }
+                  }
+                ],
+                "maxSpeed": 5,
+                "sizeX": 0.8,
+                "sizeY": 0.8,
+                "orientation": 1
+              },
+              "controllerUUID": "z0x08cqg6v11ia67bvwbmhx2u4w8502i",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 3,
+              "title": "3D Field",
+              "controller": {
+                "sources": [
+                  {
+                    "type": "robot",
+                    "logKey": "NT:/PoseEstimate/estimatedField",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "riptide"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "logKey": "NT:/Arm/wristRelativePos",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/AutoAim/estimatedPosition",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "riptide",
+                      "color": "#00ff00"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "logKey": "NT:/Arm/wristRelativePos",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/PoseEstimate/visionField",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "riptide",
+                      "color": "#ff8c00"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "logKey": "NT:/Arm/wristRelativePos",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/PathPlanner/targetPose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "model": "riptide",
+                      "color": "#ff0000"
+                    }
+                  },
+                  {
+                    "type": "component",
+                    "logKey": "NT:/Arm/wristRelativePos",
+                    "logType": "Pose3d",
+                    "visible": true,
+                    "options": {}
+                  },
+                  {
+                    "type": "gamePiece",
+                    "logKey": "NT:/simulationGamePieces/algae",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "variant": "Algae"
+                    }
+                  },
+                  {
+                    "type": "gamePiece",
+                    "logKey": "NT:/simulationGamePieces/coral",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "variant": "Coral"
+                    }
+                  }
+                ],
+                "game": "2025 Field (Welded)",
+                "origin": "blue"
+              },
+              "controllerUUID": "fjrg2yd9yvi7dz6616up0x6zjhhyc4ji",
+              "renderer": {
+                "cameraIndex": -1,
+                "orbitFov": 50,
+                "cameraPosition": [
+                  -4.383376914326375,
+                  4.116994760057767,
+                  -5.759960618767824
+                ],
+                "cameraTarget": [
+                  -2.8125878160915194,
+                  -0.0357421658515302,
+                  0.6561455880679663
+                ]
+              },
+              "controlsHeight": 260
+            },
+            {
+              "type": 1,
+              "title": "Line Graph",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SwerveStates/CurrentState/0/speed",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/SwerveStates/DesiredState/0/speed",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "type": "angle",
+                  "factor": 1,
+                  "from": "radians",
+                  "to": "degrees"
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "nhd7zs5hi0ryks998qanrj7e1duib2y7",
+              "renderer": null,
+              "controlsHeight": 200
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "satellites": [],
+  "version": "4.1.1"
+}

@@ -89,7 +89,7 @@ public class Constants {
                 public static double DRIVE_PID_D = 0;
     
                 public static double DRIVE_FEED_FORWARD_KS = 0.017;
-                public static double DRIVE_FEED_FORWARD_KV = 0.7;
+                public static double DRIVE_FEED_FORWARD_KV = 0.6;
                 public static double DRIVE_FEED_FORWARD_KA = 0;
     
                 public static double TURN_PID_P = 30;
@@ -204,9 +204,6 @@ public class Constants {
     }
 
     public class FieldConstants{
-        // 1.3147m from the front of robot to surface of reef
-        // suppose to be 1cm away from reef
-
         public static double FIELD_LENGTH = 17.548;
         public static double FIELD_WIDTH = 8.052;
 
@@ -215,7 +212,7 @@ public class Constants {
         public static AdvancedPose2D REEF_CENTER_BLUE = new AdvancedPose2D(4.48945, FIELD_WIDTH / 2, Rotation2d.fromDegrees(0));
 
         public class AutoAim{
-            public static double REEF_CENTER_TO_ROBOT = 1.45;
+            public static double REEF_CENTER_TO_ROBOT = 1.4;
             public static double CORAL_STATION_TO_ROBOT = Units.inchesToMeters(27) / 2;
             public static double AUTO_TRANSLATION = 0.16; // Shift for L/R coral
             public static double AUTO_TRANSLATION_OFFSET = 0; // Offset for L/R coral

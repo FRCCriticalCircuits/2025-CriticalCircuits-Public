@@ -91,12 +91,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "fetchAlgae"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "0 - Path 3"
@@ -214,7 +208,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "0 - Path 5"
+                  "pathName": "0 - Path 7"
                 }
               },
               {

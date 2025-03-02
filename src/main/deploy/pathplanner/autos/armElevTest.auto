@@ -9,6 +9,18 @@
           "data": {
             "pathName": "1 - Path 1"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intakeAlgae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outTake"
+          }
         }
       ]
     }

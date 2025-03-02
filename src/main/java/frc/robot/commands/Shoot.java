@@ -4,6 +4,7 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.*;
 
 import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnFly;
 import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnFly;
 
 import edu.wpi.first.math.geometry.Pose3d;
@@ -47,11 +48,25 @@ public class Shoot extends Command{
                         SwerveSubsystem.driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
                         SwerveSubsystem.driveSimulation.getSimulatedDriveTrainPose().getRotation(),
                         wristTranslation.getMeasureZ(),
-                        MetersPerSecond.of(2.5),
+                        MetersPerSecond.of(3),
                         wristTranslation.getRotation().getMeasureY().times(-1)
                     ).enableBecomesGamePieceOnFieldAfterTouchGround()
                 );
-            }   
+            } 
+            
+            if(rollerSubsystem.algaeDetected()){
+                SimulatedArena.getInstance().addGamePieceProjectile(
+                    new ReefscapeAlgaeOnFly(
+                        SwerveSubsystem.driveSimulation.getSimulatedDriveTrainPose().getTranslation(),
+                        wristTranslation.getTranslation().toTranslation2d(),
+                        SwerveSubsystem.driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
+                        SwerveSubsystem.driveSimulation.getSimulatedDriveTrainPose().getRotation(),
+                        wristTranslation.getMeasureZ(),
+                        MetersPerSecond.of(3),
+                        wristTranslation.getRotation().getMeasureY().times(-1)
+                    ).enableBecomesGamePieceOnFieldAfterTouchGround()
+                );
+            }
         }
     }
 

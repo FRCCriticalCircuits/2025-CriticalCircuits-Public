@@ -77,6 +77,7 @@ public class RobotContainer {
     );
 
     autoChooser.setDefaultOption("Upper Coral", "Auto 0");
+    autoChooser.addOption("testing", "armElevTest");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 

@@ -52,42 +52,75 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // State Nodes
         graphMachine.addNode("preMatch", new Pair<Double, Double>(Units.degreesToRotations(56), 0.0));      // 56.0 deg,    0 cm
+        graphMachine.addNode("groundAlgae", new Pair<Double, Double>(Units.degreesToRotations(-10), 0.0));
         graphMachine.addNode("L1coral", new Pair<Double, Double>(Units.degreesToRotations(40), 0.15));      // 40.0 deg,    2 cm
         graphMachine.addNode("coralIntake", new Pair<Double, Double>(Units.degreesToRotations(30), 3.55));  // 30.0 deg,    50.5cm
 
-        // Nodes with 0 deg
-        graphMachine.addNode("L2coral", new Pair<Double, Double>(Units.degreesToRotations(0), 2.27));        // 00.0 deg,   cm
-        graphMachine.addNode("L3coral", new Pair<Double, Double>(Units.degreesToRotations(0), 5.27));        // 00.0 deg,    70.5cm
+        // State Nodes with angle 0
+        graphMachine.addNode("L2coral", new Pair<Double, Double>(Units.degreesToRotations(0), 2.3));
+        graphMachine.addNode("L3coral", new Pair<Double, Double>(Units.degreesToRotations(0), 5.25));   
+        graphMachine.addNode("processorAlgae", new Pair<Double, Double>(Units.degreesToRotations(0), 0.0));
+        graphMachine.addNode("algaeL1", new Pair<Double, Double>(Units.degreesToRotations(0), 2.35));
+        graphMachine.addNode("algaeL2", new Pair<Double, Double>(Units.degreesToRotations(0), 5.3));
+
+        // Algae-Fetch Nodes
+        graphMachine.addNode("algaeL1-in", new Pair<Double, Double>(Units.degreesToRotations(-25), 2.35));
+        graphMachine.addNode("algaeL2-in", new Pair<Double, Double>(Units.degreesToRotations(-25), 5.3));
 
         // Transition Nodes
         graphMachine.addNode("0n-1", new Pair<Double, Double>(0.0, 0.0));    // 00.0 deg,    0    cm
         graphMachine.addNode("0n-2", new Pair<Double, Double>(0.0, 0.15));   // 00.0 deg,    2.0  cm
         graphMachine.addNode("0n-3", new Pair<Double, Double>(0.0, 3.55));   // 00.0 deg,    50.5 cm
-        graphMachine.addNode("0n-4", new Pair<Double, Double>(0.0, 5.0));    // 00.0 deg,    70.5 cm
-
-        // Edges
+        
+        // Edges for Regular Nodes
         graphMachine.addEdge("0n-1", "preMatch");
+        graphMachine.addEdge("0n-1", "groundAlgae");
         graphMachine.addEdge("0n-2", "L1coral");
         graphMachine.addEdge("0n-3", "coralIntake");
 
-        // Edges (Nodes with 0 deg)
-        graphMachine.addEdge("0n-1", "L3coral");
-        graphMachine.addEdge("0n-2", "L3coral");
-        graphMachine.addEdge("0n-3", "L3coral");
-        graphMachine.addEdge("0n-4", "L3coral");
+        // Edges for Algae-Fetch Nodes
+        graphMachine.addEdge("algaeL1", "algaeL1-in");
+        graphMachine.addEdge("algaeL2", "algaeL2-in");
 
+        // Edges for State Nodes with angle 0
         graphMachine.addEdge("0n-1", "L2coral");
         graphMachine.addEdge("0n-2", "L2coral");
         graphMachine.addEdge("0n-3", "L2coral");
-        graphMachine.addEdge("0n-4", "L2coral");
 
-        // Transition Edges with angle 0
+        graphMachine.addEdge("0n-1", "L3coral");
+        graphMachine.addEdge("0n-2", "L3coral");
+        graphMachine.addEdge("0n-3", "L3coral");
+
+        graphMachine.addEdge("0n-1", "processorAlgae");
+        graphMachine.addEdge("0n-2", "processorAlgae");
+        graphMachine.addEdge("0n-3", "processorAlgae");
+
+        graphMachine.addEdge("0n-1", "algaeL1");
+        graphMachine.addEdge("0n-2", "algaeL1");
+        graphMachine.addEdge("0n-3", "algaeL1");
+
+        graphMachine.addEdge("0n-1", "algaeL2");
+        graphMachine.addEdge("0n-2", "algaeL2");
+        graphMachine.addEdge("0n-3", "algaeL2");
+
+        graphMachine.addEdge("L2coral", "L3coral");
+        graphMachine.addEdge("L2coral", "processorAlgae");
+        graphMachine.addEdge("L2coral", "algaeL1");
+        graphMachine.addEdge("L2coral", "algaeL2");
+
+        graphMachine.addEdge("L3coral", "processorAlgae");
+        graphMachine.addEdge("L3coral", "algaeL1");
+        graphMachine.addEdge("L3coral", "algaeL2");
+
+        graphMachine.addEdge("processorAlgae", "algaeL1");
+        graphMachine.addEdge("processorAlgae", "algaeL2");
+
+        graphMachine.addEdge("algaeL1", "algaeL2");
+
+        // Edges for Transition Nodes
         graphMachine.addEdge("0n-1", "0n-2");
         graphMachine.addEdge("0n-1", "0n-3");
-        graphMachine.addEdge("0n-1", "0n-4");
         graphMachine.addEdge("0n-2", "0n-3");
-        graphMachine.addEdge("0n-2", "0n-4");
-        graphMachine.addEdge("0n-3", "0n-4");
 
         wristPose = NetworkTableInstance.getDefault().getStructTopic("/Arm/wristRelativePos", Pose3d.struct).publish();
     }
