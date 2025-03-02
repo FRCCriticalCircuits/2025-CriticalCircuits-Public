@@ -51,7 +51,8 @@ public class DataStrcutures{
         L1(0),
         L2(1),
         L3(2),
-        L4(3);
+        L4(3),
+        LClimb(4);
 
         public final int value;
 

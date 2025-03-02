@@ -18,9 +18,9 @@ public class RollerKraken implements RollerIO {
 
     private TalonFXConfiguration rollerConfiguration;
 
-    private TimeOfFlight coralSensor, algaeSensor;
+    // private TimeOfFlight coralSensor, algaeSensor;
 
-    private Debouncer algaeDebouncer = new Debouncer(0.1);
+    private Debouncer coralDebouncer = new Debouncer(0.1);
 
     private RollerMode mode = RollerMode.HOLD;
 
@@ -35,7 +35,7 @@ public class RollerKraken implements RollerIO {
         rollerConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
         rollerConfiguration.CurrentLimits.StatorCurrentLimit = PhysicalConstants.Elevator.CurrentLimits.ROLLER_CURRENT_LIMIT;
         rollerConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
-        rollerConfiguration.CurrentLimits.SupplyCurrentLimit = 10;
+        rollerConfiguration.CurrentLimits.SupplyCurrentLimit = 20;
         rollerConfiguration.CurrentLimits.SupplyCurrentLowerLimit = 1;
         rollerConfiguration.CurrentLimits.SupplyCurrentLowerTime = 0.1;
 
@@ -51,21 +51,24 @@ public class RollerKraken implements RollerIO {
         rollerConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         m_intakeMotor.getConfigurator().apply(rollerConfiguration);
 
-        coralSensor = new TimeOfFlight(DeviceID.Sensor.CORAL_SENSOR);
-        algaeSensor = new TimeOfFlight(DeviceID.Sensor.ALGAE_SENSOR);
+        // coralSensor = new TimeOfFlight(DeviceID.Sensor.CORAL_SENSOR);
+        // algaeSensor = new TimeOfFlight(DeviceID.Sensor.ALGAE_SENSOR);
 
-        coralSensor.setRangingMode(RangingMode.Short, 25);
-        algaeSensor.setRangingMode(RangingMode.Short, 25);
+        // coralSensor.setRangingMode(RangingMode.Short, 25);
+        // algaeSensor.setRangingMode(RangingMode.Short, 25);
     }
 
     @Override
     public void updateInputs(RollerIOInputs inputs) {
-        inputs.algaeDetected = algaeDebouncer.calculate(
-            algaeSensor.isRangeValid() &&
-            algaeSensor.getRange() < 80
-        );
+        // inputs.algaeDetected = algaeDebouncer.calculate(
+        //     algaeSensor.isRangeValid() &&
+        //     algaeSensor.getRange() < 80
+        // );
 
-        inputs.coralDetected = m_hatcherMotor.getSupplyCurrent().getValueAsDouble() > 0.5 &&  m_hatcherMotor.getSupplyCurrent().getValueAsDouble() < 3.0;
+        inputs.coralDetected = coralDebouncer.calculate(
+            m_hatcherMotor.getVelocity().getValueAsDouble() < 0.1
+        );
+        // m_hatcherMotor.getSupplyCurrent().getValueAsDouble() > 0.5 &&  m_hatcherMotor.getSupplyCurrent().getValueAsDouble() < 3.0;
 
         SmartDashboard.putBoolean("algae", inputs.algaeDetected);
         SmartDashboard.putBoolean("coral", inputs.coralDetected);
