@@ -295,6 +295,11 @@ public class SwerveSubsystem extends SubsystemBase{
                 module.stop();
             }
         }
+        
+        // Pose Estimator
+        updatePoseEstimator();
+
+        // Add Vision Measurements
         LimelightHelpers.SetRobotOrientation("limelight", getPoseEstimate().getRotation().getDegrees(), 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
         boolean doRejectUpdate = false;
@@ -308,8 +313,6 @@ public class SwerveSubsystem extends SubsystemBase{
         {
             updatePoseEstimator(mt2.pose, mt2.timestampSeconds,VecBuilder.fill(0.7, 0.7, 9999999));
         }
-        // Pose Estimator
-        updatePoseEstimator();
 
 
         // Telemetry
