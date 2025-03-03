@@ -9,11 +9,13 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Constants.Physical.LEDSubsystem.*;
+
+import static frc.robot.Constants.Physical.LEDSubsystemConstants.*;
 import static edu.wpi.first.units.Units.*;
 
 public class LEDSubsystem extends SubsystemBase {
     public static final Color CICRed = new Color("89191c");
+    private static LEDSubsystem instance;
 
     AddressableLED leds;
     AddressableLEDBuffer buf;
@@ -90,13 +92,18 @@ public class LEDSubsystem extends SubsystemBase {
     public void setBlink(boolean state) {
         this.blink = state;
 
+        // Apply pattern per state
         if (state) {
             patternBlink.applyTo(bufElev);
         } else {
             pattern.applyTo(bufElev);
         }
-
+        // set data into leds
         leds.setData(buf);
     }
-    
+
+    public static LEDSubsystem getInstance() {
+        if (instance == null) instance = new LEDSubsystem();
+        return instance;
+    }
 }

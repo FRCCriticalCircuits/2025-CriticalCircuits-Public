@@ -206,7 +206,7 @@ public class Constants {
             public static double ENCODER_ZERO_OFFSET = -0.90;
         }
 
-        public static class LEDSubsystem {
+        public static class LEDSubsystemConstants {
             public static int PWM_PORT = 0;
             public static int NUM_LEDS = 50;
             public static final int NUM_LAST_ELEV_LED = 49;
