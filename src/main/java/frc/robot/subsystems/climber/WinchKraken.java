@@ -7,10 +7,12 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class WinchKraken implements WinchIO {
     TalonFX winchKraken = new TalonFX(29);
+    
     private TalonFXConfiguration winchConfig;
 
     public WinchKraken() {
         winchConfig = new TalonFXConfiguration();
+
         winchConfig.CurrentLimits.StatorCurrentLimit = 80; 
         winchConfig.CurrentLimits.SupplyCurrentLimit = 20; 
         winchConfig.CurrentLimits.SupplyCurrentLimitEnable = true; 

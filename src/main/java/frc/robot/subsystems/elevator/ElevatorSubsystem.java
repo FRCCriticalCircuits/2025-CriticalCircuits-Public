@@ -22,6 +22,8 @@ import frc.robot.Constants.PhysicalConstants;
 public class ElevatorSubsystem extends SubsystemBase {
     private static ElevatorSubsystem instance;
 
+    private RollerSubsystem rollerSubsystem = RollerSubsystem.getInstance();
+
     private ElevatorIO elevatorIO;
     private final ElevatorIOInputs elevatorInputs = new ElevatorIOInputs();
 
@@ -208,9 +210,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         nextState = graphMachine.findPath(curState, targetState);
         
         armIO.setRotation(Rotation2d.fromRotations(nextState.getSecond().getFirst()));
+        armIO.updateInputs(armInputs, rollerSubsystem.coralDetected(), rollerSubsystem.algaeDetected());
+
         elevatorIO.setPosition(nextState.getSecond().getSecond());
         elevatorIO.updateInputs(elevatorInputs);
-        armIO.updateInputs(armInputs);
 
         // false if osilating
         atGoal =    elevatorAtGoal.calculate(Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) < 0.1) &&

@@ -8,6 +8,6 @@ public interface ArmIO {
         public Rotation2d targetRotation;
     }
 
-    public default void updateInputs(ArmIOInputs inputs) {}
+    public default void updateInputs(ArmIOInputs inputs, boolean coralDetected, boolean algaeDetected) {}
     public void setRotation(Rotation2d rotation);
 }

@@ -183,7 +183,7 @@ public class RobotContainer {
           if(mode < 0) mode = 2;
           autoAimManager.updateMode(Mode.valueOf(mode));
           if(mode == 2) elevatorSubsystem.fetchAlgae = false;
-        }
+        }, elevatorSubsystem, rollerSubsystem
       )
     );
 
@@ -194,7 +194,7 @@ public class RobotContainer {
           if(mode > 2) mode = 0;
           autoAimManager.updateMode(Mode.valueOf(mode));
           if(mode == 2) elevatorSubsystem.fetchAlgae = false;
-        }
+        }, elevatorSubsystem, rollerSubsystem
       )
     );
 
@@ -210,7 +210,7 @@ public class RobotContainer {
       new InstantCommand(
         () -> {
             elevatorSubsystem.fetchAlgae = !elevatorSubsystem.fetchAlgae;
-        }, elevatorSubsystem
+        }, elevatorSubsystem, rollerSubsystem
       )
     );
 

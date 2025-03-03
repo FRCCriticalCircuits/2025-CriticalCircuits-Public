@@ -113,12 +113,16 @@ public class Constants {
 
         public class Arm{
             public static double ARM_PID_P = 20.0;
-            public static double ARM_PID_I = 0;
+            public static double ARM_PID_I = 0.0;
             public static double ARM_PID_D = 0.0;
 
-            public static double ARM_FEED_FORWARD_KS = 0.0;
-            public static double ARM_FEED_FORWARD_KV = 0.0;
-            public static double ARM_FEED_FORWARD_KA = 0.0;
+            public static double ARM_PID_P_CORAL = 0.0;
+            public static double ARM_PID_I_CORAL = 0.0;
+            public static double ARM_PID_D_CORAL = 0.0;
+
+            public static double ARM_PID_P_ALGAE = 0.0;
+            public static double ARM_PID_I_ALGAE = 0.0;
+            public static double ARM_PID_D_ALGAE = 0.0;
 
             public static double ARM_MAX_VELOCITY = 5.0;
             public static double ARM_MAX_ACCELERATION = 35.0;

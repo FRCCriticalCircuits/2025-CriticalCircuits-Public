@@ -23,7 +23,7 @@ public class ArmSim implements ArmIO{
     }
 
     @Override
-    public void updateInputs(ArmIOInputs inputs) {
+    public void updateInputs(ArmIOInputs inputs, boolean coralDetected, boolean algaeDetected) {
         motorSim.update(0.02);
 
         motorSim.setInputVoltage(pidController.calculate(motorSim.getAngularPositionRotations(), targetIORotation.getRotations()));

@@ -1,10 +1,11 @@
 package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
+import com.ctre.phoenix6.configs.Slot2Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -21,7 +22,9 @@ public class ArmKraken implements ArmIO {
 
     private Rotation2d targetIORotation = Rotation2d.fromDegrees(55);
 
-    private final MotionMagicVoltage m_MotionMagic = new MotionMagicVoltage(0).withSlot(0);
+    private final PositionVoltage m_PositionVoltage_0 = new PositionVoltage(0).withSlot(0);
+    private final PositionVoltage m_PositionVoltage_1 = new PositionVoltage(0).withSlot(1);
+    private final PositionVoltage m_PositionVoltage_2 = new PositionVoltage(0).withSlot(2);
 
     public ArmKraken(){
         m_anglerMotor = new TalonFX(DeviceID.Angler.ANGLER_ID);
@@ -41,13 +44,23 @@ public class ArmKraken implements ArmIO {
 
         anglerConfig.withSlot0(
             new Slot0Configs()
-            .withGravityType(GravityTypeValue.Arm_Cosine)
-            .withKS(TunedConstants.Arm.ARM_FEED_FORWARD_KS)
-            .withKV(TunedConstants.Arm.ARM_FEED_FORWARD_KV)
-            .withKA(TunedConstants.Arm.ARM_FEED_FORWARD_KA)
             .withKP(TunedConstants.Arm.ARM_PID_P)             // Error Gain
             .withKI(TunedConstants.Arm.ARM_PID_I)             // Error Intergral Gain
             .withKD(TunedConstants.Arm.ARM_PID_D)             // Error Derivative Gain
+        );
+
+        anglerConfig.withSlot1(
+            new Slot1Configs()
+            .withKP(TunedConstants.Arm.ARM_PID_P_CORAL)             // Error Gain
+            .withKI(TunedConstants.Arm.ARM_PID_I_CORAL)             // Error Intergral Gain
+            .withKD(TunedConstants.Arm.ARM_PID_D_CORAL)             // Error Derivative Gain
+        );
+
+        anglerConfig.withSlot2(
+            new Slot2Configs()
+            .withKP(TunedConstants.Arm.ARM_PID_P_ALGAE)             // Error Gain
+            .withKI(TunedConstants.Arm.ARM_PID_I_ALGAE)             // Error Intergral Gain
+            .withKD(TunedConstants.Arm.ARM_PID_D_ALGAE)             // Error Derivative Gain
         );
 
         anglerConfig.Voltage.PeakForwardVoltage = 8;
@@ -66,11 +79,13 @@ public class ArmKraken implements ArmIO {
     }
 
     @Override
-    public void updateInputs(ArmIOInputs inputs) {
+    public void updateInputs(ArmIOInputs inputs, boolean coralDetected, boolean algaeDetected) {
         inputs.ioRotation = Rotation2d.fromRotations(m_anglerMotor.getPosition().getValueAsDouble());
         inputs.targetRotation = this.targetIORotation;
 
-        m_anglerMotor.setControl(m_MotionMagic.withPosition(this.targetIORotation.getRotations()));
+        if(coralDetected) m_anglerMotor.setControl(m_PositionVoltage_1.withPosition(this.targetIORotation.getRotations()));
+        else if (algaeDetected) m_anglerMotor.setControl(m_PositionVoltage_2.withPosition(this.targetIORotation.getRotations()));
+        else m_anglerMotor.setControl(m_PositionVoltage_0.withPosition(this.targetIORotation.getRotations()));
     }
 
     /**
