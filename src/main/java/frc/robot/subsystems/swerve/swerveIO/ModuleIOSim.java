@@ -17,7 +17,7 @@ import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.Constants.PhysicalConstants;
+import frc.robot.Constants.Physical;
 import frc.robot.Constants.TunedConstants;
 import frc.robot.utils.MotorUtil;
 import java.util.Arrays;
@@ -41,9 +41,9 @@ public class ModuleIOSim implements ModuleIO {
     public ModuleIOSim(SwerveModuleSimulation moduleSimulation) {
         this.moduleSimulation = moduleSimulation;
         this.driveMotor =
-                moduleSimulation.useGenericMotorControllerForDrive().withCurrentLimit(Amps.of(PhysicalConstants.DriveBase.CurrentLimits.DRIVE_CURRENT_LIMIT));
+                moduleSimulation.useGenericMotorControllerForDrive().withCurrentLimit(Amps.of(Physical.DriveBase.CurrentLimits.DRIVE_CURRENT_LIMIT));
         this.turnMotor =
-                moduleSimulation.useGenericControllerForSteer().withCurrentLimit(Amps.of(PhysicalConstants.DriveBase.CurrentLimits.TURN_CURRENT_LIMIT));
+                moduleSimulation.useGenericControllerForSteer().withCurrentLimit(Amps.of(Physical.DriveBase.CurrentLimits.TURN_CURRENT_LIMIT));
 
         // Enable wrapping for turn PID
         turnController.enableContinuousInput(-Math.PI, Math.PI);

@@ -23,11 +23,11 @@ public class Constants {
     public static AutoAimSetting DEFAULT_SETTING = new AutoAimSetting(Spot.MID, Level.L1, Mode.CORAL_PLACE);
     public static int SAMPLE_NUM = 20;
 
-    public class KeyBinding{
+    public static class KeyBinding{
         public static int GYRO_RESET = 8; // Menu
     }
 
-    public class DeviceID {
+    public static class DeviceID {
         public static final int GAMEPAD_DRIVER = 0;
         
         public class DriveBase{
@@ -70,7 +70,7 @@ public class Constants {
         public static final int CLIMBER_ID = 29;
     }
 
-    public class TunedConstants{
+    public static class TunedConstants{
         public class DriveBase{
             public static double DRIVE_PID_P = 0;
             public static double DRIVE_PID_I = 0;
@@ -129,7 +129,7 @@ public class Constants {
         }
     }
 
-    public class PhysicalConstants {
+    public class Physical {
         public static double NOMINAL_VOLTAGE = 12.0;
         public static double ODOMETRY_FREQUENCY = 100.0;
         
@@ -204,6 +204,16 @@ public class Constants {
 
         public class Arm{
             public static double ENCODER_ZERO_OFFSET = -0.90;
+        }
+
+        public static class LEDSubsystemConstants {
+            public static int PWM_PORT = 0;
+            public static int NUM_LEDS = 50;
+            public static final int NUM_LAST_ELEV_LED = 49;
+
+            public static final double BLINK_TIME_ON = 0.150;
+            public static final double BLINK_TIME_OFF = 0.050;
+            public static final double SCROLL_PERCENT_PER_SEC = 0.2;
         }
     }
 

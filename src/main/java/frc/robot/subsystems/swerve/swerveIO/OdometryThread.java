@@ -2,7 +2,7 @@ package frc.robot.subsystems.swerve.swerveIO;
 
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-import frc.robot.Constants.PhysicalConstants;
+import frc.robot.Constants.Physical;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class OdometryThread {
     }
 
     public void start() {
-        if(!timestampQueues.isEmpty()) notifier.startPeriodic(1.0 / PhysicalConstants.ODOMETRY_FREQUENCY);
+        if(!timestampQueues.isEmpty()) notifier.startPeriodic(1.0 / Physical.ODOMETRY_FREQUENCY);
     }
 
     /** Registers a generic signal to be read from the thread. */

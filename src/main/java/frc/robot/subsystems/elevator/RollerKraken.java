@@ -10,7 +10,7 @@ import com.playingwithfusion.TimeOfFlight.RangingMode;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DeviceID;
-import frc.robot.Constants.PhysicalConstants;
+import frc.robot.Constants.Physical;
 
 public class RollerKraken implements RollerIO {
     private TalonFX m_hatcherMotor;
@@ -34,7 +34,7 @@ public class RollerKraken implements RollerIO {
 
         // common settings
         rollerConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
-        rollerConfiguration.CurrentLimits.StatorCurrentLimit = PhysicalConstants.Elevator.CurrentLimits.ROLLER_CURRENT_LIMIT;
+        rollerConfiguration.CurrentLimits.StatorCurrentLimit = Physical.Elevator.CurrentLimits.ROLLER_CURRENT_LIMIT;
         rollerConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
         rollerConfiguration.CurrentLimits.SupplyCurrentLimit = 20;
         rollerConfiguration.CurrentLimits.SupplyCurrentLowerLimit = 1;

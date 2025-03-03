@@ -31,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.PhysicalConstants;
+import frc.robot.Constants.Physical;
 import frc.robot.subsystems.swerve.swerveIO.GyroIO;
 import frc.robot.subsystems.swerve.swerveIO.GyroRedux;
 import frc.robot.subsystems.swerve.swerveIO.GyroSim;
@@ -73,7 +73,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
     private SwerveSubsystem(){
         driveSimulation = new SwerveDriveSimulation(
-            PhysicalConstants.DriveBase.SIMULATION_CONFIG,
+            Physical.DriveBase.SIMULATION_CONFIG,
             DriveStationIO.isBlue()   ? FieldConstants.INIT_POSE_BLUE 
                                       : FieldConstants.INIT_POSE_BLUE.flip()
         );
@@ -102,7 +102,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
         // Pose Estimator
         poseEstimator = new SwerveDrivePoseEstimator(
-            PhysicalConstants.DriveBase.KINEMATICS, 
+            Physical.DriveBase.KINEMATICS, 
             rawGyroRotation,
             getSwerveModulePositions(),
             DriveStationIO.isBlue()   ? FieldConstants.INIT_POSE_BLUE 
@@ -192,7 +192,7 @@ public class SwerveSubsystem extends SubsystemBase{
      * @apiNote uses for pathplanner
      */
     public synchronized ChassisSpeeds getChassisSpeeds() {
-        return PhysicalConstants.DriveBase.KINEMATICS.toChassisSpeeds(getSwerveModuleStates());
+        return Physical.DriveBase.KINEMATICS.toChassisSpeeds(getSwerveModuleStates());
     }
 
     /**
@@ -202,7 +202,7 @@ public class SwerveSubsystem extends SubsystemBase{
      */
     private void setModuleStates(SwerveModuleState[] states){
         // normalize wheelspeed to make it smaller than the maximum speed
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, PhysicalConstants.DriveBase.MAX_SPEED_METERS);
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, Physical.DriveBase.MAX_SPEED_METERS);
 
         // apply speeds to each Swerve Module
         for (int i = 0; i < 4; i++) {
@@ -219,7 +219,7 @@ public class SwerveSubsystem extends SubsystemBase{
      */
     public synchronized void setModuleStates(ChassisSpeeds speeds){
         speeds = ChassisSpeeds.discretize(speeds, 0.02);
-        SwerveModuleState states[] = PhysicalConstants.DriveBase.KINEMATICS.toSwerveModuleStates(speeds);
+        SwerveModuleState states[] = Physical.DriveBase.KINEMATICS.toSwerveModuleStates(speeds);
         setModuleStates(states);
     }
 
@@ -255,7 +255,7 @@ public class SwerveSubsystem extends SubsystemBase{
                 rawGyroRotation = gyroInputs.odometryYawPositions[i];
             } else {
                 // Use the angle delta from the kinematics and module deltas
-                Twist2d twist = PhysicalConstants.DriveBase.KINEMATICS.toTwist2d(moduleDeltas);
+                Twist2d twist = Physical.DriveBase.KINEMATICS.toTwist2d(moduleDeltas);
                 rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
             }
 
