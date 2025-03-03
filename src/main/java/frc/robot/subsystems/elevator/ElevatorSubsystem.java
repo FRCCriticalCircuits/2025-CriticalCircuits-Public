@@ -182,47 +182,28 @@ public class ElevatorSubsystem extends SubsystemBase {
                 break;  
             case CORAL_INTAKE:
                 this.targetState = "coralIntake";
-                   break;
+                break;
+            case ALGAE_PICK:
+                switch (currentSettings.getLevel()) {
+                    case L1:
+                        this.targetState = "groundAlgae"; // No AutoAim
+                        break;
+                    case L2:
+                        this.targetState = "processorAlgae"; // No AutoAim
+                        break;
+                    case L3:
+                        if(fetchAlgae) this.targetState = "algaeL1-in"; // Mid
+                        else this.targetState = "algaeL1"; // Mid
+                        break;
+                    case L4:
+                        if(fetchAlgae) this.targetState = "algaeL2-in"; // Mid
+                        else this.targetState = "algaeL2"; // Mid
+                        break;
+                    case LClimb:
+                        break;
+                }
+                break;
         }
-
-        // switch(currentSettings.getMode()){
-        //     case CORAL_PLACE:
-        //         switch (currentSettings.getLevel()) {
-        //             case L1:
-        //                 this.targetState = "L1coral"; // Mid
-        //                 break;
-        //             case L2:
-        //                 this.targetState = "L2coral"; // L/R
-        //                 break;
-        //             case L3:
-        //                 this.targetState = "L3coral"; // L/R
-        //                 break;
-        //             default:
-        //                 this.targetState = "L3coral"; // L/R
-        //                 break;
-        //         }
-        //         break;
-        //     case CORAL_INTAKE:
-        //         this.targetState = "coralIntake";
-        //         break;
-        //     default:
-        //         switch (currentSettings.getLevel()) {
-        //             case L1:
-        //                 this.targetState = "groundAlgae"; // No AutoAim
-        //                 break;
-        //             case L2:
-        //                 this.targetState = "processorAlgae"; // No AutoAim
-        //                 break;
-        //             case L3:
-        //                 if(fetchAlgae) this.targetState = "algaeL1-in"; // Mid
-        //                 else this.targetState = "algaeL1"; // Mid
-        //                 break;
-        //             default:
-        //                 if(fetchAlgae) this.targetState = "algaeL2-in"; // Mid
-        //                 else this.targetState = "algaeL2"; // Mid
-        //                 break;
-        //         }
-        // }
 
         nextState = graphMachine.findPath(curState, targetState);
         
@@ -233,12 +214,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // false if osilating
         atGoal =    elevatorAtGoal.calculate(Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) < 0.1) &&
-                    armAtGoal.calculate(Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) < 0.01);
+                    armAtGoal.calculate(Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) < 0.02);
         
         // false if error is too big
         atGoal =    (
                         (Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) > 0.1) ||
-                        (Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) > 0.01)
+                        (Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) > 0.02)
                     ) ? false 
                       : atGoal;
 

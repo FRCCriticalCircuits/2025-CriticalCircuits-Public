@@ -1,5 +1,11 @@
 package frc.robot.subsystems.climber;
 
-abstract class WinchIO {
-    abstract public void runWinch(double voltage);
+public interface WinchIO {
+    public enum WINCH_STATES{
+        UP,
+        DOWN,
+        IDLE
+    }
+    
+    default public void runWinch(double voltage) {};
 }

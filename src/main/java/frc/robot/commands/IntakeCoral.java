@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
@@ -8,17 +7,14 @@ import frc.robot.subsystems.elevator.RollerSubsystem;
 
 public class IntakeCoral extends Command{
     private RollerSubsystem rollerSubsystem;
-    private double timeEnds, timeLimitSeconds;
     
-    public IntakeCoral(double timeLimitSeconds){
+    public IntakeCoral(){
         rollerSubsystem = RollerSubsystem.getInstance();
-        this.timeLimitSeconds = timeLimitSeconds;
 
         addRequirements(rollerSubsystem);
     }
 
     public void initialize(){
-        this.timeEnds = Timer.getFPGATimestamp() + timeLimitSeconds;
         rollerSubsystem.intake();
     }
 
@@ -33,10 +29,5 @@ public class IntakeCoral extends Command{
             newInputs.coralDetected = true;
             rollerSubsystem.overrideSimStates(newInputs);
         }
-    }
-
-    @Override
-    public boolean isFinished() {
-        return rollerSubsystem.coralDetected() || (Timer.getFPGATimestamp() > this.timeEnds);
     }
 }

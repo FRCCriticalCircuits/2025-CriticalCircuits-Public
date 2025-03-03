@@ -8,7 +8,6 @@ import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnFly
 import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnFly;
 
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
@@ -20,13 +19,9 @@ public class Shoot extends Command{
     private RollerSubsystem rollerSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
 
-    private double timeEnds, timeLimitSeconds;
-    
-    public Shoot(double timeLimitSeconds){
+    public Shoot(){
         rollerSubsystem = RollerSubsystem.getInstance();
         elevatorSubsystem = ElevatorSubsystem.getInstance();
-
-        this.timeLimitSeconds = timeLimitSeconds;
 
         addRequirements(rollerSubsystem);
         addRequirements(elevatorSubsystem);
@@ -34,7 +29,6 @@ public class Shoot extends Command{
     }
 
     public void initialize(){
-        this.timeEnds = Timer.getFPGATimestamp() + timeLimitSeconds;
         rollerSubsystem.outTake();
         
         if(Robot.isSimulation()){
@@ -81,10 +75,5 @@ public class Shoot extends Command{
             newInputs.coralDetected = false;
             rollerSubsystem.overrideSimStates(newInputs);
         }
-    }
-
-    @Override
-    public boolean isFinished() {
-        return (!rollerSubsystem.coralDetected() && !rollerSubsystem.algaeDetected()) || (Timer.getFPGATimestamp() > timeEnds);
     }
 }

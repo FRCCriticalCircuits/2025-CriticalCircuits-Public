@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.KeyBinding;
@@ -213,16 +214,16 @@ public class RobotContainer {
       )
     );
 
-    driveController.rightBumper().debounce(0.02).onTrue(
-      new IntakeAlgae(1.75)
+    driveController.rightBumper().debounce(0.02).whileTrue(
+      new IntakeAlgae()
     );
 
-    driveController.b().debounce(0.02).onTrue(
-      new IntakeCoral(1.75)
+    driveController.b().debounce(0.02).whileTrue(
+      new IntakeCoral()
     );
 
-    driveController.y().debounce(0.02).onTrue(
-      new Shoot(5)
+    driveController.y().debounce(0.02).whileTrue(
+      new Shoot()
     );
   }
 
@@ -342,17 +343,30 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
       "outTake",
-      new Shoot(0.7)
+      new Shoot().withTimeout(1).withDeadline(
+        new WaitUntilCommand(
+          () -> !rollerSubsystem.algaeDetected() &&
+                !rollerSubsystem.coralDetected()
+        )
+      )
     );
 
     NamedCommands.registerCommand(
       "intakeCoral",
-      new IntakeCoral(1.4)
+      new IntakeCoral().withTimeout(1.2).withDeadline(
+        new WaitUntilCommand(
+          () -> rollerSubsystem.coralDetected()
+        )
+      )
     );
 
     NamedCommands.registerCommand(
       "intakeAlgae",
-      new IntakeAlgae(1.4)
+      new IntakeAlgae().withTimeout(1.2).withDeadline(
+        new WaitUntilCommand(
+          () -> rollerSubsystem.algaeDetected()
+        )
+      )
     );
 
     NamedCommands.registerCommand(

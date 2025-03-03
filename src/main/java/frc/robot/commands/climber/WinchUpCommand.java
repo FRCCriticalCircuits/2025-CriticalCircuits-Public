@@ -3,24 +3,25 @@ package frc.robot.commands.climber;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.climber.WinchSubsystem;
+import frc.robot.subsystems.climber.WinchIO.WINCH_STATES;
 import frc.robot.utils.structures.DataStrcutures.Level;
 
 public class WinchUpCommand extends Command {
     WinchSubsystem winchSubsystem;
-    boolean dir;
-    public WinchUpCommand(WinchSubsystem s) {
-        winchSubsystem = s;
-        addRequirements(s);
+
+    public WinchUpCommand(WinchSubsystem winchSubsystem) {
+        this.winchSubsystem = winchSubsystem;
+        addRequirements(winchSubsystem);
     }
 
     @Override
     public void execute() {
-        winchSubsystem.winch(-1);
+        winchSubsystem.setState(WINCH_STATES.UP);
         AutoAimManager.getInstance().updateLevel(Level.LClimb);
     }
 
     @Override
     public void end(boolean interrupted) {
-        winchSubsystem.winch(0);
+        winchSubsystem.setState(WINCH_STATES.IDLE);
     }
 }

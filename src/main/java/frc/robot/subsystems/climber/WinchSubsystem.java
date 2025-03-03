@@ -2,7 +2,7 @@ package frc.robot.subsystems.climber;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import pabeles.concurrency.IntRangeConsumer;
+import frc.robot.subsystems.climber.WinchIO.WINCH_STATES;
 
 public class WinchSubsystem extends SubsystemBase {
     private static WinchSubsystem instance;
@@ -16,19 +16,22 @@ public class WinchSubsystem extends SubsystemBase {
         }
     }
     
-    public void winch(int state) {
-        if (state == 1) {
-            winchIO.runWinch(4);
-        } else if (state == -1) {
-            winchIO.runWinch(-4);
-        } else {
-            winchIO.runWinch(0);
+    public void setState(WINCH_STATES state) {
+        switch (state) {
+            case DOWN:
+                winchIO.runWinch(4);
+                break;
+            case UP:
+                winchIO.runWinch(-4);
+                break;
+            case IDLE:
+                winchIO.runWinch(0);
+                break;
         }
     }
 
     public static WinchSubsystem getInstance() {
         if (instance == null) instance = new WinchSubsystem();
-
         return instance;
     }
 }

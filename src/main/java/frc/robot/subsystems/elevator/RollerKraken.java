@@ -18,9 +18,10 @@ public class RollerKraken implements RollerIO {
 
     private TalonFXConfiguration rollerConfiguration;
 
-    // private TimeOfFlight coralSensor, algaeSensor;
+    private TimeOfFlight algaeSensor;
 
-    private Debouncer coralDebouncer = new Debouncer(0.1);
+    private Debouncer coralDebouncer = new Debouncer(0.04);
+    private Debouncer algaeDebouncer = new Debouncer(0.06);
 
     private RollerMode mode = RollerMode.HOLD;
 
@@ -51,28 +52,24 @@ public class RollerKraken implements RollerIO {
         rollerConfiguration.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         m_intakeMotor.getConfigurator().apply(rollerConfiguration);
 
-        // coralSensor = new TimeOfFlight(DeviceID.Sensor.CORAL_SENSOR);
-        // algaeSensor = new TimeOfFlight(DeviceID.Sensor.ALGAE_SENSOR);
+        algaeSensor = new TimeOfFlight(DeviceID.Sensor.ALGAE_SENSOR);
 
-        // coralSensor.setRangingMode(RangingMode.Short, 25);
-        // algaeSensor.setRangingMode(RangingMode.Short, 25);
+        algaeSensor.setRangingMode(RangingMode.Short, 25);
     }
 
     @Override
     public void updateInputs(RollerIOInputs inputs) {
-        // inputs.algaeDetected = algaeDebouncer.calculate(
-        //     algaeSensor.isRangeValid() &&
-        //     algaeSensor.getRange() < 80
-        // );
+        inputs.algaeDetected = algaeDebouncer.calculate(
+            algaeSensor.isRangeValid() &&
+            algaeSensor.getRange() < 80
+        );
 
         inputs.coralDetected = coralDebouncer.calculate(
-            m_hatcherMotor.getVelocity().getValueAsDouble() < 0.1
+            m_hatcherMotor.getSupplyCurrent().getValueAsDouble() > 0.5 &&  m_hatcherMotor.getSupplyCurrent().getValueAsDouble() < 3.0
         );
-        // m_hatcherMotor.getSupplyCurrent().getValueAsDouble() > 0.5 &&  m_hatcherMotor.getSupplyCurrent().getValueAsDouble() < 3.0;
 
         SmartDashboard.putBoolean("algae", inputs.algaeDetected);
         SmartDashboard.putBoolean("coral", inputs.coralDetected);
-
 
         switch (mode) {
             case IN:
