@@ -18,9 +18,9 @@ public class WinchSubsystem extends SubsystemBase {
     
     public void winch(int state) {
         if (state == 1) {
-            winchIO.runWinch(4);
+            winchIO.runWinch(12);
         } else if (state == -1) {
-            winchIO.runWinch(-4);
+            winchIO.runWinch(-12);
         } else {
             winchIO.runWinch(0);
         }
