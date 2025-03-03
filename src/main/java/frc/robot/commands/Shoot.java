@@ -66,7 +66,7 @@ public class Shoot extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        if(rollerSubsystem.coralDetected() || rollerSubsystem.algaeDetected()) rollerSubsystem.hold();
+        if(rollerSubsystem.coralDetected() || rollerSubsystem.algaeDetected()) rollerSubsystem.intake();
         else rollerSubsystem.idle();
 
         if(Robot.isSimulation()){

@@ -38,7 +38,6 @@ import frc.robot.subsystems.Controller;
 import frc.robot.subsystems.climber.WinchSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.RollerSubsystem;
-import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
@@ -51,14 +50,14 @@ public class RobotContainer {
   private VisionSubsystem visionSubsystem = new VisionSubsystem();
 
   private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
-  private WinchSubsystem winchSubsystem;
-  private LEDSubsystem ledSubsystem;
-
   private RollerSubsystem rollerSubsystem = RollerSubsystem.getInstance();
+
+  private WinchSubsystem winchSubsystem = WinchSubsystem.getInstance();
 
   private SendableChooser<String> autoChooser = new SendableChooser<>();
 
   private Controller controller = Controller.getInstance();
+
   private CommandXboxController driveController = new CommandXboxController(0); 
   private CommandXboxController operatorController = new CommandXboxController(1);
 
@@ -70,9 +69,6 @@ public class RobotContainer {
   private int mode = 1;
 
   public RobotContainer() {
-    winchSubsystem = WinchSubsystem.getInstance();
-    ledSubsystem = LEDSubsystem.getInstance();
-    
     visionSubsystem.start();
     
     swerveSubsystem.setDefaultCommand(
@@ -378,7 +374,7 @@ public class RobotContainer {
       new InstantCommand(
         () -> {
             elevatorSubsystem.fetchAlgae = !elevatorSubsystem.fetchAlgae;
-        }, elevatorSubsystem
+        }, elevatorSubsystem, rollerSubsystem
       )
     );
   }

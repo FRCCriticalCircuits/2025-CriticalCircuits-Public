@@ -23,7 +23,7 @@ public class RollerKraken implements RollerIO {
     private Debouncer coralDebouncer = new Debouncer(0.04);
     private Debouncer algaeDebouncer = new Debouncer(0.06);
 
-    private RollerMode mode = RollerMode.HOLD;
+    private RollerMode mode = RollerMode.IN;
 
     public RollerKraken(){
         m_hatcherMotor = new TalonFX(DeviceID.Angler.HATCHER_ID);

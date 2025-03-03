@@ -21,7 +21,6 @@ public class VisionLL implements VisionIO{
         this.camName = name;
     }
 
-    
     /**
      * The latest estimated robot pose on the field from vision data. This may be empty. This should
      * only be called once per loop.
@@ -31,14 +30,14 @@ public class VisionLL implements VisionIO{
      */
     @Override
     public Optional<VisionResult> getEstimatedGlobalPose() {
-        PoseEstimate visionEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(camName);
+        PoseEstimate visionEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(camName);
 
         if(LimelightHelpers.validPoseEstimate(visionEst)){
             VisionResult result = new VisionResult(); 
             
             result.pose = visionEst.pose;
             result.timestampSeconds = visionEst.timestampSeconds;
-            result.stdDevs = VecBuilder.fill(2, 2, 4);
+            result.stdDevs = VecBuilder.fill(.7, .7, 4); // LimelightHelpers.getMT1StdDevs(camName)
             
             return Optional.of(result);
         }else{
