@@ -33,7 +33,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants.DeviceID;
-import frc.robot.Constants.PhysicalConstants;
+import frc.robot.Constants.Physical;
 import frc.robot.Constants.TunedConstants;
 
 import java.util.Queue;
@@ -85,10 +85,10 @@ public class ModuleIOSpark implements ModuleIO {
 
     public ModuleIOSpark(int module) {
         zeroRotation = switch (module) {
-            case 0 -> PhysicalConstants.DriveBase.CANCoder.FRONT_LEFT_OFFSET;
-            case 1 -> PhysicalConstants.DriveBase.CANCoder.FRONT_RIGHT_OFFSET;
-            case 2 -> PhysicalConstants.DriveBase.CANCoder.REAR_LEFT_OFFSET;
-            case 3 -> PhysicalConstants.DriveBase.CANCoder.REAR_RIGHT_OFFSET;
+            case 0 -> Physical.DriveBase.CANCoder.FRONT_LEFT_OFFSET;
+            case 1 -> Physical.DriveBase.CANCoder.FRONT_RIGHT_OFFSET;
+            case 2 -> Physical.DriveBase.CANCoder.REAR_LEFT_OFFSET;
+            case 3 -> Physical.DriveBase.CANCoder.REAR_RIGHT_OFFSET;
             default -> 0;
         };
 
@@ -144,13 +144,13 @@ public class ModuleIOSpark implements ModuleIO {
         /* Current Limits */
         driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         driveConfig.CurrentLimits.SupplyCurrentLimitEnable = false;
-        driveConfig.CurrentLimits.StatorCurrentLimit = PhysicalConstants.DriveBase.CurrentLimits.DRIVE_CURRENT_LIMIT;
+        driveConfig.CurrentLimits.StatorCurrentLimit = Physical.DriveBase.CurrentLimits.DRIVE_CURRENT_LIMIT;
 
         /* Gear Ratio */
-        driveConfig.Feedback.SensorToMechanismRatio = PhysicalConstants.DriveBase.GearRatios.DRIVE_GEAR_RATIO;
+        driveConfig.Feedback.SensorToMechanismRatio = Physical.DriveBase.GearRatios.DRIVE_GEAR_RATIO;
 
         /* OpenLoop Control Ramp Period*/
-        driveConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = PhysicalConstants.DriveBase.CurrentLimits.DRIVE_LOOP_RAMP_RATE;
+        driveConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = Physical.DriveBase.CurrentLimits.DRIVE_LOOP_RAMP_RATE;
         
         /* CloseLoop Control Ramp Period */
         driveConfig.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = 0;
@@ -184,17 +184,17 @@ public class ModuleIOSpark implements ModuleIO {
         encoderConfig = new EncoderConfig();
 
         /* Current Limits */
-        turnConfig.voltageCompensation(PhysicalConstants.NOMINAL_VOLTAGE);
-        turnConfig.smartCurrentLimit(PhysicalConstants.DriveBase.CurrentLimits.TURN_CURRENT_LIMIT);
+        turnConfig.voltageCompensation(Physical.NOMINAL_VOLTAGE);
+        turnConfig.smartCurrentLimit(Physical.DriveBase.CurrentLimits.TURN_CURRENT_LIMIT);
         
         /* Gear Ratio */
-        encoderConfig.positionConversionFactor((1.0 / PhysicalConstants.DriveBase.GearRatios.TURN_GEAR_RATIO) * Math.PI * 2);
-        encoderConfig.velocityConversionFactor((60.0 / PhysicalConstants.DriveBase.GearRatios.TURN_GEAR_RATIO) * Math.PI * 2);
+        encoderConfig.positionConversionFactor((1.0 / Physical.DriveBase.GearRatios.TURN_GEAR_RATIO) * Math.PI * 2);
+        encoderConfig.velocityConversionFactor((60.0 / Physical.DriveBase.GearRatios.TURN_GEAR_RATIO) * Math.PI * 2);
 
         turnConfig
             .signals
             .primaryEncoderPositionAlwaysOn(true)
-            .primaryEncoderPositionPeriodMs((int) (1000.0 / PhysicalConstants.ODOMETRY_FREQUENCY))
+            .primaryEncoderPositionPeriodMs((int) (1000.0 / Physical.ODOMETRY_FREQUENCY))
             .primaryEncoderVelocityAlwaysOn(true)
             .primaryEncoderVelocityPeriodMs(20)
             .appliedOutputPeriodMs(20)
@@ -230,7 +230,7 @@ public class ModuleIOSpark implements ModuleIO {
         driveAppliedVolts = driveMotor.getMotorVoltage();
         driveCurrent = driveMotor.getStatorCurrent();
 
-        BaseStatusSignal.setUpdateFrequencyForAll(PhysicalConstants.ODOMETRY_FREQUENCY, driveVelocity, drivePosition);
+        BaseStatusSignal.setUpdateFrequencyForAll(Physical.ODOMETRY_FREQUENCY, driveVelocity, drivePosition);
         BaseStatusSignal.setUpdateFrequencyForAll(
             50.0,
             driveAppliedVolts,

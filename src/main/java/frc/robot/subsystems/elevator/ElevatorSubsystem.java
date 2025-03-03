@@ -17,7 +17,7 @@ import frc.robot.subsystems.elevator.ArmIO.ArmIOInputs;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
 import frc.robot.utils.GraphMachine;
 import frc.robot.utils.structures.AutoAimSetting;
-import frc.robot.Constants.PhysicalConstants;
+import frc.robot.Constants.Physical;
 
 public class ElevatorSubsystem extends SubsystemBase {
     private static ElevatorSubsystem instance;
@@ -146,7 +146,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         this.wristPose3d = new Pose3d(
                 0.2383,
                 0,
-                0.4704 + (elevatorRotation * PhysicalConstants.Elevator.GEAR_CIRCUMFERENCE_METERS),
+                0.4704 + (elevatorRotation * Physical.Elevator.GEAR_CIRCUMFERENCE_METERS),
                 new Rotation3d(
                     0,
                     -armRotation2d.getRadians(),

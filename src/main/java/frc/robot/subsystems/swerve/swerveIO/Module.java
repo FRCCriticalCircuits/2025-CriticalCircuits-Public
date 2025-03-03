@@ -18,7 +18,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import frc.robot.Constants.PhysicalConstants;
+import frc.robot.Constants.Physical;
 import frc.robot.subsystems.swerve.swerveIO.ModuleIO.ModuleIOInputs;
 
 public class Module {
@@ -45,7 +45,7 @@ public class Module {
         int sampleCount = inputs.odometryTimestamps.length; // All signals are sampled together
         odometryPositions = new SwerveModulePosition[sampleCount];
         for (int i = 0; i < sampleCount; i++) {
-            double positionMeters = inputs.odometryDrivePositionsRad[i] * PhysicalConstants.DriveBase.LENGTHS.DRIVE_WHEEL_RADIUS_METERS;
+            double positionMeters = inputs.odometryDrivePositionsRad[i] * Physical.DriveBase.LENGTHS.DRIVE_WHEEL_RADIUS_METERS;
             Rotation2d angle = inputs.odometryTurnPositions[i];
             odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
         }
@@ -67,7 +67,7 @@ public class Module {
         state.cosineScale(inputs.turnPosition);
 
         // Apply setpoints
-        io.setDriveVelocity(state.speedMetersPerSecond / PhysicalConstants.DriveBase.LENGTHS.DRIVE_WHEEL_RADIUS_METERS);
+        io.setDriveVelocity(state.speedMetersPerSecond / Physical.DriveBase.LENGTHS.DRIVE_WHEEL_RADIUS_METERS);
         io.setTurnPosition(state.angle);
     }
 
@@ -84,12 +84,12 @@ public class Module {
 
     /** Returns the current drive position of the module in meters. */
     public double getPositionMeters() {
-        return inputs.drivePositionRad * PhysicalConstants.DriveBase.LENGTHS.DRIVE_WHEEL_RADIUS_METERS;
+        return inputs.drivePositionRad * Physical.DriveBase.LENGTHS.DRIVE_WHEEL_RADIUS_METERS;
     }
 
     /** Returns the current drive velocity of the module in meters per second. */
     public double getVelocityMetersPerSec() {
-        return inputs.driveVelocityRadPerSec * PhysicalConstants.DriveBase.LENGTHS.DRIVE_WHEEL_RADIUS_METERS;
+        return inputs.driveVelocityRadPerSec * Physical.DriveBase.LENGTHS.DRIVE_WHEEL_RADIUS_METERS;
     }
 
     /** Returns the module position (turn angle and drive position). */
