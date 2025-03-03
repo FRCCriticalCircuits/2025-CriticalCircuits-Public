@@ -50,14 +50,14 @@ public class RobotContainer {
   private VisionSubsystem visionSubsystem = new VisionSubsystem();
 
   private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
-  private WinchSubsystem winchSubsystem = WinchSubsystem.getInstance();
-
-  @SuppressWarnings("unused")
   private RollerSubsystem rollerSubsystem = RollerSubsystem.getInstance();
+
+  private WinchSubsystem winchSubsystem = WinchSubsystem.getInstance();
 
   private SendableChooser<String> autoChooser = new SendableChooser<>();
 
   private Controller controller = Controller.getInstance();
+
   private CommandXboxController driveController = new CommandXboxController(0); 
   private CommandXboxController operatorController = new CommandXboxController(1);
 
@@ -374,7 +374,7 @@ public class RobotContainer {
       new InstantCommand(
         () -> {
             elevatorSubsystem.fetchAlgae = !elevatorSubsystem.fetchAlgae;
-        }, elevatorSubsystem
+        }, elevatorSubsystem, rollerSubsystem
       )
     );
   }

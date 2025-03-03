@@ -31,6 +31,8 @@ public class VisionSubsystem extends SubsystemBase{
 
     private void update(){
         limelightResult = limelight.getEstimatedGlobalPose(); 
+
+        if(swerveSubsystem.getGyroYawVelocity() > 12.5664) return;
   
         if(!limelightResult.isEmpty() && limelightResult.get().pose != null){
             swerveSubsystem.updatePoseEstimator(

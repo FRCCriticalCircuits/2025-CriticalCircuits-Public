@@ -12,7 +12,6 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -153,6 +152,10 @@ public class SwerveSubsystem extends SubsystemBase{
 
     public synchronized Rotation2d getGyroRotation2D(){
         return rawGyroRotation;
+    }
+
+    public synchronized double getGyroYawVelocity(){
+        return gyroInputs.yawVelocityRadPerSec;
     }
 
     public synchronized void resetGyro(double yaw){
@@ -301,19 +304,6 @@ public class SwerveSubsystem extends SubsystemBase{
 
         // Add Vision Measurements
         LimelightHelpers.SetRobotOrientation("limelight", getPoseEstimate().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-        boolean doRejectUpdate = false;
-        if(Math.abs(gyroInputs.yawVelocityRadPerSec) > 12.5664){ // if our angular velocity is greater than 720 degrees per second, ignore vision updates
-            doRejectUpdate = true;
-        }
-        if(mt2.tagCount == 0){
-          doRejectUpdate = true;
-        }
-        if(!doRejectUpdate)
-        {
-            updatePoseEstimator(mt2.pose, mt2.timestampSeconds,VecBuilder.fill(0.7, 0.7, 9999999));
-        }
-
 
         // Telemetry
         estimateFieldPublisher.set(getPoseEstimate()); 
