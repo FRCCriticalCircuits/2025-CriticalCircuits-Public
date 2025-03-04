@@ -17,6 +17,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -38,6 +39,7 @@ import frc.robot.subsystems.Controller;
 import frc.robot.subsystems.climber.WinchSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.RollerSubsystem;
+import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
@@ -260,6 +262,7 @@ public class RobotContainer {
       new InstantCommand(
         () -> {
           autoAimManager.updateMode(Mode.CORAL_PLACE);
+          LEDSubsystem.getInstance().setColor(Color.kRed);
         }
       )
     );
@@ -269,6 +272,7 @@ public class RobotContainer {
       new InstantCommand(
         () -> {
           autoAimManager.updateMode(Mode.CORAL_INTAKE);
+          LEDSubsystem.getInstance().setColor(Color.kBlue);
         }
       )
     );
@@ -278,6 +282,7 @@ public class RobotContainer {
       new InstantCommand(
         () -> {
           autoAimManager.updateMode(Mode.ALGAE_PICK);
+          LEDSubsystem.getInstance().setColor(Color.kGreen);
         }
       )
     );

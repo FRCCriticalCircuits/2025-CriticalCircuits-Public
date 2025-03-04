@@ -112,7 +112,7 @@ public class Constants {
         }
 
         public class Arm{
-            public static double ARM_PID_P = 20.0;
+            public static double ARM_PID_P = 40.0;
             public static double ARM_PID_I = 0.0;
             public static double ARM_PID_D = 0.0;
 
@@ -208,12 +208,13 @@ public class Constants {
 
         public static class LEDSubsystemConstants {
             public static int PWM_PORT = 0;
-            public static int NUM_LEDS = 50;
-            public static final int NUM_LAST_ELEV_LED = 49;
+            public static int NUM_LEDS = 71;
+            public static final int NUM_LAST_ELEV_LED = 70;
 
             public static final double BLINK_TIME_ON = 0.150;
             public static final double BLINK_TIME_OFF = 0.050;
-            public static final double SCROLL_PERCENT_PER_SEC = 0.2;
+            public static final double SCROLL_PERCENT_PER_SEC = 65;
+            public static final double BRIGHTNESS = 100;
         }
     }
 

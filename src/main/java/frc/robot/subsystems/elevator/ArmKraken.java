@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.Physical;
 import frc.robot.Constants.TunedConstants;
@@ -33,9 +34,9 @@ public class ArmKraken implements ArmIO {
         m_anglerEncoder = new DutyCycleEncoder(DeviceID.Sensor.ANGLER_ENCODER, 1.0, Physical.Arm.ENCODER_ZERO_OFFSET);
 
         anglerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        anglerConfig.CurrentLimits.StatorCurrentLimit = Physical.Elevator.CurrentLimits.ANGLER_CURRENT_LIMIT;
+        anglerConfig.CurrentLimits.StatorCurrentLimit = 100;
         anglerConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        anglerConfig.CurrentLimits.SupplyCurrentLimit = 40;
+        anglerConfig.CurrentLimits.SupplyCurrentLimit = 20;
 
         anglerConfig.Feedback.SensorToMechanismRatio = 35.0;
 
@@ -83,9 +84,14 @@ public class ArmKraken implements ArmIO {
         inputs.ioRotation = Rotation2d.fromRotations(m_anglerMotor.getPosition().getValueAsDouble());
         inputs.targetRotation = this.targetIORotation;
 
-        if(coralDetected) m_anglerMotor.setControl(m_PositionVoltage_1.withPosition(this.targetIORotation.getRotations()));
-        else if (algaeDetected) m_anglerMotor.setControl(m_PositionVoltage_2.withPosition(this.targetIORotation.getRotations()));
-        else m_anglerMotor.setControl(m_PositionVoltage_0.withPosition(this.targetIORotation.getRotations()));
+        // if(coralDetected) m_anglerMotor.setControl(m_PositionVoltage_1.withPosition(this.targetIORotation.getRotations()));
+        // else if (algaeDetected) m_anglerMotor.setControl(m_PositionVoltage_2.withPosition(this.targetIORotation.getRotations()));
+        // else m_anglerMotor.setControl(m_PositionVoltage_0.withPosition(this.targetIORotation.getRotations()));
+
+        m_anglerMotor.setControl(m_PositionVoltage_0.withPosition(this.targetIORotation.getRotations()));
+        SmartDashboard.putNumber("Position", inputs.targetRotation.getDegrees());
+        SmartDashboard.putNumber("ReaLPos", m_anglerMotor.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("EncPos", m_anglerEncoder.get());
     }
 
     /**
