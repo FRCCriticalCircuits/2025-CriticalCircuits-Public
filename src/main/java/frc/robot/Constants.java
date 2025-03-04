@@ -111,7 +111,7 @@ public class Constants {
         }
 
         public class Arm{
-            public static double ARM_PID_P = 20.0;
+            public static double ARM_PID_P = 1.0;
             public static double ARM_PID_I = 0.0;
             public static double ARM_PID_D = 0.0;
 
@@ -123,8 +123,8 @@ public class Constants {
             public static double ARM_PID_I_ALGAE = 0.0;
             public static double ARM_PID_D_ALGAE = 0.0;
 
-            public static double ARM_MAX_VELOCITY = 5.0;
-            public static double ARM_MAX_ACCELERATION = 35.0;
+            public static double ARM_MAX_VELOCITY = 2.0;
+            public static double ARM_MAX_ACCELERATION = 5.0;
         }
     }
 
@@ -202,7 +202,7 @@ public class Constants {
         }
 
         public class Arm{
-            public static double ENCODER_ZERO_OFFSET = -0.59;
+            public static double ENCODER_ZERO_OFFSET = 0;
         }
 
         public static class LEDSubsystemConstants {
