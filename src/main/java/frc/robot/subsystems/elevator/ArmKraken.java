@@ -88,7 +88,8 @@ public class ArmKraken implements ArmIO {
         // else if (algaeDetected) m_anglerMotor.setControl(m_PositionVoltage_2.withPosition(this.targetIORotation.getRotations()));
         // else m_anglerMotor.setControl(m_PositionVoltage_0.withPosition(this.targetIORotation.getRotations()));
 
-        m_anglerMotor.setControl(m_PositionVoltage_0.withPosition(this.targetIORotation.getRotations()));
+        // debug
+        // m_anglerMotor.setControl(m_PositionVoltage_0.withPosition(this.targetIORotation.getRotations()));
         
         SmartDashboard.putNumber("Position", inputs.targetRotation.getDegrees());
         SmartDashboard.putNumber("ReaLPos", m_anglerMotor.getPosition().getValueAsDouble());

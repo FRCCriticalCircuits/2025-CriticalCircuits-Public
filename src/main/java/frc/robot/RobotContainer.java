@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.KeyBinding;
@@ -50,9 +49,9 @@ public class RobotContainer {
   private ElevatorSubsystem elevatorSubsystem;
   private RollerSubsystem rollerSubsystem;
 
-  private LEDSubsystem ledSubsystem = LEDSubsystem.getInstance();
+  private LEDSubsystem ledSubsystem;
 
-  private WinchSubsystem winchSubsystem;
+  private WinchSubsystem winchSubsystem = WinchSubsystem.getInstance();
 
   private SendableChooser<String> autoChooser = new SendableChooser<>();
 
@@ -70,11 +69,14 @@ public class RobotContainer {
 
   public RobotContainer() {
     LEDSubsystem.start();
+
     swerveSubsystem = SwerveSubsystem.getInstance();
     visionSubsystem = new VisionSubsystem();
     elevatorSubsystem = ElevatorSubsystem.getInstance();
     rollerSubsystem = RollerSubsystem.getInstance();
+    ledSubsystem = LEDSubsystem.getInstance();
     winchSubsystem = WinchSubsystem.getInstance();
+
     visionSubsystem.start();
     
     swerveSubsystem.setDefaultCommand(
@@ -121,9 +123,11 @@ public class RobotContainer {
       )
     );
 
+    /*
     driveController.povUp().debounce(0.02).whileTrue(
         new PathTest(swerveSubsystem)
     );
+     */
 
     driveController.x().debounce(0.02).onTrue(
       new InstantCommand(
@@ -356,30 +360,17 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
       "outTake",
-      new Shoot().withTimeout(1).withDeadline(
-        new WaitUntilCommand(
-          () -> !rollerSubsystem.algaeDetected() &&
-                !rollerSubsystem.coralDetected()
-        )
-      )
+      new Shoot().withTimeout(1)
     );
 
     NamedCommands.registerCommand(
       "intakeCoral",
-      new IntakeCoral().withTimeout(1.2).withDeadline(
-        new WaitUntilCommand(
-          () -> rollerSubsystem.coralDetected()
-        )
-      )
+      new IntakeCoral().withTimeout(1.2)
     );
 
     NamedCommands.registerCommand(
       "intakeAlgae",
-      new IntakeAlgae().withTimeout(1.2).withDeadline(
-        new WaitUntilCommand(
-          () -> rollerSubsystem.algaeDetected()
-        )
-      )
+      new IntakeAlgae().withTimeout(1.2)
     );
 
     NamedCommands.registerCommand(

@@ -20,7 +20,6 @@ import frc.robot.utils.structures.AutoAimSetting;
 import frc.robot.utils.structures.DataStrcutures.Level;
 import frc.robot.utils.structures.DataStrcutures.Mode;
 import frc.robot.utils.structures.DataStrcutures.Spot;
-import frc.robot.utils.structures.DataStrcutures.Station;
 import frc.robot.utils.web.WebServer;
 
 public class AutoAimManager{
@@ -35,8 +34,6 @@ public class AutoAimManager{
     private Supplier<Double> LTSupplier, RTSupplier;
 
     private Pose2d targetPose = new Pose2d();
-    private double[] BOUNDARIES = {-180.0, -150.0, -90.0, -30.0, 30.0, 90.0, 150.0, 180.0}; 
-    private Station[] STATIONS = {Station.D, Station.E, Station.F, Station.A, Station.B, Station.C, Station.D};
 
     private StructPublisher<Pose2d> autoAimPositionPublisher;
     
@@ -88,30 +85,19 @@ public class AutoAimManager{
         }
     }
 
-    /**
-     * Uses Binary Search to find the estimate station from robot heading
-     * @param angle the robot's heading
-     * @return the estimated {@link Station}
-     */
-    private Station estimateStation(double angle) {
-        int left = 0;
-        int right = BOUNDARIES.length - 2;
-    
-        while (left <= right) {
-            int middle = left + (right - left) / 2;
-    
-            if (angle >= BOUNDARIES[middle] && angle < BOUNDARIES[middle + 1]) {
-                return STATIONS[middle];
-            }
-    
-            if (angle < BOUNDARIES[middle]) {
-                right = middle - 1;
-            } else {
-                left = middle + 1;
+    private AdvancedPose2D nearest(Pose2d currentPose) {
+        AdvancedPose2D targetPose = null;
+        double minDist = Double.MAX_VALUE;
+
+        for(AdvancedPose2D pose: FieldConstants.AutoAim.LIST_REEF_POS){
+            double tmpDist = pose.getTranslation().getDistance(currentPose.getTranslation());
+            if(tmpDist < minDist){
+                targetPose = pose;
+                minDist = tmpDist;
             }
         }
 
-        return Station.D;   // for theta = 180
+        return targetPose;
     }
 
     /**
@@ -126,8 +112,7 @@ public class AutoAimManager{
         if(setting.getMode() == Mode.CORAL_INTAKE){
             return cloestCoralStation(currentPos.getTranslation());
         }else if (setting.getMode() == Mode.CORAL_PLACE){
-            Station station = estimateStation(currentPos.getRotation().getDegrees());
-            AdvancedPose2D aimPose = DriveStationIO.isBlue() ? FieldConstants.AutoAim.STATION_BLUE.get(station) : FieldConstants.AutoAim.STATION_RED.get(station);
+            AdvancedPose2D aimPose = nearest(currentPos);
 
             if(setting.getSpot() == Spot.L){
                 return aimPose.withRobotRelativeTransformation(new Translation2d(-FieldConstants.AutoAim.AUTO_TRANSLATION + FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET, 0));
@@ -137,8 +122,7 @@ public class AutoAimManager{
                 return aimPose.withRobotRelativeTransformation(manualTranslation);
             }
         }else{
-            Station station = estimateStation(currentPos.getRotation().getDegrees());
-            AdvancedPose2D aimPose = DriveStationIO.isBlue() ? FieldConstants.AutoAim.STATION_BLUE.get(station) : FieldConstants.AutoAim.STATION_RED.get(station);
+            AdvancedPose2D aimPose = nearest(currentPos);
             return aimPose.withRobotRelativeTransformation(manualTranslation);
         }
     }
