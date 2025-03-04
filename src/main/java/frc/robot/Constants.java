@@ -203,7 +203,7 @@ public class Constants {
         }
 
         public class Arm{
-            public static double ENCODER_ZERO_OFFSET = -0.90;
+            public static double ENCODER_ZERO_OFFSET = -0.59;
         }
 
         public static class LEDSubsystemConstants {

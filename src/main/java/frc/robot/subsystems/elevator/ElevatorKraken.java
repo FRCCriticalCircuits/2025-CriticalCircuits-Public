@@ -67,7 +67,7 @@ public class ElevatorKraken implements ElevatorIO {
     public void updateInputs(ElevatorIOInputs inputs) {
         inputs.position = m_rightMotor.getPosition().getValueAsDouble();
         inputs.targetPosition = targetRotation;
-
+        
         m_rightMotor.setControl(m_MotionMagic.withPosition(targetRotation));
     }
 

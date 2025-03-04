@@ -47,14 +47,6 @@ public class RollerSubsystem extends SubsystemBase{
         rollerIO.setMode(RollerMode.OUT);
     }
 
-    public void hold(){
-        rollerIO.setMode(RollerMode.HOLD);
-    }
-
-    public void idle(){
-        rollerIO.setMode(RollerMode.IDLE);
-    }
-
     @Override
     public void periodic() {
         rollerIO.updateInputs(inputs);

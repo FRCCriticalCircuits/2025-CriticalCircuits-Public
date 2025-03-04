@@ -54,6 +54,8 @@ public class RobotContainer {
   private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
   private RollerSubsystem rollerSubsystem = RollerSubsystem.getInstance();
 
+  private LEDSubsystem ledSubsystem = LEDSubsystem.getInstance();
+
   private WinchSubsystem winchSubsystem = WinchSubsystem.getInstance();
 
   private SendableChooser<String> autoChooser = new SendableChooser<>();
@@ -262,8 +264,8 @@ public class RobotContainer {
       new InstantCommand(
         () -> {
           autoAimManager.updateMode(Mode.CORAL_PLACE);
-          LEDSubsystem.getInstance().setColor(Color.kRed);
-        }
+          ledSubsystem.setColor(Color.kRed);
+        }, ledSubsystem
       )
     );
 
@@ -272,8 +274,8 @@ public class RobotContainer {
       new InstantCommand(
         () -> {
           autoAimManager.updateMode(Mode.CORAL_INTAKE);
-          LEDSubsystem.getInstance().setColor(Color.kBlue);
-        }
+          ledSubsystem.setColor(Color.kBlue);
+        }, ledSubsystem
       )
     );
 
@@ -282,8 +284,8 @@ public class RobotContainer {
       new InstantCommand(
         () -> {
           autoAimManager.updateMode(Mode.ALGAE_PICK);
-          LEDSubsystem.getInstance().setColor(Color.kGreen);
-        }
+          ledSubsystem.setColor(Color.kGreen);
+        }, ledSubsystem
       )
     );
 

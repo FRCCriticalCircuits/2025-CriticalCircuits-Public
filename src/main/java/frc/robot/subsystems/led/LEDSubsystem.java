@@ -1,14 +1,11 @@
 package frc.robot.subsystems.led;
 
-import java.util.Map;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.Physical.LEDSubsystemConstants.*;
@@ -34,6 +31,7 @@ public class LEDSubsystem extends SubsystemBase {
         // buffer length is expensive to change make it constant
         buf = new AddressableLEDBuffer(NUM_LEDS);
         leds.setLength(NUM_LEDS);
+        
         // elevator leds
         bufElev = buf.createView(0, NUM_LAST_ELEV_LED);
 

@@ -89,6 +89,7 @@ public class ArmKraken implements ArmIO {
         // else m_anglerMotor.setControl(m_PositionVoltage_0.withPosition(this.targetIORotation.getRotations()));
 
         m_anglerMotor.setControl(m_PositionVoltage_0.withPosition(this.targetIORotation.getRotations()));
+        
         SmartDashboard.putNumber("Position", inputs.targetRotation.getDegrees());
         SmartDashboard.putNumber("ReaLPos", m_anglerMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("EncPos", m_anglerEncoder.get());

@@ -8,9 +8,7 @@ public interface RollerIO {
 
     public enum RollerMode{
         IN,
-        OUT,
-        HOLD,
-        IDLE
+        OUT
     }
 
     public default void updateInputs(RollerIOInputs inputs) {}
