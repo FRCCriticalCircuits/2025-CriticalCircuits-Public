@@ -15,7 +15,6 @@ import static frc.robot.Constants.Physical.LEDSubsystemConstants.*;
 import static edu.wpi.first.units.Units.*;
 
 public class LEDSubsystem extends SubsystemBase {
-    public static final Color CICRed = new Color("#89191c");
     private static LEDSubsystem instance;
 
     AddressableLED leds;
@@ -115,6 +114,10 @@ public class LEDSubsystem extends SubsystemBase {
         } else {
             pattern.applyTo(bufElev);
         }
+    }
+
+    public static void start() {
+        LEDSubsystem.getInstance();
     }
 
     public static LEDSubsystem getInstance() {
