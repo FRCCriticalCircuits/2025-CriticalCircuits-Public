@@ -112,7 +112,7 @@ public class Constants {
         }
 
         public class Arm{
-            public static double ARM_PID_P = 40.0;
+            public static double ARM_PID_P = 20.0;
             public static double ARM_PID_I = 0.0;
             public static double ARM_PID_D = 0.0;
 

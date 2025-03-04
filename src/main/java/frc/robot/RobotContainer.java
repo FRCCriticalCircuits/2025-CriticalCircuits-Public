@@ -27,13 +27,9 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.KeyBinding;
-import frc.robot.commands.IntakeAlgae;
-import frc.robot.commands.IntakeCoral;
-import frc.robot.commands.Shoot;
-import frc.robot.commands.TeleopDrive;
-import frc.robot.commands.WaitElevator;
 import frc.robot.commands.climber.WinchDownCommand;
 import frc.robot.commands.climber.WinchUpCommand;
+import frc.robot.commands.*;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.Controller;
 import frc.robot.subsystems.climber.WinchSubsystem;
@@ -48,15 +44,15 @@ import frc.robot.utils.structures.DataStrcutures.Mode;
 import frc.robot.utils.structures.DataStrcutures.Spot;
 
 public class RobotContainer {
-  private SwerveSubsystem swerveSubsystem = SwerveSubsystem.getInstance();
-  private VisionSubsystem visionSubsystem = new VisionSubsystem();
+  private SwerveSubsystem swerveSubsystem;
+  private VisionSubsystem visionSubsystem;
 
-  private ElevatorSubsystem elevatorSubsystem = ElevatorSubsystem.getInstance();
-  private RollerSubsystem rollerSubsystem = RollerSubsystem.getInstance();
+  private ElevatorSubsystem elevatorSubsystem;
+  private RollerSubsystem rollerSubsystem;
 
   private LEDSubsystem ledSubsystem = LEDSubsystem.getInstance();
 
-  private WinchSubsystem winchSubsystem = WinchSubsystem.getInstance();
+  private WinchSubsystem winchSubsystem;
 
   private SendableChooser<String> autoChooser = new SendableChooser<>();
 
@@ -73,6 +69,12 @@ public class RobotContainer {
   private int mode = 1;
 
   public RobotContainer() {
+    LEDSubsystem.start();
+    swerveSubsystem = SwerveSubsystem.getInstance();
+    visionSubsystem = new VisionSubsystem();
+    elevatorSubsystem = ElevatorSubsystem.getInstance();
+    rollerSubsystem = RollerSubsystem.getInstance();
+    winchSubsystem = WinchSubsystem.getInstance();
     visionSubsystem.start();
     
     swerveSubsystem.setDefaultCommand(
@@ -117,6 +119,10 @@ public class RobotContainer {
           ).schedule();
         }, swerveSubsystem
       )
+    );
+
+    driveController.povUp().debounce(0.02).whileTrue(
+        new PathTest(swerveSubsystem)
     );
 
     driveController.x().debounce(0.02).onTrue(

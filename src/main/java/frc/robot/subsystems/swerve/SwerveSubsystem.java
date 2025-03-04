@@ -27,6 +27,7 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
@@ -283,6 +284,9 @@ public class SwerveSubsystem extends SubsystemBase{
 
     @Override
     public synchronized void periodic(){
+        SmartDashboard.putNumber("PoseX", getPoseEstimate().getX());
+        SmartDashboard.putNumber("PoseY", getPoseEstimate().getY());
+
         odometryLock.lock(); // Prevents odometry updates while reading data
         
         gyro.updateInputs(gyroInputs);
