@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -47,6 +48,12 @@ public class RollerKraken implements RollerIO {
         // hatcher
         rollerConfiguration.Feedback.SensorToMechanismRatio = 3.86;
         rollerConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        rollerConfiguration.Slot0 = new Slot0Configs()
+            .withKV(0)
+            .withKS(0)
+            .withKP(0)
+            .withKD(0);
+            
         m_hatcherMotor.getConfigurator().apply(rollerConfiguration);
 
         // intake
