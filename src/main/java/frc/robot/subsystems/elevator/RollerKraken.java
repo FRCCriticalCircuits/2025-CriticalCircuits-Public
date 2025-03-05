@@ -29,7 +29,6 @@ public class RollerKraken implements RollerIO {
         m_hatcherMotor = new TalonFX(DeviceID.Angler.HATCHER_ID);
         m_intakeMotor = new TalonFX(DeviceID.Angler.INTAKE_ID);
 
-
         rollerConfiguration = new TalonFXConfiguration();
 
         // common settings
