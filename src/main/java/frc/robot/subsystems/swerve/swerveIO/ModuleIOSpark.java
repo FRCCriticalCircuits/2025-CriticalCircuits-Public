@@ -35,6 +35,7 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.Physical;
 import frc.robot.Constants.TunedConstants;
+import frc.robot.utils.conversions.WheelConversions;
 
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
@@ -143,8 +144,9 @@ public class ModuleIOSpark implements ModuleIO {
 
         /* Current Limits */
         driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        driveConfig.CurrentLimits.SupplyCurrentLimitEnable = false;
+        driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         driveConfig.CurrentLimits.StatorCurrentLimit = Physical.DriveBase.CurrentLimits.DRIVE_CURRENT_LIMIT;
+        driveConfig.CurrentLimits.SupplyCurrentLimit = 40;
 
         /* Gear Ratio */
         driveConfig.Feedback.SensorToMechanismRatio = Physical.DriveBase.GearRatios.DRIVE_GEAR_RATIO;
@@ -158,7 +160,7 @@ public class ModuleIOSpark implements ModuleIO {
         /* CloseLoop Constants, haven't tuned */
         driveConfig.Slot0 = new Slot0Configs()
             .withKP(TunedConstants.DriveBase.DRIVE_PID_P)
-            .withKI(TunedConstants.DriveBase.DRIVE_PID_I);
+            .withKD(TunedConstants.DriveBase.DRIVE_PID_D);
 
         /* Motor Outputs */
         driveConfig.MotorOutput.Inverted = (driveInverted) ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
@@ -317,8 +319,8 @@ public class ModuleIOSpark implements ModuleIO {
     }
 
     @Override
-    public void setDriveVelocity(double velocityRadPerSec) {
-        velocityDutyCycle.Velocity = Units.radiansToRotations(velocityRadPerSec);
+    public void setDriveVelocity(double metersPerSec) {
+        velocityDutyCycle.Velocity = WheelConversions.MPSToRPS(metersPerSec, Physical.DriveBase.LENGTHS.DRIVE_WHEEL_CIRCUMFERENCE);
         velocityDutyCycle.FeedForward = driveFeedForward.calculateWithVelocities(driveVelocity.getValueAsDouble(), velocityDutyCycle.Velocity);
         driveMotor.setControl(velocityDutyCycle);
     }

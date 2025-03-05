@@ -91,24 +91,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "0 - Path 3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "outTake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setModeIntake"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -125,6 +107,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setModeIntake"
           }
         },
         {

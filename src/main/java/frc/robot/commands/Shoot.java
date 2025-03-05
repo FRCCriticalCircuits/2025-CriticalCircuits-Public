@@ -1,40 +1,27 @@
 package frc.robot.commands;
 
-
-import static edu.wpi.first.units.Units.*;
-
-import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnFly;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnFly;
-
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
 import frc.robot.subsystems.elevator.RollerIO.RollerMode;
-import frc.robot.subsystems.swerve.SwerveSubsystem;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.RollerSubsystem;
 
 public class Shoot extends Command{
     private RollerSubsystem rollerSubsystem;
-    private ElevatorSubsystem elevatorSubsystem;
 
     public Shoot(){
         rollerSubsystem = RollerSubsystem.getInstance();
-        elevatorSubsystem = ElevatorSubsystem.getInstance();
 
         addRequirements(rollerSubsystem);
-        addRequirements(elevatorSubsystem);
-        addRequirements(SwerveSubsystem.getInstance());
     }
 
     @Override
     public void initialize(){
         rollerSubsystem.set(RollerMode.OUT);
         
-        if(Robot.isSimulation()){
-            Pose3d wristTranslation = elevatorSubsystem.getRollerTransltaion();
+        /*
+         * if(Robot.isSimulation()){
+            Pose3d wristTranslation = ElevatorSubsystem.getInstance().getRollerTransltaion();
 
             if(rollerSubsystem.coralDetected()){
                 SimulatedArena.getInstance().addGamePieceProjectile(
@@ -64,12 +51,17 @@ public class Shoot extends Command{
                 );
             }
         }
+         */
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
     }
 
     @Override
     public void end(boolean interrupted) {
-        if(!rollerSubsystem.coralDetected() && !rollerSubsystem.algaeDetected()) rollerSubsystem.set(RollerMode.IDLE);
-        else rollerSubsystem.set(RollerMode.HOLD);
+        rollerSubsystem.set(RollerMode.IDLE);
 
         if(Robot.isSimulation()){
             RollerIOInputs newInputs = new RollerIOInputs();

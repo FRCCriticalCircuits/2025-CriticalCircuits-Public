@@ -239,36 +239,7 @@ public class RobotContainer {
     driveController.y().debounce(0.02).whileTrue(
       new Shoot()
     );
-  }
 
-  public Command getAutonomousCommand() {
-    registerCommands();
-    
-    return new SequentialCommandGroup(
-      new InstantCommand(
-        () -> {
-          Optional<Pose2d> initialPose;
-          
-          try {
-            initialPose = PathPlannerAuto.getPathGroupFromAutoFile(autoChooser.getSelected()).get(0).getStartingHolonomicPose();
-          } catch (IOException | ParseException e) {
-            throw new RuntimeException("[Pathplanner] No auto file found");
-          }
-
-          if(initialPose.isEmpty()) {
-            throw new RuntimeException("[Pathplanner] No starting pose found in auto file");
-          }else{
-            swerveSubsystem.resetPoseEstimate(
-              initialPose.get()
-            );
-          }
-        }, swerveSubsystem
-      ),
-      AutoBuilder.buildAuto(autoChooser.getSelected())
-    );
-  }
-
-  public void registerCommands(){
     NamedCommands.registerCommand(
       "setModeCoral",
       new InstantCommand(
@@ -360,7 +331,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
       "outTake",
-      new Shoot().withTimeout(1)
+      new Shoot()
     );
 
     NamedCommands.registerCommand(
@@ -380,6 +351,31 @@ public class RobotContainer {
             elevatorSubsystem.fetchAlgae = !elevatorSubsystem.fetchAlgae;
         }, elevatorSubsystem, rollerSubsystem
       )
+    );
+  }
+
+  public Command getAutonomousCommand() {    
+    return new SequentialCommandGroup(
+      new InstantCommand(
+        () -> {
+          Optional<Pose2d> initialPose;
+          
+          try {
+            initialPose = PathPlannerAuto.getPathGroupFromAutoFile(autoChooser.getSelected()).get(0).getStartingHolonomicPose();
+          } catch (IOException | ParseException e) {
+            throw new RuntimeException("[Pathplanner] No auto file found");
+          }
+
+          if(initialPose.isEmpty()) {
+            throw new RuntimeException("[Pathplanner] No starting pose found in auto file");
+          }else{
+            swerveSubsystem.resetPoseEstimate(
+              initialPose.get()
+            );
+          }
+        }, swerveSubsystem
+      ),
+      AutoBuilder.buildAuto(autoChooser.getSelected())
     );
   }
 

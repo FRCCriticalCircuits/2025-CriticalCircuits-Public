@@ -53,28 +53,28 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
 
         // State Nodes
-        graphMachine.addNode("preMatch", new Pair<Double, Double>(Units.degreesToRotations(60) + 0.295, 0.0));      // 56.0 deg,    0 cm
+        graphMachine.addNode("preMatch", new Pair<Double, Double>(Units.degreesToRotations(60) + 0.305, 0.0));      // 56.0 deg,    0 cm
         graphMachine.addNode("groundAlgae", new Pair<Double, Double>(0.05, 0.1));
-        graphMachine.addNode("L1coral", new Pair<Double, Double>(Units.degreesToRotations(40) + 0.295, 0.15));          // 40.0 deg,    2 cm
-        graphMachine.addNode("coralIntake", new Pair<Double, Double>(Units.degreesToRotations(30) + 0.295, 3.090));     // 30.0 deg,    50.5cm
+        graphMachine.addNode("L1coral", new Pair<Double, Double>(Units.degreesToRotations(40) + 0.305, 0.15));          // 40.0 deg,    2 cm
+        graphMachine.addNode("coralIntake", new Pair<Double, Double>(Units.degreesToRotations(30) + 0.305, 3.090));     // 30.0 deg,    50.5cm
 
         // State Nodes with angle 0
-        graphMachine.addNode("L2coral", new Pair<Double, Double>(0.0 + 0.295, 2.18));
-        graphMachine.addNode("L3coral", new Pair<Double, Double>(0.0 + 0.295, 5.2));   
+        graphMachine.addNode("L2coral", new Pair<Double, Double>(0.0 + 0.305, 2.25));
+        graphMachine.addNode("L3coral", new Pair<Double, Double>(0.0 + 0.305, 5.25));   
 
-        graphMachine.addNode("processorAlgae", new Pair<Double, Double>(0.0 + 0.295, 0.1));
+        graphMachine.addNode("processorAlgae", new Pair<Double, Double>(0.0 + 0.305, 0.1));
 
-        graphMachine.addNode("algaeL1", new Pair<Double, Double>(0.0 + 0.295, 2.25));
-        graphMachine.addNode("algaeL2", new Pair<Double, Double>(0.0 + 0.295, 5.2));
+        graphMachine.addNode("algaeL1", new Pair<Double, Double>(0.0 + 0.305, 2.25));
+        graphMachine.addNode("algaeL2", new Pair<Double, Double>(0.0 + 0.305, 5.2));
     
         // Algae-Fetch Nodes
-        graphMachine.addNode("algaeL1-in", new Pair<Double, Double>(Units.degreesToRotations(-40) + 0.295, 2.25));
-        graphMachine.addNode("algaeL2-in", new Pair<Double, Double>(Units.degreesToRotations(-40) + 0.295, 5.2));
+        graphMachine.addNode("algaeL1-in", new Pair<Double, Double>(Units.degreesToRotations(-40) + 0.305, 2.25));
+        graphMachine.addNode("algaeL2-in", new Pair<Double, Double>(Units.degreesToRotations(-40) + 0.305, 5.2));
 
         // Transition Nodes
-        graphMachine.addNode("0n-1", new Pair<Double, Double>(0.295, 0.1));    // 00.0 deg,    0    cm
-        graphMachine.addNode("0n-2", new Pair<Double, Double>(0.295, 0.15));   // 00.0 deg,    2.0  cm
-        graphMachine.addNode("0n-3", new Pair<Double, Double>(0.295, 3.090));   // 00.0 deg,   50.5 cm
+        graphMachine.addNode("0n-1", new Pair<Double, Double>(0.305, 0.1));    // 00.0 deg,    0    cm
+        graphMachine.addNode("0n-2", new Pair<Double, Double>(0.305, 0.15));   // 00.0 deg,    2.0  cm
+        graphMachine.addNode("0n-3", new Pair<Double, Double>(0.305, 3.090));   // 00.0 deg,   50.5 cm
         
         // Edges for Regular Nodes
         graphMachine.addEdge("0n-1", "preMatch");
@@ -129,7 +129,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         wristPose = NetworkTableInstance.getDefault().getStructTopic("/Arm/wristRelativePos", Pose3d.struct).publish();
     }
 
-    public static ElevatorSubsystem getInstance(){
+    public synchronized static ElevatorSubsystem getInstance(){
         if(instance == null) instance = new ElevatorSubsystem();
         return instance;
     }
@@ -153,7 +153,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         );
     }
 
-    public Pose3d getRollerTransltaion(){
+    public synchronized Pose3d getRollerTransltaion(){
         return this.wristPose3d;
     }
 

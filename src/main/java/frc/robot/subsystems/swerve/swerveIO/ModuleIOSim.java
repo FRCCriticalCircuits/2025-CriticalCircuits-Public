@@ -20,6 +20,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.Physical;
 import frc.robot.Constants.TunedConstants;
 import frc.robot.utils.MotorUtil;
+import frc.robot.utils.conversions.WheelConversions;
+
 import java.util.Arrays;
 import org.ironmaple.simulation.drivesims.SwerveModuleSimulation;
 import org.ironmaple.simulation.motorsims.SimulatedMotorController;
@@ -103,8 +105,10 @@ public class ModuleIOSim implements ModuleIO {
     }
 
     @Override
-    public void setDriveVelocity(double velocityRadPerSec) {
+    public void setDriveVelocity(double metersPerSec) {
         driveClosedLoop = true;
+        double velocityRadPerSec = WheelConversions.MPSToRPS(metersPerSec, Physical.DriveBase.LENGTHS.DRIVE_WHEEL_CIRCUMFERENCE) * Math.PI * 2;
+        
         driveFFVolts = TunedConstants.DriveBase.Simulation.DRIVE_FEED_FORWARD_KS * Math.signum(velocityRadPerSec) + TunedConstants.DriveBase.Simulation.DRIVE_FEED_FORWARD_KV * velocityRadPerSec;
         driveController.setSetpoint(velocityRadPerSec);
     }

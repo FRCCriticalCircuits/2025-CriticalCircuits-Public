@@ -21,6 +21,11 @@ public class IntakeCoral extends Command{
     }
 
     @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
     public void end(boolean interrupted) {
         if(rollerSubsystem.coralDetected()) rollerSubsystem.set(RollerMode.HOLD);
         else rollerSubsystem.set(RollerMode.IDLE);

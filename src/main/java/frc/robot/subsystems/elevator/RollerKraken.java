@@ -26,7 +26,7 @@ public class RollerKraken implements RollerIO {
     private Debouncer coralDebouncer = new Debouncer(0.1);
     private Debouncer algaeDebouncer = new Debouncer(0.1);
 
-    private RollerMode mode = RollerMode.IN;
+    private RollerMode mode = RollerMode.IDLE;
 
     private VelocityVoltage hatcherControl = new VelocityVoltage(0).withSlot(0);
 

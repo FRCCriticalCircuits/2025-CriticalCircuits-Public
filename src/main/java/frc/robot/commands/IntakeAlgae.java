@@ -20,6 +20,11 @@ public class IntakeAlgae extends Command{
     }
 
     @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    @Override
     public void end(boolean interrupted) {
         if(rollerSubsystem.algaeDetected()) rollerSubsystem.set(RollerMode.HOLD);
         else rollerSubsystem.set(RollerMode.IDLE);

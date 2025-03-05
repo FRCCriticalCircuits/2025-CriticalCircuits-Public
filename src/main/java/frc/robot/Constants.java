@@ -71,11 +71,11 @@ public class Constants {
 
     public static class TunedConstants{
         public class DriveBase{
-            public static double DRIVE_PID_P = 0;
-            public static double DRIVE_PID_I = 0;
+            public static double DRIVE_PID_P = 0.1;
+            public static double DRIVE_PID_D = 0;
 
             public static double DRIVE_FEED_FORWARD_KS = 0.015;
-            public static double DRIVE_FEED_FORWARD_KV = 0.06;
+            public static double DRIVE_FEED_FORWARD_KV = 0.04;
             public static double DRIVE_FEED_FORWARD_KA = 0;
 
             public static double TURN_PID_P = 0.3;
@@ -166,7 +166,7 @@ public class Constants {
             }      
 
             public class CurrentLimits{
-                public static int DRIVE_CURRENT_LIMIT = 40;
+                public static int DRIVE_CURRENT_LIMIT = 70;
                 public static int TURN_CURRENT_LIMIT = 30;
 
                 public static double DRIVE_LOOP_RAMP_RATE = 0.25;
@@ -226,7 +226,7 @@ public class Constants {
         public static AdvancedPose2D REEF_CENTER_BLUE = new AdvancedPose2D(4.48945, FIELD_WIDTH / 2, Rotation2d.fromDegrees(0));
 
         public class AutoAim{
-            public static double REEF_CENTER_TO_ROBOT = 1.4;
+            public static double REEF_CENTER_TO_ROBOT = 1.35;
             public static double CORAL_STATION_TO_ROBOT = Units.inchesToMeters(27) / 2;
             public static double AUTO_TRANSLATION = 0.16; // Shift for L/R coral
             public static double AUTO_TRANSLATION_OFFSET = 0; // Offset for L/R coral

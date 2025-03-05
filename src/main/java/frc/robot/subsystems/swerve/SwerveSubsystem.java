@@ -27,7 +27,6 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
@@ -125,8 +124,8 @@ public class SwerveSubsystem extends SubsystemBase{
             this::getChassisSpeeds, // ChassisSpeeds supplier
             (speeds, feedforwards) -> setModuleStates(speeds), // optionally outputs individual feedforwards
             new PPHolonomicDriveController(
-                new PIDConstants(20.0, 0.0, 0.0), // Translation Feedback PID constants
-                new PIDConstants(0.0, 0.0, 0.0) // Rotation Feedback PID constants
+                new PIDConstants(15.0, 0.0, 0.5),   // Translation Feedback PID constants
+                new PIDConstants(7.0, 0.0, 0.0)     // Rotation Feedback PID constants
             ),
             config, // The robot configuration
             () -> {
