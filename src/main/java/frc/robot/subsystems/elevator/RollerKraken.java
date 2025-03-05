@@ -6,11 +6,11 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.Physical;
@@ -23,13 +23,12 @@ public class RollerKraken implements RollerIO {
 
     private TimeOfFlight algaeSensor;
 
-    private Debouncer coralDebouncer = new Debouncer(0.06);
+    private Debouncer coralDebouncer = new Debouncer(0.1);
     private Debouncer algaeDebouncer = new Debouncer(0.1);
 
     private RollerMode mode = RollerMode.IN;
 
     private VelocityVoltage hatcherControl = new VelocityVoltage(0).withSlot(0);
-    private DigitalInput limitSwitch = new DigitalInput(0);
 
     public RollerKraken(){
         m_hatcherMotor = new TalonFX(DeviceID.Angler.HATCHER_ID);
@@ -49,11 +48,12 @@ public class RollerKraken implements RollerIO {
         rollerConfiguration.Feedback.SensorToMechanismRatio = 3.86;
         rollerConfiguration.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         rollerConfiguration.Slot0 = new Slot0Configs()
-            .withKV(0)
-            .withKS(0)
-            .withKP(0)
-            .withKD(0);
-            
+            .withKV(0.35)
+            .withKS(0.3)
+            .withKP(1)
+            .withKD(0)
+            .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseVelocitySign);
+
         m_hatcherMotor.getConfigurator().apply(rollerConfiguration);
 
         // intake
@@ -74,9 +74,9 @@ public class RollerKraken implements RollerIO {
         );
 
         inputs.coralDetected = coralDebouncer.calculate(
-            //m_hatcherMotor.getVelocity().getValueAsDouble() < 0.1 &&
-            //m_hatcherMotor.getSupplyCurrent().getValueAsDouble() > 1.0 &&
-            limitSwitch.get() &&
+            m_hatcherMotor.getVelocity().getValueAsDouble() < 1.0 &&
+            m_hatcherMotor.getSupplyCurrent().getValueAsDouble() > 2.0 &&
+            // limitSwitch.get() &&
             (mode == RollerMode.IN)
         );
 
@@ -85,8 +85,8 @@ public class RollerKraken implements RollerIO {
 
         switch (mode) {
             case IN:
-                m_hatcherMotor.setControl(hatcherControl.withVelocity(5));
-                m_intakeMotor.setVoltage(4.0);  
+                m_hatcherMotor.setControl(hatcherControl.withVelocity(10));
+                m_intakeMotor.setVoltage(4.0);
                 break;
             case OUT:
                 m_hatcherMotor.setVoltage(-12.0);

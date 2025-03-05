@@ -54,7 +54,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // State Nodes
         graphMachine.addNode("preMatch", new Pair<Double, Double>(Units.degreesToRotations(60) + 0.295, 0.0));      // 56.0 deg,    0 cm
-        graphMachine.addNode("groundAlgae", new Pair<Double, Double>(Units.degreesToRotations(-30) + 0.295, 0.0));
+        graphMachine.addNode("groundAlgae", new Pair<Double, Double>(0.1, 0.1));
         graphMachine.addNode("L1coral", new Pair<Double, Double>(Units.degreesToRotations(40) + 0.295, 0.15));          // 40.0 deg,    2 cm
         graphMachine.addNode("coralIntake", new Pair<Double, Double>(Units.degreesToRotations(30) + 0.295, 3.090));     // 30.0 deg,    50.5cm
 
@@ -62,7 +62,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         graphMachine.addNode("L2coral", new Pair<Double, Double>(0.0 + 0.295, 2.18));
         graphMachine.addNode("L3coral", new Pair<Double, Double>(0.0 + 0.295, 5.2));   
 
-        graphMachine.addNode("processorAlgae", new Pair<Double, Double>(0.0 + 0.295, 0.0));
+        graphMachine.addNode("processorAlgae", new Pair<Double, Double>(0.0 + 0.295, 0.1));
 
         graphMachine.addNode("algaeL1", new Pair<Double, Double>(0.0 + 0.295, 2.25));
         graphMachine.addNode("algaeL2", new Pair<Double, Double>(0.0 + 0.295, 5.2));
@@ -72,7 +72,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         graphMachine.addNode("algaeL2-in", new Pair<Double, Double>(Units.degreesToRotations(-25) + 0.295, 5.2));
 
         // Transition Nodes
-        graphMachine.addNode("0n-1", new Pair<Double, Double>(0.295, 0.0));    // 00.0 deg,    0    cm
+        graphMachine.addNode("0n-1", new Pair<Double, Double>(0.295, 0.1));    // 00.0 deg,    0    cm
         graphMachine.addNode("0n-2", new Pair<Double, Double>(0.295, 0.15));   // 00.0 deg,    2.0  cm
         graphMachine.addNode("0n-3", new Pair<Double, Double>(0.295, 3.090));   // 00.0 deg,   50.5 cm
         
@@ -215,12 +215,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // false if osilating
         atGoal =    elevatorAtGoal.calculate(Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) < 0.1) &&
-                    armAtGoal.calculate(Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) < 0.02);
+                    armAtGoal.calculate(Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) < 0.05);
         
         // false if error is too big
         atGoal =    (
                         (Math.abs(elevatorInputs.position - elevatorInputs.targetPosition) > 0.1) ||
-                        (Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) > 0.02)
+                        (Math.abs(armInputs.ioRotation.getRotations() - armInputs.targetRotation.getRotations()) > 0.05)
                     ) ? false 
                       : atGoal;
 

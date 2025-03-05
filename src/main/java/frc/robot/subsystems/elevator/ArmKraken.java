@@ -44,7 +44,7 @@ public class ArmKraken implements ArmIO {
         anglerConfig.withSlot0(
             new Slot0Configs()
             .withKG(0.37)
-            .withKV(2)
+            .withKV(3)
             .withGravityType(GravityTypeValue.Arm_Cosine)
             .withKP(TunedConstants.Arm.ARM_PID_P)             // Error Gain
             .withKI(TunedConstants.Arm.ARM_PID_I)             // Error Intergral Gain
