@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
+import frc.robot.subsystems.elevator.RollerIO.RollerMode;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.RollerSubsystem;
@@ -27,9 +28,10 @@ public class Shoot extends Command{
         addRequirements(elevatorSubsystem);
         addRequirements(SwerveSubsystem.getInstance());
     }
-
+    
+    @Override
     public void initialize(){
-        rollerSubsystem.outTake();
+        rollerSubsystem.set(RollerMode.OUT);
         
         if(Robot.isSimulation()){
             Pose3d wristTranslation = elevatorSubsystem.getRollerTransltaion();
@@ -66,7 +68,8 @@ public class Shoot extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        rollerSubsystem.intake();
+        if(!rollerSubsystem.coralDetected() && !rollerSubsystem.algaeDetected()) rollerSubsystem.set(RollerMode.IDLE);
+        else rollerSubsystem.set(RollerMode.HOLD);
 
         if(Robot.isSimulation()){
             RollerIOInputs newInputs = new RollerIOInputs();

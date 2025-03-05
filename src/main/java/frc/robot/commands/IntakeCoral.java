@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
+import frc.robot.subsystems.elevator.RollerIO.RollerMode;
 import frc.robot.subsystems.elevator.RollerSubsystem;
 
 public class IntakeCoral extends Command{
@@ -13,13 +14,17 @@ public class IntakeCoral extends Command{
 
         addRequirements(rollerSubsystem);
     }
-
+    
+    @Override
     public void initialize(){
-        rollerSubsystem.intake();
+        rollerSubsystem.set(RollerMode.IN);
     }
 
     @Override
     public void end(boolean interrupted) {
+        if(rollerSubsystem.coralDetected()) rollerSubsystem.set(RollerMode.HOLD);
+        else rollerSubsystem.set(RollerMode.IDLE);
+
         if(Robot.isSimulation()){
             RollerIOInputs newInputs = new RollerIOInputs();
             newInputs.algaeDetected = false;

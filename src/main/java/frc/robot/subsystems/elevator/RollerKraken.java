@@ -9,6 +9,7 @@ import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.Physical;
@@ -26,7 +27,8 @@ public class RollerKraken implements RollerIO {
 
     private RollerMode mode = RollerMode.IN;
 
-    private VelocityVoltage hatcherControl = new VelocityVoltage(null).withSlot(0);
+    private VelocityVoltage hatcherControl = new VelocityVoltage(0).withSlot(0);
+    private DigitalInput limitSwitch = new DigitalInput(0);
 
     public RollerKraken(){
         m_hatcherMotor = new TalonFX(DeviceID.Angler.HATCHER_ID);
@@ -65,8 +67,7 @@ public class RollerKraken implements RollerIO {
         );
 
         inputs.coralDetected = coralDebouncer.calculate(
-            (m_hatcherMotor.getSupplyCurrent().getValueAsDouble() > 0.5) &&  
-            (m_hatcherMotor.getVelocity().getValueAsDouble() < 3.0) &&
+            limitSwitch.get() &&
             (mode == RollerMode.IN)
         );
 
@@ -76,7 +77,7 @@ public class RollerKraken implements RollerIO {
         switch (mode) {
             case IN:
                 if(inputs.algaeDetected || inputs.coralDetected) mode = RollerMode.HOLD;
-                
+
                 m_hatcherMotor.setControl(hatcherControl.withVelocity(5));
                 m_intakeMotor.setVoltage(4.0);  
                 break;
