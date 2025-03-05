@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.Slot2Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -43,7 +44,8 @@ public class ArmKraken implements ArmIO {
         anglerConfig.withSlot0(
             new Slot0Configs()
             .withKG(0.37)
-            .withKV(0)
+            .withKV(2)
+            .withGravityType(GravityTypeValue.Arm_Cosine)
             .withKP(TunedConstants.Arm.ARM_PID_P)             // Error Gain
             .withKI(TunedConstants.Arm.ARM_PID_I)             // Error Intergral Gain
             .withKD(TunedConstants.Arm.ARM_PID_D)             // Error Derivative Gain
