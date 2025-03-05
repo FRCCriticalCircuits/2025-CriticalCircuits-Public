@@ -67,6 +67,8 @@ public class RollerKraken implements RollerIO {
         );
 
         inputs.coralDetected = coralDebouncer.calculate(
+            //m_hatcherMotor.getVelocity().getValueAsDouble() < 0.1 &&
+            //m_hatcherMotor.getSupplyCurrent().getValueAsDouble() > 1.0 &&
             limitSwitch.get() &&
             (mode == RollerMode.IN)
         );
