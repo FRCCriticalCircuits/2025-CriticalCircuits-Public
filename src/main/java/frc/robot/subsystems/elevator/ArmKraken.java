@@ -86,21 +86,7 @@ public class ArmKraken implements ArmIO {
         inputs.targetRotation = this.targetIORotation;
 
         m_anglerMotor.setControl(m_MotionMagic.withSlot(0).withPosition(this.targetIORotation.getRotations()));
-
-        SmartDashboard.putNumber("Position", inputs.targetRotation.getDegrees());
-        SmartDashboard.putNumber("ReaLPos", m_anglerMotor.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("EncPos", m_anglerEncoder.get());
     }
-    
-    /**
-     * Converts encoder rotation from [0, 1] to [-0.5, 0.5)
-     * @param rotation encoder rotation
-     * @return converted encoder rotation
-     
-    private double encoderConversion(double rotation){
-        return (rotation > 0.5) ? rotation - 1.0 : rotation;
-    }
-    */
 
     @Override
     public void setRotation(Rotation2d ioRotation) {

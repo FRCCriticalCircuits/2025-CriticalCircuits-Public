@@ -30,14 +30,14 @@ public class VisionLL implements VisionIO{
      */
     @Override
     public Optional<VisionResult> getEstimatedGlobalPose() {
-        PoseEstimate visionEst = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(camName);
+        PoseEstimate visionEst = LimelightHelpers.getBotPoseEstimate_wpiBlue(camName);
 
         if(LimelightHelpers.validPoseEstimate(visionEst)){
             VisionResult result = new VisionResult(); 
             
             result.pose = visionEst.pose;
             result.timestampSeconds = visionEst.timestampSeconds;
-            result.stdDevs = VecBuilder.fill(.7, .7, 4); // LimelightHelpers.getMT1StdDevs(camName)
+            result.stdDevs = VecBuilder.fill(1, 1, .3); // LimelightHelpers.getMT1StdDevs(camName)
             
             return Optional.of(result);
         }else{

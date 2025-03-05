@@ -125,8 +125,8 @@ public class SwerveSubsystem extends SubsystemBase{
             this::getChassisSpeeds, // ChassisSpeeds supplier
             (speeds, feedforwards) -> setModuleStates(speeds), // optionally outputs individual feedforwards
             new PPHolonomicDriveController(
-                new PIDConstants(4.0, 0.0, 1.0), // Translation Feedback PID constants
-                new PIDConstants(4.0, 0.0, 0.0) // Rotation Feedback PID constants
+                new PIDConstants(20.0, 0.0, 0.0), // Translation Feedback PID constants
+                new PIDConstants(0.0, 0.0, 0.0) // Rotation Feedback PID constants
             ),
             config, // The robot configuration
             () -> {
@@ -284,9 +284,6 @@ public class SwerveSubsystem extends SubsystemBase{
 
     @Override
     public synchronized void periodic(){
-        SmartDashboard.putNumber("PoseX", getPoseEstimate().getX());
-        SmartDashboard.putNumber("PoseY", getPoseEstimate().getY());
-
         odometryLock.lock(); // Prevents odometry updates while reading data
         
         gyro.updateInputs(gyroInputs);

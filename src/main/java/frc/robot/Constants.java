@@ -83,12 +83,12 @@ public class Constants {
             public static double TURN_PID_D = 0;
 
             public class Simulation{
-                public static double DRIVE_PID_P = 3.0;
-                public static double DRIVE_PID_I = 0;
-                public static double DRIVE_PID_D = 0;
+                public static double DRIVE_PID_P = 0.0;
+                public static double DRIVE_PID_I = 0.0;
+                public static double DRIVE_PID_D = 0.0;
     
                 public static double DRIVE_FEED_FORWARD_KS = 0.017;
-                public static double DRIVE_FEED_FORWARD_KV = 0.6;
+                public static double DRIVE_FEED_FORWARD_KV = 0.58;
                 public static double DRIVE_FEED_FORWARD_KA = 0;
     
                 public static double TURN_PID_P = 30;

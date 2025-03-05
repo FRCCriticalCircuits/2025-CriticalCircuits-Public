@@ -54,7 +54,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // State Nodes
         graphMachine.addNode("preMatch", new Pair<Double, Double>(Units.degreesToRotations(60) + 0.295, 0.0));      // 56.0 deg,    0 cm
-        graphMachine.addNode("groundAlgae", new Pair<Double, Double>(0.1, 0.1));
+        graphMachine.addNode("groundAlgae", new Pair<Double, Double>(0.05, 0.1));
         graphMachine.addNode("L1coral", new Pair<Double, Double>(Units.degreesToRotations(40) + 0.295, 0.15));          // 40.0 deg,    2 cm
         graphMachine.addNode("coralIntake", new Pair<Double, Double>(Units.degreesToRotations(30) + 0.295, 3.090));     // 30.0 deg,    50.5cm
 
@@ -68,8 +68,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         graphMachine.addNode("algaeL2", new Pair<Double, Double>(0.0 + 0.295, 5.2));
     
         // Algae-Fetch Nodes
-        graphMachine.addNode("algaeL1-in", new Pair<Double, Double>(Units.degreesToRotations(-25) + 0.295, 2.25));
-        graphMachine.addNode("algaeL2-in", new Pair<Double, Double>(Units.degreesToRotations(-25) + 0.295, 5.2));
+        graphMachine.addNode("algaeL1-in", new Pair<Double, Double>(Units.degreesToRotations(-40) + 0.295, 2.25));
+        graphMachine.addNode("algaeL2-in", new Pair<Double, Double>(Units.degreesToRotations(-40) + 0.295, 5.2));
 
         // Transition Nodes
         graphMachine.addNode("0n-1", new Pair<Double, Double>(0.295, 0.1));    // 00.0 deg,    0    cm
