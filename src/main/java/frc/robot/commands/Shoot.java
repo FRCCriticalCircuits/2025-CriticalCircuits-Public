@@ -28,7 +28,7 @@ public class Shoot extends Command{
         addRequirements(elevatorSubsystem);
         addRequirements(SwerveSubsystem.getInstance());
     }
-    
+
     @Override
     public void initialize(){
         rollerSubsystem.set(RollerMode.OUT);

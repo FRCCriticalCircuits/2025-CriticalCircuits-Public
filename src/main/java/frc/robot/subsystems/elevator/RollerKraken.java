@@ -76,8 +76,6 @@ public class RollerKraken implements RollerIO {
 
         switch (mode) {
             case IN:
-                if(inputs.algaeDetected || inputs.coralDetected) mode = RollerMode.HOLD;
-
                 m_hatcherMotor.setControl(hatcherControl.withVelocity(5));
                 m_intakeMotor.setVoltage(4.0);  
                 break;
