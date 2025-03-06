@@ -15,7 +15,7 @@ public class RollerSim implements RollerIO{
     }
 
     @Override
-    public void updateInputs(RollerIOInputs inputs) {
+    public void updateInputs(RollerIOInputs inputs, boolean lowVoltage) {
         inputs = this.inputsSim;
 
         SmartDashboard.putBoolean("algae", inputs.algaeDetected);

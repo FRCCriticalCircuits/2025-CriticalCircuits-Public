@@ -8,6 +8,8 @@ import frc.robot.subsystems.elevator.RollerIO.RollerMode;
 public class RollerSubsystem extends SubsystemBase{
     private static RollerSubsystem instance;
 
+    public boolean lowVoltage = false;
+
     private RollerIO rollerIO;
     private RollerIOInputs inputs = new RollerIOInputs();
 
@@ -45,6 +47,6 @@ public class RollerSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        rollerIO.updateInputs(inputs);
+        rollerIO.updateInputs(inputs, lowVoltage);
     }
 }

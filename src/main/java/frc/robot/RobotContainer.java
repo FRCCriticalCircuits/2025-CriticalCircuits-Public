@@ -90,7 +90,7 @@ public class RobotContainer {
     );
 
     autoChooser.setDefaultOption("Upper Coral", "Auto 0");
-    autoChooser.addOption("testing", "armElevTest");
+    autoChooser.addOption("testing", "auto 1");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -331,13 +331,34 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
       "outTake",
-      new Shoot()
+      new Shoot().withTimeout(1)
+    );
+
+    NamedCommands.registerCommand(
+      "outTakeL1",
+      new SequentialCommandGroup(
+        new InstantCommand(
+          () -> {
+            rollerSubsystem.lowVoltage = true;
+
+          }
+        ),
+        new Shoot().withTimeout(1),
+        new InstantCommand(
+          () -> {
+            rollerSubsystem.lowVoltage = false;
+          }
+        )
+      )
     );
 
     NamedCommands.registerCommand(
       "intakeCoral",
-      new IntakeCoral().withTimeout(1.2)
+      new AutoIntakeCoral()
     );
+
+    NamedCommands.registerCommand(
+      "autoIntakeCoral", new AutoIntakeCoral());
 
     NamedCommands.registerCommand(
       "intakeAlgae",

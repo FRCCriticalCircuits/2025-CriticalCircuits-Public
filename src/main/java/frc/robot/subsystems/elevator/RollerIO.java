@@ -13,7 +13,7 @@ public interface RollerIO {
         IDLE
     }
 
-    public default void updateInputs(RollerIOInputs inputs) {}
+    public default void updateInputs(RollerIOInputs inputs, boolean lowVoltage) {}
     public default void overrideStates(RollerIOInputs inputs) {};
 
     public default void setMode(RollerMode mode) {};

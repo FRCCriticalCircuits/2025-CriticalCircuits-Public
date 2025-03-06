@@ -67,7 +67,7 @@ public class RollerKraken implements RollerIO {
     }
 
     @Override
-    public void updateInputs(RollerIOInputs inputs) {
+    public void updateInputs(RollerIOInputs inputs, boolean lowVoltage) {
         inputs.algaeDetected = algaeDebouncer.calculate(
             algaeSensor.isRangeValid() &&
             algaeSensor.getRange() < 90
@@ -89,8 +89,13 @@ public class RollerKraken implements RollerIO {
                 m_intakeMotor.setVoltage(4.0);
                 break;
             case OUT:
-                m_hatcherMotor.setVoltage(-12.0);
-                m_intakeMotor.setVoltage(-12.0);
+                if(lowVoltage){
+                    m_hatcherMotor.setVoltage(-2.0);
+                    m_intakeMotor.setVoltage(-2.0);
+                }else{
+                    m_hatcherMotor.setVoltage(-12.0);
+                    m_intakeMotor.setVoltage(-12.0);
+                }
                 break;
             case HOLD:
                 m_hatcherMotor.setVoltage(0.70);
