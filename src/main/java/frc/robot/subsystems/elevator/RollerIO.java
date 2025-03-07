@@ -9,6 +9,7 @@ public interface RollerIO {
     public enum RollerMode{
         IN,
         OUT,
+        C_OUT_LIGHT,
         HOLD,
         IDLE
     }

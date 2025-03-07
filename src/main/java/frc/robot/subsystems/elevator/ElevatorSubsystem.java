@@ -177,7 +177,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                         this.targetState = "L3coral";
                         break;
                     case LClimb:
-                        this.targetState = "processorAlgae";
+                        this.targetState = "groundAlgae";
                 }
                 break;  
             case CORAL_INTAKE:

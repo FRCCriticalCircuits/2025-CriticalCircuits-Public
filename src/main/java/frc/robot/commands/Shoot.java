@@ -4,6 +4,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
 import frc.robot.subsystems.elevator.RollerIO.RollerMode;
+import frc.robot.utils.structures.DataStrcutures.Level;
+import frc.robot.subsystems.AutoAimManager;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.RollerSubsystem;
 
 public class Shoot extends Command{
@@ -17,7 +20,11 @@ public class Shoot extends Command{
 
     @Override
     public void initialize(){
-        rollerSubsystem.set(RollerMode.OUT);
+        if (AutoAimManager.getInstance().getSetting().getLevel() == Level.L1) {
+            rollerSubsystem.set(RollerMode.C_OUT_LIGHT);
+        } else {
+            rollerSubsystem.set(RollerMode.OUT);
+        }
         
         /*
          * if(Robot.isSimulation()){
@@ -61,7 +68,7 @@ public class Shoot extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        rollerSubsystem.set(RollerMode.IDLE);
+        rollerSubsystem.set(RollerMode.HOLD);
 
         if(Robot.isSimulation()){
             RollerIOInputs newInputs = new RollerIOInputs();

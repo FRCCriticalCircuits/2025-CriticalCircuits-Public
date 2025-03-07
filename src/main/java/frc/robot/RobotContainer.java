@@ -197,6 +197,18 @@ public class RobotContainer {
           if(mode < 0) mode = 2;
           autoAimManager.updateMode(Mode.valueOf(mode));
           if(mode == 2) elevatorSubsystem.fetchAlgae = false;
+
+          switch (mode) {
+            case 0:
+                ledSubsystem.setColor(Color.kRed);
+            break;
+            case 1:
+            ledSubsystem.setColor(Color.kBlue);
+            break;
+            case 2:
+            ledSubsystem.setColor(Color.kGreen);
+            break;
+          }
         }, elevatorSubsystem, rollerSubsystem
       )
     );
@@ -208,6 +220,18 @@ public class RobotContainer {
           if(mode > 2) mode = 0;
           autoAimManager.updateMode(Mode.valueOf(mode));
           if(mode == 2) elevatorSubsystem.fetchAlgae = false;
+
+          switch (mode) {
+            case 0:
+                ledSubsystem.setColor(Color.kRed);
+            break;
+            case 1:
+            ledSubsystem.setColor(Color.kBlue);
+            break;
+            case 2:
+            ledSubsystem.setColor(Color.kGreen);
+            break;
+          }
         }, elevatorSubsystem, rollerSubsystem
       )
     );

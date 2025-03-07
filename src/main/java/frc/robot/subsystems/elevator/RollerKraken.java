@@ -26,7 +26,7 @@ public class RollerKraken implements RollerIO {
     private Debouncer coralDebouncer = new Debouncer(0.1);
     private Debouncer algaeDebouncer = new Debouncer(0.1);
 
-    private RollerMode mode = RollerMode.IDLE;
+    private RollerMode mode = RollerMode.HOLD;
 
     private VelocityVoltage hatcherControl = new VelocityVoltage(0).withSlot(0);
 
@@ -74,10 +74,7 @@ public class RollerKraken implements RollerIO {
         );
 
         inputs.coralDetected = coralDebouncer.calculate(
-            m_hatcherMotor.getVelocity().getValueAsDouble() < 1.0 &&
-            m_hatcherMotor.getSupplyCurrent().getValueAsDouble() > 2.0 &&
-            // limitSwitch.get() &&
-            (mode == RollerMode.IN)
+            m_hatcherMotor.getVelocity().getValueAsDouble() < 1.5
         );
 
         SmartDashboard.putBoolean("algae", inputs.algaeDetected);
@@ -97,14 +94,16 @@ public class RollerKraken implements RollerIO {
                     m_intakeMotor.setVoltage(-12.0);
                 }
                 break;
+            case C_OUT_LIGHT:
+                    m_hatcherMotor.setVoltage(-2.0);
+                break;
             case HOLD:
-                m_hatcherMotor.setVoltage(0.70);
-                m_intakeMotor.setVoltage(0.70);
+                m_hatcherMotor.setControl(hatcherControl.withVelocity(3));
                 break;
-            case IDLE:
-                m_hatcherMotor.stopMotor();
-                m_intakeMotor.stopMotor();
-                break;
+            // case IDLE:
+            //     m_hatcherMotor.stopMotor();
+            //     m_intakeMotor.stopMotor();
+            //     break;
         }
     }
 

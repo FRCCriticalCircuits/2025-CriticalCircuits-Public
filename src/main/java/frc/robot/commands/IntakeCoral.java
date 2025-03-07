@@ -28,7 +28,7 @@ public class IntakeCoral extends Command{
     @Override
     public void end(boolean interrupted) {
         if(rollerSubsystem.coralDetected()) rollerSubsystem.set(RollerMode.HOLD);
-        else rollerSubsystem.set(RollerMode.IDLE);
+        else rollerSubsystem.set(RollerMode.HOLD);
 
         if(Robot.isSimulation()){
             RollerIOInputs newInputs = new RollerIOInputs();

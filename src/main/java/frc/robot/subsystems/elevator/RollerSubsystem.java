@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
@@ -48,5 +49,7 @@ public class RollerSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
         rollerIO.updateInputs(inputs, lowVoltage);
+
+        SmartDashboard.putBoolean("HasCoral", coralDetected());
     }
 }

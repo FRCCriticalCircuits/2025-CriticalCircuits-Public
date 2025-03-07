@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     if(Robot.isSimulation()) m_robotContainer.resetSimulationField();
 
-    LEDSubsystem.getInstance().setColor(Color.kAqua);
+    LEDSubsystem.getInstance().setColor(Color.kRed);
   }
 
   @Override

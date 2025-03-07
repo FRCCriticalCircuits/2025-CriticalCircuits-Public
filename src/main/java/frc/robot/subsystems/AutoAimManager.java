@@ -167,7 +167,7 @@ public class AutoAimManager{
     }
 
     public synchronized void cancle(){
-        this.command.cancel();
+        if (this.command != null) this.command.cancel();
     }
 
     public synchronized AutoAimSetting getSetting(){
