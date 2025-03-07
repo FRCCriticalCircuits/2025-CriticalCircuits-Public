@@ -14,6 +14,9 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.Physical;
+import frc.robot.subsystems.AutoAimManager;
+import frc.robot.subsystems.led.LEDSubsystem;
+import frc.robot.utils.structures.DataStrcutures.Mode;
 
 public class RollerKraken implements RollerIO {
     private TalonFX m_hatcherMotor;
@@ -80,6 +83,16 @@ public class RollerKraken implements RollerIO {
         SmartDashboard.putBoolean("algae", inputs.algaeDetected);
         SmartDashboard.putBoolean("coral", inputs.coralDetected);
 
+        if (inputs.coralDetected && 
+            (AutoAimManager.getInstance().getSetting().getMode() == Mode.CORAL_INTAKE 
+                || AutoAimManager.getInstance().getSetting().getMode() == Mode.CORAL_PLACE
+            )
+        ) {
+            LEDSubsystem.getInstance().setBlink(true);
+        } else {
+            LEDSubsystem.getInstance().setBlink(false);
+        }
+
         switch (mode) {
             case IN:
                 m_hatcherMotor.setControl(hatcherControl.withVelocity(10));
@@ -96,9 +109,11 @@ public class RollerKraken implements RollerIO {
                 break;
             case C_OUT_LIGHT:
                     m_hatcherMotor.setVoltage(-2.0);
+                    m_intakeMotor.stopMotor();
                 break;
             case HOLD:
-                m_hatcherMotor.setControl(hatcherControl.withVelocity(3));
+                    m_hatcherMotor.setControl(hatcherControl.withVelocity(3));
+                    m_intakeMotor.stopMotor();
                 break;
             // case IDLE:
             //     m_hatcherMotor.stopMotor();

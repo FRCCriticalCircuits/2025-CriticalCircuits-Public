@@ -13,10 +13,12 @@ public class VisionSubsystem extends SubsystemBase{
     VisionIO limelight;
     SwerveSubsystem swerveSubsystem;
     Optional<VisionResult> limelightResult;
+    private boolean enabled;
 
     public VisionSubsystem(){
         this.notifier = new Notifier(this::update);
         this.swerveSubsystem = SwerveSubsystem.getInstance(); 
+        this.enabled = true;
 
         if(Robot.isReal()){
             this.limelight = VisionLL.getInstance("limelight");
@@ -29,12 +31,21 @@ public class VisionSubsystem extends SubsystemBase{
         if(Robot.isReal()) this.notifier.startPeriodic(0.01);
     }
 
+    public void enable() {
+        this.enabled = true;
+    }
+
+    public void disable() {
+        this.enabled = false;
+    }
+
     private void update(){
         limelightResult = limelight.getEstimatedGlobalPose(); 
 
         if(swerveSubsystem.getGyroYawVelocity() > 12.5664) return;
   
-        if(!limelightResult.isEmpty() && limelightResult.get().pose != null){
+        // Only update pose if limelight found a tag
+        if(this.enabled && !limelightResult.isEmpty() && limelightResult.get().pose != null){
             swerveSubsystem.updatePoseEstimator(
                 limelightResult.get().pose,
                 limelightResult.get().timestampSeconds,

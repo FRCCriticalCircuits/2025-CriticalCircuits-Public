@@ -62,12 +62,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         graphMachine.addNode("L2coral", new Pair<Double, Double>(0.0 + 0.305, 2.25));
         graphMachine.addNode("L3coral", new Pair<Double, Double>(0.0 + 0.305, 5.25));   
 
-        graphMachine.addNode("processorAlgae", new Pair<Double, Double>(0.0 + 0.305, 0.1));
+        graphMachine.addNode("processorAlgae", new Pair<Double, Double>(Units.degreesToRotations(-40) + 0.305, 0.1));
 
         graphMachine.addNode("algaeL1", new Pair<Double, Double>(0.0 + 0.305, 2.25));
         graphMachine.addNode("algaeL2", new Pair<Double, Double>(0.0 + 0.305, 5.2));
     
-        // Algae-Fetch Nodes
+        // Algae-Fetch Nodes    
         graphMachine.addNode("algaeL1-in", new Pair<Double, Double>(Units.degreesToRotations(-40) + 0.305, 2.25));
         graphMachine.addNode("algaeL2-in", new Pair<Double, Double>(Units.degreesToRotations(-40) + 0.305, 5.2));
 

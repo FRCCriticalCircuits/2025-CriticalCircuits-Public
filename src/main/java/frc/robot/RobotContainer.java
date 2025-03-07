@@ -54,6 +54,7 @@ public class RobotContainer {
   private WinchSubsystem winchSubsystem = WinchSubsystem.getInstance();
 
   private SendableChooser<String> autoChooser = new SendableChooser<>();
+  private SendableChooser<String> ac = new SendableChooser<>();
 
   private Controller controller = Controller.getInstance();
 
@@ -69,6 +70,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     LEDSubsystem.start();
+    LEDSubsystem.getInstance().setColor(Color.kRed);
 
     swerveSubsystem = SwerveSubsystem.getInstance();
     visionSubsystem = new VisionSubsystem();
@@ -89,8 +91,12 @@ public class RobotContainer {
       )
     );
 
-    autoChooser.setDefaultOption("Upper Coral", "Auto 0");
-    autoChooser.addOption("testing", "auto 1");
+    // ac = AutoBuilder.buildAutoChooser();
+    // ac.setDefaultOption("1 Piece Mid", "1 Piece Mid");
+
+    autoChooser.setDefaultOption("1 Piece Mid", "1 Piece Mid");
+    autoChooser.addOption("test2", "test2");
+    autoChooser.addOption("2p test", "test2");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -397,6 +403,25 @@ public class RobotContainer {
         }, elevatorSubsystem, rollerSubsystem
       )
     );
+
+    // Vision commands
+    NamedCommands.registerCommand(
+      "visionEnable",
+      new InstantCommand(
+        () -> {
+          this.visionSubsystem.enable();
+        }
+      )
+    );
+
+    NamedCommands.registerCommand(
+        "visionDisable",
+        new InstantCommand(
+          () -> {
+            this.visionSubsystem.disable();
+          }
+        )
+      );
   }
 
   public Command getAutonomousCommand() {    

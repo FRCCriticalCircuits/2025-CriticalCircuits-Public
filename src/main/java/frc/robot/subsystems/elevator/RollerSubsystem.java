@@ -50,6 +50,6 @@ public class RollerSubsystem extends SubsystemBase{
     public void periodic() {
         rollerIO.updateInputs(inputs, lowVoltage);
 
-        SmartDashboard.putBoolean("HasCoral", coralDetected());
+        // SmartDashboard.putBoolean("HasCoral", coralDetected());
     }
 }

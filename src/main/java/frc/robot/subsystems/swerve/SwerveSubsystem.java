@@ -6,10 +6,12 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -27,6 +29,8 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
@@ -52,6 +56,9 @@ public class SwerveSubsystem extends SubsystemBase{
     private GyroIOInputs gyroInputs = new GyroIOInputs();
     private Rotation2d rawGyroRotation = Rotation2d.fromRotations(-0.5);
 
+    // private RobotConfig config = RobotConfig.fromGUISettings();
+    // private SwerveSetpointGenerator setpointGenerator = new SwerveSetpointGenerator(config);
+
     private SwerveModulePosition[] lastModulePositions = new SwerveModulePosition[] {
         new SwerveModulePosition(),
         new SwerveModulePosition(),
@@ -71,7 +78,11 @@ public class SwerveSubsystem extends SubsystemBase{
 
     public static final Lock odometryLock = new ReentrantLock();
 
+    private Field2d m_field = new Field2d();
+
     private SwerveSubsystem(){
+        SmartDashboard.putData("Field", m_field);
+
         driveSimulation = new SwerveDriveSimulation(
             Physical.DriveBase.SIMULATION_CONFIG,
             DriveStationIO.isBlue()   ? FieldConstants.INIT_POSE_BLUE 
@@ -309,5 +320,7 @@ public class SwerveSubsystem extends SubsystemBase{
         estimateFieldPublisher.set(getPoseEstimate()); 
 
         currentSwerveStatePublisher.set(getSwerveModuleStates());
+
+        m_field.setRobotPose(getPoseEstimate());
     }
 }

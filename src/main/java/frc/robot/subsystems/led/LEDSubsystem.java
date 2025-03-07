@@ -1,5 +1,7 @@
 package frc.robot.subsystems.led;
 
+import edu.wpi.first.units.DimensionlessUnit;
+import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
@@ -20,12 +22,15 @@ public class LEDSubsystem extends SubsystemBase {
     AddressableLEDBufferView bufElev;
     LEDPattern pattern;
     LEDPattern patternBlink;
+    private Dimensionless brightness;
 
     boolean blink;
     Color color;
     
     public LEDSubsystem() {
         leds = new AddressableLED(PWM_PORT);
+
+        this.brightness = Percent.of(BRIGHTNESS);
 
         // buffer length is expensive to change make it constant
         buf = new AddressableLEDBuffer(NUM_LEDS);
@@ -68,14 +73,14 @@ public class LEDSubsystem extends SubsystemBase {
             c, c, c, c, Color.kWhite, c, c, c, c
         // Add cycling white zone       
         ).scrollAtRelativeSpeed(Percent.per(Second).of(SCROLL_PERCENT_PER_SEC))
-        .atBrightness(Percent.of(BRIGHTNESS));
+        .atBrightness(this.brightness);
 
         patternBlink = LEDPattern.gradient(
             GradientType.kContinuous, 
             c, c, c, c, Color.kWhite, c, c, c, c
         // Add cycling white zone
         ).blink(Seconds.of(BLINK_TIME_ON), Seconds.of(BLINK_TIME_OFF))
-        .atBrightness(Percent.of(BRIGHTNESS));
+        .atBrightness(this.brightness);
 
         setBlink(this.blink);
     }
@@ -90,14 +95,14 @@ public class LEDSubsystem extends SubsystemBase {
             GradientType.kContinuous, 
             c, c, c, c,  c2, c, c, c, c
         // Add cycling white zone
-        ).atBrightness(Percent.of(BRIGHTNESS))
+        ).atBrightness(this.brightness)
         .scrollAtRelativeSpeed(Percent.per(Second).of(SCROLL_PERCENT_PER_SEC));
 
         patternBlink = LEDPattern.gradient(
             GradientType.kContinuous, 
             c, c, c, c, c2, c, c, c, c
         // Add cycling white zone
-        ).atBrightness(Percent.of(BRIGHTNESS))
+        ).atBrightness(this.brightness)
         .blink(Seconds.of(BLINK_TIME_ON), Seconds.of(BLINK_TIME_OFF));
 
         setBlink(this.blink);

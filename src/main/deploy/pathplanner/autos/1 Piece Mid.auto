@@ -7,7 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "intakeCoral"
+            "name": "visionDisable"
           }
         },
         {
@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "1 - Path 1"
+                  "pathName": "1 Piece Mid"
                 }
               },
               {
@@ -45,6 +45,12 @@
           "type": "named",
           "data": {
             "name": "outTakeL1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "visionEnable"
           }
         }
       ]
