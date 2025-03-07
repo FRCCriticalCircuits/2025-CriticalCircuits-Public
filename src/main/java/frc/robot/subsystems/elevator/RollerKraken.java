@@ -95,7 +95,7 @@ public class RollerKraken implements RollerIO {
                 }
                 break;
             case C_OUT_LIGHT:
-                    m_hatcherMotor.setVoltage(-2.0);
+                m_hatcherMotor.setVoltage(-2.0);
                 break;
             case HOLD:
                 m_hatcherMotor.setControl(hatcherControl.withVelocity(3));

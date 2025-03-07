@@ -6,7 +6,6 @@ import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
 import frc.robot.subsystems.elevator.RollerIO.RollerMode;
 import frc.robot.utils.structures.DataStrcutures.Level;
 import frc.robot.subsystems.AutoAimManager;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.RollerSubsystem;
 
 public class Shoot extends Command{
