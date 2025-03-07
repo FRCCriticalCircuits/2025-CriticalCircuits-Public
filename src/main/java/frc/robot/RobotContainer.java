@@ -90,7 +90,10 @@ public class RobotContainer {
     );
 
     autoChooser.setDefaultOption("Upper Coral", "Auto 0");
-    autoChooser.addOption("testing", "auto 1");
+    
+    autoChooser.addOption("Mid L1", "Auto 1");
+    autoChooser.addOption("Up L1", "Auto 2");
+    autoChooser.addOption("Down L1", "Auto 3");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -364,7 +367,6 @@ public class RobotContainer {
         new InstantCommand(
           () -> {
             rollerSubsystem.lowVoltage = true;
-
           }
         ),
         new Shoot().withTimeout(1),
