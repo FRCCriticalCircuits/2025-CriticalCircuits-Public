@@ -7,6 +7,12 @@
         {
           "type": "named",
           "data": {
+            "name": "visionDisable"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "setModeCoral"
           }
         },
@@ -23,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Copy of 1 Piece Mid"
+                  "pathName": "1 Piece Mid"
                 }
               },
               {
@@ -39,6 +45,12 @@
           "type": "named",
           "data": {
             "name": "outTakeL1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "visionEnable"
           }
         }
       ]
