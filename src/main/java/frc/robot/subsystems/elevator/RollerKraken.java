@@ -1,9 +1,11 @@
 package frc.robot.subsystems.elevator;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
@@ -12,6 +14,7 @@ import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.Physical;
 import frc.robot.subsystems.AutoAimManager;
@@ -43,7 +46,7 @@ public class RollerKraken implements RollerIO {
         rollerConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
         rollerConfiguration.CurrentLimits.StatorCurrentLimit = Physical.Elevator.CurrentLimits.ROLLER_CURRENT_LIMIT;
         rollerConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
-        rollerConfiguration.CurrentLimits.SupplyCurrentLimit = 20;
+        rollerConfiguration.CurrentLimits.SupplyCurrentLimit = 10;
 
         rollerConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
@@ -86,7 +89,7 @@ public class RollerKraken implements RollerIO {
         if (inputs.coralDetected && 
             (AutoAimManager.getInstance().getSetting().getMode() == Mode.CORAL_INTAKE 
                 || AutoAimManager.getInstance().getSetting().getMode() == Mode.CORAL_PLACE
-            )
+            ) 
         ) {
             LEDSubsystem.getInstance().setBlink(true);
         } else {
@@ -108,12 +111,13 @@ public class RollerKraken implements RollerIO {
                 }
                 break;
             case C_OUT_LIGHT:
-                    m_hatcherMotor.setVoltage(-2.0);
+                    // m_hatcherMotor.setVoltage(-2.0);
+                    m_hatcherMotor.setControl(hatcherControl.withVelocity(-7));
                     m_intakeMotor.stopMotor();
                 break;
             case HOLD:
                     m_hatcherMotor.setControl(hatcherControl.withVelocity(3));
-                    m_intakeMotor.stopMotor();
+                m_intakeMotor.stopMotor();
                 break;
             // case IDLE:
             //     m_hatcherMotor.stopMotor();

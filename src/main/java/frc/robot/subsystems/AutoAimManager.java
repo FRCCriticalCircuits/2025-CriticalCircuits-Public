@@ -12,7 +12,8 @@
     import edu.wpi.first.wpilibj.Notifier;
     import edu.wpi.first.wpilibj.DriverStation.Alliance;
     import edu.wpi.first.wpilibj2.command.Command;
-    import frc.robot.Constants.FieldConstants;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import frc.robot.Constants.FieldConstants;
     import frc.robot.subsystems.swerve.SwerveSubsystem;
     import frc.robot.utils.DriveStationIO.DriveStationIO;
     import frc.robot.utils.Math.AdvancedPose2D;
@@ -152,6 +153,8 @@
         public synchronized Command getCommand(){
             updateValues();
 
+            SwerveSubsystem.getInstance().m_field.getObject("Target").setPose(targetPose);
+
             // Since AutoBuilder is configured, we can use it to build pathfinding commands
             this.command = AutoBuilder.pathfindToPose(
                 targetPose,
@@ -159,7 +162,7 @@
                 0.0 // Goal end velocity in meters/sec
             );
 
-            return this.command;
+            return new PrintCommand("autoaim");
         }
 
         public synchronized boolean isFinished(){

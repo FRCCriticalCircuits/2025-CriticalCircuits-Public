@@ -58,7 +58,7 @@ public class RobotContainer {
 
   private Controller controller = Controller.getInstance();
 
-  private CommandXboxController driveController = new CommandXboxController(0); 
+  private static CommandXboxController driveController = new CommandXboxController(0); 
   private CommandXboxController operatorController = new CommandXboxController(1);
 
   private AutoAimManager autoAimManager = AutoAimManager.getInstance(
@@ -129,11 +129,14 @@ public class RobotContainer {
       )
     );
 
-    /*
-    driveController.povUp().debounce(0.02).whileTrue(
-        new PathTest(swerveSubsystem)
-    );
-     */
+    
+    // driveController.povRight().debounce(0.02).whileTrue(
+    //     new RelativeDrive(0.1)
+    // );
+
+    // driveController.povLeft().debounce(0.02).whileTrue(
+    //     new RelativeDrive(-0.1)
+    // );
 
     driveController.x().debounce(0.02).onTrue(
       new InstantCommand(
@@ -462,5 +465,9 @@ public class RobotContainer {
   
   public void updateSimulation() {
     SimulatedArena.getInstance().simulationPeriodic();
+  }
+
+  public static CommandXboxController getDriveController() {
+    return driveController;
   }
 }

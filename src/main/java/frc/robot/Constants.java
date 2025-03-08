@@ -211,7 +211,7 @@ public class Constants {
             public static final int NUM_LAST_ELEV_LED = 70;
 
             public static final double BLINK_TIME_ON = 0.150;
-            public static final double BLINK_TIME_OFF = 0.050;
+            public static final double BLINK_TIME_OFF = 0.10;
             public static final double SCROLL_PERCENT_PER_SEC = 65;
             public static final double BRIGHTNESS = 100;
         }

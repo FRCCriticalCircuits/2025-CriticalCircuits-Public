@@ -78,7 +78,7 @@ public class SwerveSubsystem extends SubsystemBase{
 
     public static final Lock odometryLock = new ReentrantLock();
 
-    private Field2d m_field = new Field2d();
+    public Field2d m_field = new Field2d();
 
     private SwerveSubsystem(){
         SmartDashboard.putData("Field", m_field);
@@ -135,7 +135,7 @@ public class SwerveSubsystem extends SubsystemBase{
             this::getChassisSpeeds, // ChassisSpeeds supplier
             (speeds, feedforwards) -> setModuleStates(speeds), // optionally outputs individual feedforwards
             new PPHolonomicDriveController(
-                new PIDConstants(15.0, 0.0, 0.5),   // Translation Feedback PID constants
+                new PIDConstants(20.0, 0.0, 0.5),   // Translation Feedback PID constants
                 new PIDConstants(7.0, 0.0, 0.0)     // Rotation Feedback PID constants
             ),
             config, // The robot configuration

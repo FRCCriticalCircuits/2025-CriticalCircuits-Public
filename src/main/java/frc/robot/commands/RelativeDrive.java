@@ -26,8 +26,8 @@ public class RelativeDrive extends Command {
     @Override
     public void execute() {
 
-        double xSpeed = speed;
-        ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, 0, 0, swerveSubsystem.getGyroRotation2D());
+        double ySpeed = speed;
+        ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(0, ySpeed, 0, swerveSubsystem.getGyroRotation2D());
         swerveSubsystem.setModuleStates(speeds);
     }
 

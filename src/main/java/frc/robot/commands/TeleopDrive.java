@@ -7,6 +7,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.subsystems.swerve.SwerveSubsystem;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.Physical;
 
 public class TeleopDrive extends Command{
@@ -94,7 +95,17 @@ public class TeleopDrive extends Command{
             ySpeed = yLimiter.calculate(ySpeed) * Physical.DriveBase.MAX_SPEED_METERS;
             rotSpeed = omegaLimiter.calculate(rotSpeed) * Physical.DriveBase.MAX_ANGULAR_SPEED_RAD;
 
-            ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2D());
+            ChassisSpeeds speeds;
+
+            if (RobotContainer.getDriveController().povLeft().getAsBoolean()) {
+                speeds = ChassisSpeeds.fromRobotRelativeSpeeds(0, -0.2, 0, swerveSubsystem.getGyroRotation2D());
+            } else if (RobotContainer.getDriveController().povRight().getAsBoolean()) {
+                speeds = ChassisSpeeds.fromRobotRelativeSpeeds(0, 0.2, 0, swerveSubsystem.getGyroRotation2D());
+            } else {
+                speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2D());
+            }
+
+            
             swerveSubsystem.setModuleStates(speeds);
         }       
     } 

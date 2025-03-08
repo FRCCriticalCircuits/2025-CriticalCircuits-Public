@@ -60,7 +60,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // State Nodes with angle 0
         graphMachine.addNode("L2coral", new Pair<Double, Double>(0.0 + 0.305, 2.25));
-        graphMachine.addNode("L3coral", new Pair<Double, Double>(0.0 + 0.305, 5.25));   
+        graphMachine.addNode("L3coral", new Pair<Double, Double>(Units.degreesToRotations(-8) + 0.305, 5.25));   
 
         graphMachine.addNode("processorAlgae", new Pair<Double, Double>(Units.degreesToRotations(-40) + 0.305, 0.1));
 
