@@ -15,6 +15,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -43,6 +44,7 @@ import frc.robot.utils.structures.DataStrcutures.Mode;
 import frc.robot.utils.structures.DataStrcutures.Spot;
 
 public class RobotContainer {
+    private Robot robot;
   private SwerveSubsystem swerveSubsystem;
   private VisionSubsystem visionSubsystem;
 
@@ -66,16 +68,18 @@ public class RobotContainer {
     () -> controller.getDriverRT()
   );
 
-  private int mode = 1;
+//   private int mode = 1;
 
-  public RobotContainer() {
+  public RobotContainer(Robot r) {
+    this.robot = r;
+
     LEDSubsystem.start();
     LEDSubsystem.getInstance().setColor(Color.kRed);
 
     swerveSubsystem = SwerveSubsystem.getInstance();
     visionSubsystem = new VisionSubsystem();
-    elevatorSubsystem = ElevatorSubsystem.getInstance();
-    rollerSubsystem = RollerSubsystem.getInstance();
+    rollerSubsystem = new RollerSubsystem(robot);
+    elevatorSubsystem = new ElevatorSubsystem(rollerSubsystem);
     ledSubsystem = LEDSubsystem.getInstance();
     winchSubsystem = WinchSubsystem.getInstance();
 
@@ -202,6 +206,7 @@ public class RobotContainer {
     operatorController.leftBumper().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
+            int mode = autoAimManager.getMode().value;
           mode--;
           if(mode < 0) mode = 2;
           autoAimManager.updateMode(Mode.valueOf(mode));
@@ -225,6 +230,7 @@ public class RobotContainer {
     operatorController.rightBumper().debounce(0.02).onTrue(
       new InstantCommand(
         () -> {
+            int mode = autoAimManager.getMode().value;
           mode++;
           if(mode > 2) mode = 0;
           autoAimManager.updateMode(Mode.valueOf(mode));
@@ -246,11 +252,11 @@ public class RobotContainer {
     );
 
     operatorController.povUp().debounce(0.02).whileTrue(
-        new WinchUpCommand(winchSubsystem)
+        new WinchUpCommand(winchSubsystem, rollerSubsystem)
     );
 
     operatorController.povDown().debounce(0.02).whileTrue(
-        new WinchDownCommand(winchSubsystem)
+        new WinchDownCommand(winchSubsystem, rollerSubsystem)
     );
 
     driveController.leftBumper().debounce(0.02).onTrue(
@@ -262,15 +268,15 @@ public class RobotContainer {
     );
 
     driveController.rightBumper().debounce(0.02).whileTrue(
-      new IntakeAlgae()
+      new IntakeAlgae(rollerSubsystem)
     );
 
     driveController.b().debounce(0.02).whileTrue(
-      new IntakeCoral()
+      new IntakeCoral(rollerSubsystem)
     );
 
     driveController.y().debounce(0.02).whileTrue(
-      new Shoot()
+      new Shoot(rollerSubsystem)
     );
 
     NamedCommands.registerCommand(
@@ -359,12 +365,12 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
       "waitElevator",
-      new WaitElevator()
+      new WaitElevator(elevatorSubsystem)
     );
 
     NamedCommands.registerCommand(
       "outTake",
-      new Shoot().withTimeout(1)
+      new Shoot(rollerSubsystem).withTimeout(1)
     );
 
     NamedCommands.registerCommand(
@@ -376,7 +382,7 @@ public class RobotContainer {
 
           }
         ),
-        new Shoot().withTimeout(1),
+        new Shoot(rollerSubsystem).withTimeout(1),
         new InstantCommand(
           () -> {
             rollerSubsystem.lowVoltage = false;
@@ -387,15 +393,15 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
       "intakeCoral",
-      new AutoIntakeCoral()
+      new AutoIntakeCoral(rollerSubsystem)
     );
 
     NamedCommands.registerCommand(
-      "autoIntakeCoral", new AutoIntakeCoral());
+      "autoIntakeCoral", new AutoIntakeCoral(rollerSubsystem));
 
     NamedCommands.registerCommand(
       "intakeAlgae",
-      new IntakeAlgae().withTimeout(1.2)
+      new IntakeAlgae(rollerSubsystem).withTimeout(1.2)
     );
 
     NamedCommands.registerCommand(

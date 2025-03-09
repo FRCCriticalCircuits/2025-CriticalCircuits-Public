@@ -6,8 +6,8 @@ import frc.robot.subsystems.elevator.ElevatorSubsystem;
 public class WaitElevator extends Command{
     private ElevatorSubsystem elevatorSubsystem;
     
-    public WaitElevator(){
-        elevatorSubsystem = ElevatorSubsystem.getInstance();
+    public WaitElevator(ElevatorSubsystem elev){
+        elevatorSubsystem = elev;
 
         addRequirements(elevatorSubsystem);
     }

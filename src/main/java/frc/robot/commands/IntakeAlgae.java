@@ -9,8 +9,8 @@ import frc.robot.subsystems.elevator.RollerIO.RollerMode;
 public class IntakeAlgae extends Command{
     private RollerSubsystem rollerSubsystem;
     
-    public IntakeAlgae(){
-        rollerSubsystem = RollerSubsystem.getInstance();
+    public IntakeAlgae(RollerSubsystem r){
+        this.rollerSubsystem = r;
         addRequirements(rollerSubsystem);
     }
     

@@ -17,8 +17,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.Physical;
+import frc.robot.Constants.FieldConstants.AutoAim;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.led.LEDSubsystem;
+import frc.robot.utils.structures.DataStrcutures.Level;
 import frc.robot.utils.structures.DataStrcutures.Mode;
 
 public class RollerKraken implements RollerIO {
@@ -36,7 +38,12 @@ public class RollerKraken implements RollerIO {
 
     private VelocityVoltage hatcherControl = new VelocityVoltage(0).withSlot(0);
 
-    public RollerKraken(){
+    private Robot robot;
+
+    private boolean sameCoral = false;
+
+    public RollerKraken(Robot r){
+        this.robot = r;
         m_hatcherMotor = new TalonFX(DeviceID.Angler.HATCHER_ID);
         m_intakeMotor = new TalonFX(DeviceID.Angler.INTAKE_ID);
 
@@ -89,10 +96,18 @@ public class RollerKraken implements RollerIO {
         if (inputs.coralDetected && 
             (AutoAimManager.getInstance().getSetting().getMode() == Mode.CORAL_INTAKE 
                 || AutoAimManager.getInstance().getSetting().getMode() == Mode.CORAL_PLACE
-            ) 
+            ) && m_hatcherMotor.getDeviceEnable().getValue().value == 1.0
+            && robot.isTeleopEnabled()
+            
         ) {
+            if (!sameCoral) {
+                sameCoral = true;
+                AutoAimManager.getInstance().updateLevel(Level.L2);
+            }
             LEDSubsystem.getInstance().setBlink(true);
+            AutoAimManager.getInstance().updateMode(Mode.CORAL_PLACE);
         } else {
+            sameCoral = false;
             LEDSubsystem.getInstance().setBlink(false);
         }
 
@@ -112,7 +127,7 @@ public class RollerKraken implements RollerIO {
                 break;
             case C_OUT_LIGHT:
                     // m_hatcherMotor.setVoltage(-2.0);
-                    m_hatcherMotor.setControl(hatcherControl.withVelocity(-7));
+                    m_hatcherMotor.setControl(hatcherControl.withVelocity(-4.5));
                     m_intakeMotor.stopMotor();
                 break;
             case HOLD:

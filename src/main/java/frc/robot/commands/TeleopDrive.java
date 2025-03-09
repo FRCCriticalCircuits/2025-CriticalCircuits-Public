@@ -97,13 +97,16 @@ public class TeleopDrive extends Command{
 
             ChassisSpeeds speeds;
 
-            if (RobotContainer.getDriveController().povLeft().getAsBoolean()) {
-                speeds = ChassisSpeeds.fromRobotRelativeSpeeds(0, -0.2, 0, swerveSubsystem.getGyroRotation2D());
-            } else if (RobotContainer.getDriveController().povRight().getAsBoolean()) {
-                speeds = ChassisSpeeds.fromRobotRelativeSpeeds(0, 0.2, 0, swerveSubsystem.getGyroRotation2D());
-            } else {
-                speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2D());
-            }
+            // if (RobotContainer.getDriveController().povLeft().getAsBoolean()) {
+            //     speeds = ChassisSpeeds.fromRobotRelativeSpeeds(0, -0.2, 0, swerveSubsystem.getGyroRotation2D());
+            // } else if (RobotContainer.getDriveController().povRight().getAsBoolean()) {
+            //     speeds = ChassisSpeeds.fromRobotRelativeSpeeds(0, 0.2, 0, swerveSubsystem.getGyroRotation2D());
+            // }
+            // else {
+            //     speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2D());
+            // }
+
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2D());
 
             
             swerveSubsystem.setModuleStates(speeds);

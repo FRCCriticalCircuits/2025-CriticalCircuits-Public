@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "0"
+                  "pathName": "1 Piece + 1 Mid"
                 }
               },
               {
@@ -42,15 +42,9 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "1"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "intakeCoral"
+            "name": "outTakeL1"
           }
         },
         {
@@ -58,11 +52,24 @@
           "data": {
             "name": "visionEnable"
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Copy of 1 Piece + 1 Mid"
+                }
+              }
+            ]
+          }
         }
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

@@ -22,7 +22,7 @@ import frc.robot.Constants.Physical;
 public class ElevatorSubsystem extends SubsystemBase {
     private static ElevatorSubsystem instance;
 
-    private RollerSubsystem rollerSubsystem = RollerSubsystem.getInstance();
+    private RollerSubsystem rollerSubsystem;
 
     private ElevatorIO elevatorIO;
     private final ElevatorIOInputs elevatorInputs = new ElevatorIOInputs();
@@ -43,7 +43,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private StructPublisher<Pose3d> wristPose;
     private Pose3d wristPose3d = new Pose3d();
     
-    public ElevatorSubsystem() {
+    public ElevatorSubsystem(RollerSubsystem r) {
+        rollerSubsystem = r;
         if(Robot.isSimulation()){
             elevatorIO = new ElevatorSim();
             armIO = new ArmSim();
@@ -54,7 +55,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // State Nodes
         graphMachine.addNode("preMatch", new Pair<Double, Double>(Units.degreesToRotations(60) + 0.305, 0.0));      // 56.0 deg,    0 cm
-        graphMachine.addNode("groundAlgae", new Pair<Double, Double>(0.05, 0.1));
+        graphMachine.addNode("groundAlgae", new Pair<Double, Double>(Units.degreesToRotations(-95 ) + 0.305, 0.1));
         graphMachine.addNode("L1coral", new Pair<Double, Double>(Units.degreesToRotations(40) + 0.305, 0.15));          // 40.0 deg,    2 cm
         graphMachine.addNode("coralIntake", new Pair<Double, Double>(Units.degreesToRotations(30) + 0.305, 3.090));     // 30.0 deg,    50.5cm
 
@@ -127,11 +128,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         graphMachine.addEdge("0n-2", "0n-3");
 
         wristPose = NetworkTableInstance.getDefault().getStructTopic("/Arm/wristRelativePos", Pose3d.struct).publish();
-    }
-
-    public synchronized static ElevatorSubsystem getInstance(){
-        if(instance == null) instance = new ElevatorSubsystem();
-        return instance;
     }
 
     public void visualize(){
@@ -208,7 +204,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         nextState = graphMachine.findPath(curState, targetState);
         
         armIO.setRotation(Rotation2d.fromRotations(nextState.getSecond().getFirst()));
-        armIO.updateInputs(armInputs, rollerSubsystem.coralDetected(), rollerSubsystem.algaeDetected());
+        armIO.updateInputs(armInputs, rollerSubsystem.hasCoral(), rollerSubsystem.algaeDetected());
 
         elevatorIO.setPosition(nextState.getSecond().getSecond());
         elevatorIO.updateInputs(elevatorInputs);

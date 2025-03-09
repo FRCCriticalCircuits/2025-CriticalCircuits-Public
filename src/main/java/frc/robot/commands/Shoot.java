@@ -12,8 +12,8 @@ import frc.robot.subsystems.elevator.RollerSubsystem;
 public class Shoot extends Command{
     private RollerSubsystem rollerSubsystem;
 
-    public Shoot(){
-        rollerSubsystem = RollerSubsystem.getInstance();
+    public Shoot(RollerSubsystem r){
+        rollerSubsystem = r;
 
         addRequirements(rollerSubsystem);
     }

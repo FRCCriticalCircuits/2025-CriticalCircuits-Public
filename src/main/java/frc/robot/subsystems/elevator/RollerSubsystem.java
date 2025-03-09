@@ -14,19 +14,12 @@ public class RollerSubsystem extends SubsystemBase{
     private RollerIO rollerIO;
     private RollerIOInputs inputs = new RollerIOInputs();
 
-    public RollerSubsystem(){
+    public RollerSubsystem(Robot r){
         if(Robot.isReal()){
-            this.rollerIO = new RollerKraken();
+            this.rollerIO = new RollerKraken(r);
         }else{
             this.rollerIO = new RollerSim();
         }
-    }
-
-    public static RollerSubsystem getInstance() {
-        if (instance == null) {
-            instance = new RollerSubsystem();
-        }
-        return instance;
     }
 
     public void overrideSimStates(RollerIOInputs desireInputs){
@@ -38,7 +31,7 @@ public class RollerSubsystem extends SubsystemBase{
         return inputs.algaeDetected;
     }
 
-    public Boolean coralDetected(){
+    public Boolean hasCoral(){
         return inputs.coralDetected;
     }
     

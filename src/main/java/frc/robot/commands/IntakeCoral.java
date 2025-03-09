@@ -9,8 +9,8 @@ import frc.robot.subsystems.elevator.RollerSubsystem;
 public class IntakeCoral extends Command{
     private RollerSubsystem rollerSubsystem;
     
-    public IntakeCoral(){
-        rollerSubsystem = RollerSubsystem.getInstance();
+    public IntakeCoral(RollerSubsystem r){
+        rollerSubsystem = r;
 
         addRequirements(rollerSubsystem);
     }
@@ -27,7 +27,7 @@ public class IntakeCoral extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        if(rollerSubsystem.coralDetected()) rollerSubsystem.set(RollerMode.HOLD);
+        if(rollerSubsystem.hasCoral()) rollerSubsystem.set(RollerMode.HOLD);
         else rollerSubsystem.set(RollerMode.HOLD);
 
         if(Robot.isSimulation()){

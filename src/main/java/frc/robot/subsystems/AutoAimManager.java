@@ -190,6 +190,10 @@ import frc.robot.Constants.FieldConstants;
             updateSetting(server.getAutoAimSettings().withMode(mode));
         }
 
+        public Mode getMode(){
+            return server.getAutoAimSettings().getMode();
+        }        
+
         public synchronized void updateLevel(Level level){
             updateSetting(server.getAutoAimSettings().withLevel(level));
         }

@@ -1,0 +1,62 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "visionDisable"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setModeCoral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setL3"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "1 Piece Mid"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "waitElevator"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outTake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "visionEnable"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

@@ -9,8 +9,8 @@ import frc.robot.subsystems.elevator.RollerSubsystem;
 public class AutoIntakeCoral extends Command{
     private RollerSubsystem rollerSubsystem;
     
-    public AutoIntakeCoral(){
-        rollerSubsystem = RollerSubsystem.getInstance();
+    public AutoIntakeCoral(RollerSubsystem r){
+        rollerSubsystem = r;
 
         addRequirements(rollerSubsystem);
     }
@@ -22,7 +22,7 @@ public class AutoIntakeCoral extends Command{
 
     @Override
     public boolean isFinished() {
-        return rollerSubsystem.coralDetected();
+        return rollerSubsystem.hasCoral();
     }
 
     @Override
