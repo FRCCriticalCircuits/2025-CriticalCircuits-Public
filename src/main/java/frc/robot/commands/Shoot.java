@@ -19,45 +19,8 @@ public class Shoot extends Command{
 
     @Override
     public void initialize(){
-        if (AutoAimManager.getInstance().getSetting().getLevel() == Level.L1) {
-            rollerSubsystem.set(RollerMode.C_OUT_LIGHT);
-        } else {
-            rollerSubsystem.set(RollerMode.OUT);
-        }
-        
-        /*
-         * if(Robot.isSimulation()){
-            Pose3d wristTranslation = ElevatorSubsystem.getInstance().getRollerTransltaion();
-
-            if(rollerSubsystem.coralDetected()){
-                SimulatedArena.getInstance().addGamePieceProjectile(
-                    new ReefscapeCoralOnFly(
-                        SwerveSubsystem.driveSimulation.getSimulatedDriveTrainPose().getTranslation(),
-                        wristTranslation.getTranslation().toTranslation2d(),
-                        SwerveSubsystem.driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
-                        SwerveSubsystem.driveSimulation.getSimulatedDriveTrainPose().getRotation(),
-                        wristTranslation.getMeasureZ(),
-                        MetersPerSecond.of(3),
-                        wristTranslation.getRotation().getMeasureY().times(-1)
-                    ).enableBecomesGamePieceOnFieldAfterTouchGround()
-                );
-            } 
-            
-            if(rollerSubsystem.algaeDetected()){
-                SimulatedArena.getInstance().addGamePieceProjectile(
-                    new ReefscapeAlgaeOnFly(
-                        SwerveSubsystem.driveSimulation.getSimulatedDriveTrainPose().getTranslation(),
-                        wristTranslation.getTranslation().toTranslation2d(),
-                        SwerveSubsystem.driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
-                        SwerveSubsystem.driveSimulation.getSimulatedDriveTrainPose().getRotation(),
-                        wristTranslation.getMeasureZ(),
-                        MetersPerSecond.of(3),
-                        wristTranslation.getRotation().getMeasureY().times(-1)
-                    ).enableBecomesGamePieceOnFieldAfterTouchGround()
-                );
-            }
-        }
-         */
+        rollerSubsystem.lowVoltage = (AutoAimManager.getInstance().getSetting().getLevel() == Level.L1) ? true : false;
+        rollerSubsystem.set(RollerMode.OUT);
     }
 
     @Override

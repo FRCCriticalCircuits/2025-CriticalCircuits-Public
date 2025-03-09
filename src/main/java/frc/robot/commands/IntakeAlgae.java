@@ -11,6 +11,7 @@ public class IntakeAlgae extends Command{
     
     public IntakeAlgae(){
         rollerSubsystem = RollerSubsystem.getInstance();
+        
         addRequirements(rollerSubsystem);
     }
     
@@ -26,8 +27,7 @@ public class IntakeAlgae extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        if(rollerSubsystem.algaeDetected()) rollerSubsystem.set(RollerMode.HOLD);
-        else rollerSubsystem.set(RollerMode.HOLD);
+        rollerSubsystem.set(RollerMode.HOLD);
 
         if(Robot.isSimulation()){
             RollerIOInputs newInputs = new RollerIOInputs();

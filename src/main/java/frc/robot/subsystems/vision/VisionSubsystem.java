@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.subsystems.vision.VisionIO.VisionResult;
+import frc.robot.utils.DriveStationIO.DriveStationIO;
 
 public class VisionSubsystem extends SubsystemBase{
     Notifier notifier;
@@ -30,9 +31,10 @@ public class VisionSubsystem extends SubsystemBase{
     }
 
     private void update(){
-        limelightResult = limelight.getEstimatedGlobalPose(); 
-
         if(swerveSubsystem.getGyroYawVelocity() > 12.5664) return;
+        if(DriveStationIO.isAuto()) return;
+
+        limelightResult = limelight.getEstimatedGlobalPose(); 
   
         if(!limelightResult.isEmpty() && limelightResult.get().pose != null){
             swerveSubsystem.updatePoseEstimator(

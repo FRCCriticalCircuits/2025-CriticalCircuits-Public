@@ -53,12 +53,12 @@ public class RobotContainer {
 
   private WinchSubsystem winchSubsystem = WinchSubsystem.getInstance();
 
-  private SendableChooser<String> autoChooser = new SendableChooser<>();
+  private static SendableChooser<String> autoChooser = new SendableChooser<>();
 
-  private Controller controller = Controller.getInstance();
+  private static Controller controller = Controller.getInstance();
 
-  private CommandXboxController driveController = new CommandXboxController(0); 
-  private CommandXboxController operatorController = new CommandXboxController(1);
+  private static CommandXboxController driveController = new CommandXboxController(0); 
+  private static CommandXboxController operatorController = new CommandXboxController(1);
 
   private AutoAimManager autoAimManager = AutoAimManager.getInstance(
     () -> controller.getDriverLT(),
@@ -84,8 +84,7 @@ public class RobotContainer {
         () -> -controller.getDriverLY(),    // Left-Positive
         () -> -controller.getDriverLX(),    // Forward-Positive
         () -> -controller.getDriverRX(),    // CCW Positive
-        () -> controller.getDriverLT(),
-        () -> controller.getDriverRT()
+        () -> controller.getDriverLT()      // Robot Relative
       )
     );
 
@@ -203,14 +202,14 @@ public class RobotContainer {
 
           switch (mode) {
             case 0:
-                ledSubsystem.setColor(Color.kRed);
-            break;
+              ledSubsystem.updateColor(Color.kRed);
+              break;
             case 1:
-            ledSubsystem.setColor(Color.kBlue);
-            break;
+              ledSubsystem.updateColor(Color.kBlue);
+              break;
             case 2:
-            ledSubsystem.setColor(Color.kGreen);
-            break;
+              ledSubsystem.updateColor(Color.kGreen);
+              break;
           }
         }, elevatorSubsystem, rollerSubsystem
       )
@@ -226,14 +225,14 @@ public class RobotContainer {
 
           switch (mode) {
             case 0:
-                ledSubsystem.setColor(Color.kRed);
-            break;
+              ledSubsystem.updateColor(Color.kRed);
+              break;
             case 1:
-            ledSubsystem.setColor(Color.kBlue);
-            break;
+              ledSubsystem.updateColor(Color.kBlue);
+              break;
             case 2:
-            ledSubsystem.setColor(Color.kGreen);
-            break;
+              ledSubsystem.updateColor(Color.kGreen);
+              break;
           }
         }, elevatorSubsystem, rollerSubsystem
       )
@@ -272,7 +271,7 @@ public class RobotContainer {
       new InstantCommand(
         () -> {
           autoAimManager.updateMode(Mode.CORAL_PLACE);
-          ledSubsystem.setColor(Color.kRed);
+          ledSubsystem.updateColor(Color.kRed);
         }, ledSubsystem
       )
     );
@@ -282,7 +281,7 @@ public class RobotContainer {
       new InstantCommand(
         () -> {
           autoAimManager.updateMode(Mode.CORAL_INTAKE);
-          ledSubsystem.setColor(Color.kBlue);
+          ledSubsystem.updateColor(Color.kBlue);
         }, ledSubsystem
       )
     );
@@ -292,7 +291,7 @@ public class RobotContainer {
       new InstantCommand(
         () -> {
           autoAimManager.updateMode(Mode.ALGAE_PICK);
-          ledSubsystem.setColor(Color.kGreen);
+          ledSubsystem.updateColor(Color.kGreen);
         }, ledSubsystem
       )
     );

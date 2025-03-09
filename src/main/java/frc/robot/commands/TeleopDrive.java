@@ -11,6 +11,7 @@ import frc.robot.Constants.Physical;
 
 public class TeleopDrive extends Command{
     public static TeleopDrive instance;
+
     public static boolean manualEnable = true;
 
     private SwerveSubsystem swerveSubsystem;
@@ -18,8 +19,8 @@ public class TeleopDrive extends Command{
     private Supplier<Double>    verticalSpeed,
                                 horizontalSpeed,
                                 omegaSpeed,
-                                scalingFactorA,
-                                scalingFactorB;
+                                enableRoboRelative;
+
     private SlewRateLimiter xLimiter,
                             yLimiter,
                             omegaLimiter;
@@ -29,16 +30,14 @@ public class TeleopDrive extends Command{
         Supplier<Double> verticalSpeed,
         Supplier<Double> horizontalSpeed,
         Supplier<Double> omegaSpeed,
-        Supplier<Double> scalingFactorA,
-        Supplier<Double> scalingFactorB
+        Supplier<Double> enableRoboRelative
     ){
         this.swerveSubsystem = SwerveSubsystem.getInstance();
 
         this.verticalSpeed = verticalSpeed;
         this.horizontalSpeed = horizontalSpeed;
         this.omegaSpeed = omegaSpeed;
-        this.scalingFactorA = scalingFactorA;
-        this.scalingFactorB = scalingFactorB;
+        this.enableRoboRelative = enableRoboRelative;
 
         this.xLimiter = new SlewRateLimiter(5);
         this.yLimiter = new SlewRateLimiter(5);
@@ -52,10 +51,9 @@ public class TeleopDrive extends Command{
         Supplier<Double> verticalSpeed,
         Supplier<Double> horizontalSpeed,
         Supplier<Double> omegaSpeed,
-        Supplier<Double> scalingFactorA,
-        Supplier<Double> scalingFactorB
+        Supplier<Double> enableRoboRelative
     ){
-        if(instance == null) instance = new TeleopDrive(verticalSpeed, horizontalSpeed, omegaSpeed, scalingFactorA, scalingFactorB);
+        if(instance == null) instance = new TeleopDrive(verticalSpeed, horizontalSpeed, omegaSpeed, enableRoboRelative);
         return instance;
     }
 
@@ -69,8 +67,7 @@ public class TeleopDrive extends Command{
             double xSpeed = verticalSpeed.get();
             double ySpeed = horizontalSpeed.get();
             double rotSpeed = omegaSpeed.get();
-            double factorA = scalingFactorA.get();
-            double factorB = scalingFactorB.get();
+            Boolean relativeDrive = enableRoboRelative.get() > 0.5;
             
             /**
              * Apply Deadbands to Inputs
@@ -78,14 +75,6 @@ public class TeleopDrive extends Command{
             xSpeed = Math.abs(xSpeed) > 0.15 ? xSpeed : 0.0;
             ySpeed = Math.abs(ySpeed) > 0.15 ? ySpeed : 0.0;
             rotSpeed = Math.abs(rotSpeed) > 0.15 ? rotSpeed : 0.0;
-            factorA = (factorA > 0.3) ? factorA : 0.3;
-            factorB = (factorB > 0.3) ? factorB : 0.3;
-            
-            /**
-             * Apply Speed Factors
-             */
-            xSpeed *= (factorA + factorB) * 0.5;
-            ySpeed *= (factorA + factorB) * 0.5;
 
             /**
              * Apply Limiters
@@ -94,7 +83,9 @@ public class TeleopDrive extends Command{
             ySpeed = yLimiter.calculate(ySpeed) * Physical.DriveBase.MAX_SPEED_METERS;
             rotSpeed = omegaLimiter.calculate(rotSpeed) * Physical.DriveBase.MAX_ANGULAR_SPEED_RAD;
 
-            ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2D());
+            ChassisSpeeds speeds = (relativeDrive) ? new ChassisSpeeds(xSpeed, ySpeed, rotSpeed)
+                                                   : ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2D());
+
             swerveSubsystem.setModuleStates(speeds);
         }       
     } 

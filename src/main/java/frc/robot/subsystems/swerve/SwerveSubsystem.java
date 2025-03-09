@@ -124,7 +124,7 @@ public class SwerveSubsystem extends SubsystemBase{
             this::getChassisSpeeds, // ChassisSpeeds supplier
             (speeds, feedforwards) -> setModuleStates(speeds), // optionally outputs individual feedforwards
             new PPHolonomicDriveController(
-                new PIDConstants(15.0, 0.0, 0.5),   // Translation Feedback PID constants
+                new PIDConstants(20.0, 0.0, 0.5),   // Translation Feedback PID constants
                 new PIDConstants(7.0, 0.0, 0.0)     // Rotation Feedback PID constants
             ),
             config, // The robot configuration
@@ -302,12 +302,11 @@ public class SwerveSubsystem extends SubsystemBase{
         // Pose Estimator
         updatePoseEstimator();
 
-        // Add Vision Measurements
+        // Update Heading for Vision Measurements
         LimelightHelpers.SetRobotOrientation("limelight", getPoseEstimate().getRotation().getDegrees(), 0, 0, 0, 0, 0);
 
         // Telemetry
         estimateFieldPublisher.set(getPoseEstimate()); 
-
         currentSwerveStatePublisher.set(getSwerveModuleStates());
     }
 }

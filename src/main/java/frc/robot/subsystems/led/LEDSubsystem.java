@@ -1,5 +1,7 @@
 package frc.robot.subsystems.led;
 
+import static edu.wpi.first.units.Units.*;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
@@ -7,100 +9,102 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import static frc.robot.Constants.Physical.LEDSubsystemConstants.*;
-import static edu.wpi.first.units.Units.*;
+import frc.robot.Constants.Physical;
 
 public class LEDSubsystem extends SubsystemBase {
     private static LEDSubsystem instance;
 
-    AddressableLED leds;
+    private AddressableLED leds;
 
-    AddressableLEDBuffer buf;
-    AddressableLEDBufferView bufElev;
-    LEDPattern pattern;
-    LEDPattern patternBlink;
+    private AddressableLEDBuffer buf;
+    private AddressableLEDBufferView bufElev;
 
-    boolean blink;
-    Color color;
+    private LEDPattern pattern;
+    private LEDPattern patternBlink;
+
+    private boolean blink;
+    private Color color;
     
     public LEDSubsystem() {
-        leds = new AddressableLED(PWM_PORT);
+        // LED Object
+        leds = new AddressableLED(Physical.LED.PWM_PORT);
 
-        // buffer length is expensive to change make it constant
-        buf = new AddressableLEDBuffer(NUM_LEDS);
-        leds.setLength(NUM_LEDS);
+        // configure buffers
+        buf = new AddressableLEDBuffer(Physical.LED.NUM_LEDS);
+        leds.setLength(Physical.LED.NUM_LEDS);
         
-        // elevator leds
-        bufElev = buf.createView(0, NUM_LAST_ELEV_LED);
+        // initlize bufferView for LED Strip
+        bufElev = buf.createView(0, Physical.LED.NUM_ELEVATOR_LED);
 
-        // pattern = LEDPattern.gradient(
-        //     GradientType.kContinuous, 
-        //     CICRed, CICRed, Color.kWhite, CICRed, CICRed
-        // // Add cycling white zone
-        // ).scrollAtRelativeSpeed(Percent.per(Second).of(0.25))
-        // .atBrightness(Percent.of(20));
+        updateColor(Color.kRed);
 
-        // // Separate blinking pattern
-        // patternBlink = LEDPattern.gradient(
-        //     GradientType.kContinuous, 
-        //     CICRed, CICRed, Color.kWhite, CICRed, CICRed
-        // // Add cycling white zone
-        // ).scrollAtRelativeSpeed(Percent.per(Second).of(0.25))
-        // .blink(Seconds.of(0.1), Seconds.of(0.05))
-        // .atBrightness(Percent.of(20));
-
-
-        setColor(Color.kRed);
         leds.start();
+    }
+
+    public static LEDSubsystem getInstance() {
+        if (instance == null) instance = new LEDSubsystem();
+        return instance;
+    }
+
+    
+    public static void start() {
+        LEDSubsystem.getInstance();
     }
 
     @Override
     public void periodic() {
-        setColor(this.color);
+        updateColor(this.color);
+
         leds.setData(buf);
-    }
-
-    public void setColor(Color c) {
-        color = c;
-        pattern = LEDPattern.gradient(
-            GradientType.kContinuous, 
-            c, c, c, c, Color.kWhite, c, c, c, c
-        // Add cycling white zone       
-        ).scrollAtRelativeSpeed(Percent.per(Second).of(SCROLL_PERCENT_PER_SEC))
-        .atBrightness(Percent.of(BRIGHTNESS));
-
-        patternBlink = LEDPattern.gradient(
-            GradientType.kContinuous, 
-            c, c, c, c, Color.kWhite, c, c, c, c
-        // Add cycling white zone
-        ).blink(Seconds.of(BLINK_TIME_ON), Seconds.of(BLINK_TIME_OFF))
-        .atBrightness(Percent.of(BRIGHTNESS));
-
-        setBlink(this.blink);
     }
 
     /**
      * Set color and change scrolling zone color
-     * @param c Main color
-     * @param c2 Scroll color
+     * @param majorColor Main color
+     * @param scrollColor Scroll color
      */
-    public void setColor(Color c, Color c2) {
+    public void updateColor(Color majorColor, Color scrollColor) {
+        this.color = majorColor;
+
         pattern = LEDPattern.gradient(
             GradientType.kContinuous, 
-            c, c, c, c,  c2, c, c, c, c
-        // Add cycling white zone
-        ).atBrightness(Percent.of(BRIGHTNESS))
-        .scrollAtRelativeSpeed(Percent.per(Second).of(SCROLL_PERCENT_PER_SEC));
+            majorColor,
+            majorColor,
+            majorColor,
+            majorColor,
+            scrollColor,
+            majorColor, 
+            majorColor, 
+            majorColor, 
+            majorColor       
+        ).scrollAtRelativeSpeed(
+            Percent.per(Second).of(Physical.LED.SCROLL_PERCENT_PER_SEC)
+        ).atBrightness(
+            Percent.of(Physical.LED.BRIGHTNESS)
+        );
 
         patternBlink = LEDPattern.gradient(
             GradientType.kContinuous, 
-            c, c, c, c, c2, c, c, c, c
-        // Add cycling white zone
-        ).atBrightness(Percent.of(BRIGHTNESS))
-        .blink(Seconds.of(BLINK_TIME_ON), Seconds.of(BLINK_TIME_OFF));
+            majorColor,
+            majorColor,
+            majorColor,
+            majorColor,
+            scrollColor,
+            majorColor, 
+            majorColor, 
+            majorColor, 
+            majorColor
+        ).blink(
+            Seconds.of(Physical.LED.BLINK_TIME_ON), Seconds.of(Physical.LED.BLINK_TIME_OFF)
+        ).atBrightness(
+            Percent.of(Physical.LED.BRIGHTNESS)
+        );
 
         setBlink(this.blink);
+    }
+
+    public void updateColor(Color color) {
+        updateColor(color, Color.kWhite);
     }
 
     public void setBlink(boolean state) {
@@ -112,14 +116,5 @@ public class LEDSubsystem extends SubsystemBase {
         } else {
             pattern.applyTo(bufElev);
         }
-    }
-
-    public static void start() {
-        LEDSubsystem.getInstance();
-    }
-
-    public static LEDSubsystem getInstance() {
-        if (instance == null) instance = new LEDSubsystem();
-        return instance;
     }
 }

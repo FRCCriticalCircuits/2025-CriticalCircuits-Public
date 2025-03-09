@@ -38,8 +38,8 @@ public class AutoAimManager{
     private StructPublisher<Pose2d> autoAimPositionPublisher;
     
     private PathConstraints constraints = new PathConstraints(
-        1.3,
-        5,
+        0.9,
+        3,
         Math.PI / 4,
         Math.PI / 2
     );
