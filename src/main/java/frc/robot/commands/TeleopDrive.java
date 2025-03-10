@@ -3,122 +3,135 @@ package frc.robot.commands;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.proto.Kinematics;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.Physical;
 
-public class TeleopDrive extends Command{
-    public static TeleopDrive instance;
-    public static boolean manualEnable = true;
+public class TeleopDrive extends Command {
+  public static TeleopDrive instance;
+  public static boolean manualEnable = true;
+  // xy speed offsets for the robot
+  private static double xOffset;
+  private static double yOffset;
 
-    private SwerveSubsystem swerveSubsystem;
-    
-    private Supplier<Double>    verticalSpeed,
-                                horizontalSpeed,
-                                omegaSpeed,
-                                scalingFactorA,
-                                scalingFactorB;
-    private SlewRateLimiter xLimiter,
-                            yLimiter,
-                            omegaLimiter;
+  private SwerveSubsystem swerveSubsystem;
 
-    public TeleopDrive
-    (
-        Supplier<Double> verticalSpeed,
-        Supplier<Double> horizontalSpeed,
-        Supplier<Double> omegaSpeed,
-        Supplier<Double> scalingFactorA,
-        Supplier<Double> scalingFactorB
-    ){
-        this.swerveSubsystem = SwerveSubsystem.getInstance();
+  private Supplier<Double> verticalSpeed,
+      horizontalSpeed,
+      omegaSpeed,
+      scalingFactorA,
+      scalingFactorB;
+  private SlewRateLimiter xLimiter,
+      yLimiter,
+      omegaLimiter;
 
-        this.verticalSpeed = verticalSpeed;
-        this.horizontalSpeed = horizontalSpeed;
-        this.omegaSpeed = omegaSpeed;
-        this.scalingFactorA = scalingFactorA;
-        this.scalingFactorB = scalingFactorB;
+  public TeleopDrive(
+      Supplier<Double> verticalSpeed,
+      Supplier<Double> horizontalSpeed,
+      Supplier<Double> omegaSpeed,
+      Supplier<Double> scalingFactorA,
+      Supplier<Double> scalingFactorB) {
+    this.swerveSubsystem = SwerveSubsystem.getInstance();
 
-        this.xLimiter = new SlewRateLimiter(5);
-        this.yLimiter = new SlewRateLimiter(5);
-        this.omegaLimiter = new SlewRateLimiter(Math.PI);
+    this.verticalSpeed = verticalSpeed;
+    this.horizontalSpeed = horizontalSpeed;
+    this.omegaSpeed = omegaSpeed;
+    this.scalingFactorA = scalingFactorA;
+    this.scalingFactorB = scalingFactorB;
 
-        addRequirements(swerveSubsystem);
+    this.xLimiter = new SlewRateLimiter(5);
+    this.yLimiter = new SlewRateLimiter(5);
+    this.omegaLimiter = new SlewRateLimiter(Math.PI);
+
+    addRequirements(swerveSubsystem);
+  }
+
+  public static TeleopDrive getInstance(
+      Supplier<Double> verticalSpeed,
+      Supplier<Double> horizontalSpeed,
+      Supplier<Double> omegaSpeed,
+      Supplier<Double> scalingFactorA,
+      Supplier<Double> scalingFactorB) {
+    if (instance == null)
+      instance = new TeleopDrive(verticalSpeed, horizontalSpeed, omegaSpeed, scalingFactorA, scalingFactorB);
+    return instance;
+  }
+
+  @Override
+  public void execute() {
+    if (manualEnable) {
+      /**
+       * Get values from supplier
+       * here we swap to the WPI Coordinate System
+       */
+      double xSpeed = verticalSpeed.get();
+      double ySpeed = horizontalSpeed.get();
+      double rotSpeed = omegaSpeed.get();
+      double factorA = scalingFactorA.get();
+      double factorB = scalingFactorB.get();
+
+      /**
+       * Apply Deadbands to Inputs
+       */
+      xSpeed = Math.abs(xSpeed) > 0.15 ? xSpeed : 0.0;
+      ySpeed = Math.abs(ySpeed) > 0.15 ? ySpeed : 0.0;
+      rotSpeed = Math.abs(rotSpeed) > 0.15 ? rotSpeed : 0.0;
+      factorA = (factorA > 0.3) ? factorA : 0.3;
+      factorB = (factorB > 0.3) ? factorB : 0.3;
+
+      /**
+       * Apply Speed Factors
+       */
+      xSpeed *= (factorA + factorB) * 0.5;
+      ySpeed *= (factorA + factorB) * 0.5;
+
+      /**
+       * Apply Limiters
+       */
+      xSpeed = xLimiter.calculate(xSpeed) * Physical.DriveBase.MAX_SPEED_METERS;
+      ySpeed = yLimiter.calculate(ySpeed) * Physical.DriveBase.MAX_SPEED_METERS;
+      rotSpeed = omegaLimiter.calculate(rotSpeed) * Physical.DriveBase.MAX_ANGULAR_SPEED_RAD;
+
+      ChassisSpeeds speeds;
+
+      // if (RobotContainer.getDriveController().povLeft().getAsBoolean()) {
+      // speeds = ChassisSpeeds.fromRobotRelativeSpeeds(0, -0.2, 0,
+      // swerveSubsystem.getGyroRotation2D());
+      // } else if (RobotContainer.getDriveController().povRight().getAsBoolean()) {
+      // speeds = ChassisSpeeds.fromRobotRelativeSpeeds(0, 0.2, 0,
+      // swerveSubsystem.getGyroRotation2D());
+      // }
+      // else {
+      // speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed,
+      // swerveSubsystem.getGyroRotation2D());
+      // }
+
+      // FIXME: remove the offsets if they mess up
+      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed + xOffset, ySpeed + yOffset, rotSpeed, swerveSubsystem.getGyroRotation2D());
+
+      swerveSubsystem.setModuleStates(speeds);
     }
+  }
 
-    public static TeleopDrive getInstance
-    (
-        Supplier<Double> verticalSpeed,
-        Supplier<Double> horizontalSpeed,
-        Supplier<Double> omegaSpeed,
-        Supplier<Double> scalingFactorA,
-        Supplier<Double> scalingFactorB
-    ){
-        if(instance == null) instance = new TeleopDrive(verticalSpeed, horizontalSpeed, omegaSpeed, scalingFactorA, scalingFactorB);
-        return instance;
-    }
+  /**
+   * @apiNote always return false to make the command run
+   * @apiNote notice that the command will be canceled when disable the robot
+   */
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 
-    @Override
-    public void execute(){
-        if(manualEnable){
-            /**
-             * Get values from supplier
-             * here we swap to the WPI Coordinate System
-             */
-            double xSpeed = verticalSpeed.get();
-            double ySpeed = horizontalSpeed.get();
-            double rotSpeed = omegaSpeed.get();
-            double factorA = scalingFactorA.get();
-            double factorB = scalingFactorB.get();
-            
-            /**
-             * Apply Deadbands to Inputs
-             */
-            xSpeed = Math.abs(xSpeed) > 0.15 ? xSpeed : 0.0;
-            ySpeed = Math.abs(ySpeed) > 0.15 ? ySpeed : 0.0;
-            rotSpeed = Math.abs(rotSpeed) > 0.15 ? rotSpeed : 0.0;
-            factorA = (factorA > 0.3) ? factorA : 0.3;
-            factorB = (factorB > 0.3) ? factorB : 0.3;
-            
-            /**
-             * Apply Speed Factors
-             */
-            xSpeed *= (factorA + factorB) * 0.5;
-            ySpeed *= (factorA + factorB) * 0.5;
+  public static void setRelativeXSpeedOffset(double offset) {
+    TeleopDrive.xOffset = offset;
+  }
 
-            /**
-             * Apply Limiters
-             */
-            xSpeed = xLimiter.calculate(xSpeed) * Physical.DriveBase.MAX_SPEED_METERS;
-            ySpeed = yLimiter.calculate(ySpeed) * Physical.DriveBase.MAX_SPEED_METERS;
-            rotSpeed = omegaLimiter.calculate(rotSpeed) * Physical.DriveBase.MAX_ANGULAR_SPEED_RAD;
-
-            ChassisSpeeds speeds;
-
-            // if (RobotContainer.getDriveController().povLeft().getAsBoolean()) {
-            //     speeds = ChassisSpeeds.fromRobotRelativeSpeeds(0, -0.2, 0, swerveSubsystem.getGyroRotation2D());
-            // } else if (RobotContainer.getDriveController().povRight().getAsBoolean()) {
-            //     speeds = ChassisSpeeds.fromRobotRelativeSpeeds(0, 0.2, 0, swerveSubsystem.getGyroRotation2D());
-            // }
-            // else {
-            //     speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2D());
-            // }
-
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2D());
-
-            
-            swerveSubsystem.setModuleStates(speeds);
-        }       
-    } 
-
-    /**
-     * @apiNote always return false to make the command run
-     * @apiNote notice that the command will be canceled when disable the robot
-     */
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  public static void setRelativeYSpeedOffset(double offset) {
+    TeleopDrive.yOffset = offset;
+  }
 }
