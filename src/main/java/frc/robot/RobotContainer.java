@@ -44,436 +44,366 @@ import frc.robot.utils.structures.DataStrcutures.Mode;
 import frc.robot.utils.structures.DataStrcutures.Spot;
 
 public class RobotContainer {
-    private Robot robot;
-  private SwerveSubsystem swerveSubsystem;
-  private VisionSubsystem visionSubsystem;
+	private Robot robot;
+	private SwerveSubsystem swerveSubsystem;
+	private VisionSubsystem visionSubsystem;
 
-  private ElevatorSubsystem elevatorSubsystem;
-  private RollerSubsystem rollerSubsystem;
+	private ElevatorSubsystem elevatorSubsystem;
+	private RollerSubsystem rollerSubsystem;
 
-  private LEDSubsystem ledSubsystem;
+	private LEDSubsystem ledSubsystem;
 
-  private WinchSubsystem winchSubsystem = WinchSubsystem.getInstance();
+	private WinchSubsystem winchSubsystem = WinchSubsystem.getInstance();
 
-  private SendableChooser<String> autoChooser = new SendableChooser<>();
-  private SendableChooser<String> ac = new SendableChooser<>();
+	private SendableChooser<String> autoChooser = new SendableChooser<>();
+	private SendableChooser<String> ac = new SendableChooser<>();
 
-  private Controller controller = Controller.getInstance();
+	private Controller controller = Controller.getInstance();
 
-  private static CommandXboxController driveController = new CommandXboxController(0); 
-  private CommandXboxController operatorController = new CommandXboxController(1);
+	private static CommandXboxController driveController = new CommandXboxController(0);
+	private CommandXboxController operatorController = new CommandXboxController(1);
 
-  private AutoAimManager autoAimManager = AutoAimManager.getInstance(
-    () -> controller.getDriverLT(),
-    () -> controller.getDriverRT()
-  );
+	private AutoAimManager autoAimManager = AutoAimManager.getInstance(
+			() -> controller.getDriverLT(),
+			() -> controller.getDriverRT());
 
-//   private int mode = 1;
+	// private int mode = 1;
 
-  public RobotContainer(Robot r) {
-    this.robot = r;
+	public RobotContainer(Robot r) {
+		this.robot = r;
 
-    LEDSubsystem.start();
-    LEDSubsystem.getInstance().setColor(Color.kRed);
+		LEDSubsystem.start();
+		LEDSubsystem.getInstance().setColor(Color.kRed);
 
-    swerveSubsystem = SwerveSubsystem.getInstance();
-    visionSubsystem = new VisionSubsystem();
-    rollerSubsystem = new RollerSubsystem(robot);
-    elevatorSubsystem = new ElevatorSubsystem(rollerSubsystem);
-    ledSubsystem = LEDSubsystem.getInstance();
-    winchSubsystem = WinchSubsystem.getInstance();
+		swerveSubsystem = SwerveSubsystem.getInstance();
+		visionSubsystem = new VisionSubsystem();
+		rollerSubsystem = new RollerSubsystem(robot);
+		elevatorSubsystem = new ElevatorSubsystem(rollerSubsystem);
+		ledSubsystem = LEDSubsystem.getInstance();
+		winchSubsystem = WinchSubsystem.getInstance();
 
-    visionSubsystem.start();
-    
-    swerveSubsystem.setDefaultCommand(
-      TeleopDrive.getInstance(
-        () -> -controller.getDriverLY(),    // Left-Positive
-        () -> -controller.getDriverLX(),    // Forward-Positive
-        () -> -controller.getDriverRX(),    // CCW Positive
-        () -> controller.getDriverLT(),
-        () -> controller.getDriverRT()
-      )
-    );
+		visionSubsystem.start();
 
-    // ac = AutoBuilder.buildAutoChooser();
-    // ac.setDefaultOption("1 Piece Mid", "1 Piece Mid");
+		swerveSubsystem.setDefaultCommand(
+				TeleopDrive.getInstance(
+						() -> -controller.getDriverLY(), // Left-Positive
+						() -> -controller.getDriverLX(), // Forward-Positive
+						() -> -controller.getDriverRX(), // CCW Positive
+						() -> controller.getDriverLT(),
+						() -> controller.getDriverRT()));
 
-    autoChooser.setDefaultOption("1 Piece Mid", "1 Piece Mid");
-    autoChooser.addOption("test2", "test2");
-    autoChooser.addOption("2p test", "test2");
+		// ac = AutoBuilder.buildAutoChooser();
+		// ac.setDefaultOption("1 Piece Mid", "1 Piece Mid");
 
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+		autoChooser.setDefaultOption("1 Piece Mid", "1 Piece Mid");
+		autoChooser.addOption("test2", "test2");
+		autoChooser.addOption("2p test", "test2");
 
-    configureBindings();
-  }
+		SmartDashboard.putData("Auto Chooser", autoChooser);
 
-  private void configureBindings() {
-    /*
-     * Gyro Reset
-     */
-    driveController.button(KeyBinding.GYRO_RESET).debounce(0.02).onTrue(
-      new InstantCommand(
-        () -> {
-          swerveSubsystem.resetGyro(-0.5);
-        }
-      )
-    ); 
+		configureBindings();
+	}
 
-    /*
-     * AutoAim
-     */   
-    driveController.a().debounce(0.02).onTrue(
-      new InstantCommand(
-        () -> {
-          new ParallelDeadlineGroup(
-            new WaitCommand(2.5),
-            autoAimManager.getCommand()
-          ).schedule();
-        }, swerveSubsystem
-      )
-    );
+	private void configureBindings() {
 
-    
-    // driveController.povRight().debounce(0.02).whileTrue(
-    //     new RelativeDrive(0.1)
-    // );
+		// region drivecontroller
+		/*
+		 * Gyro Reset
+		 */
+		driveController.button(KeyBinding.GYRO_RESET).debounce(0.02).onTrue(
+				new InstantCommand(
+						() -> {
+							swerveSubsystem.resetGyro(-0.5);
+						}));
 
-    // driveController.povLeft().debounce(0.02).whileTrue(
-    //     new RelativeDrive(-0.1)
-    // );
+		/*
+		 * AutoAim
+		 */
+		driveController.a().debounce(0.02).onTrue(
+				new InstantCommand(
+						() -> {
+							new ParallelDeadlineGroup(
+									new WaitCommand(2.5),
+									autoAimManager.getCommand()).schedule();
+						}, swerveSubsystem));
 
-    driveController.x().debounce(0.02).onTrue(
-      new InstantCommand(
-        () -> {
-          autoAimManager.cancle();
-          TeleopDrive.manualEnable = true;
-        }, swerveSubsystem
-      )
-    );
+		// driveController.povRight().debounce(0.02).whileTrue(
+		// new RelativeDrive(0.1)
+		// );
 
-    /*
-     * AutoAim Settings
-     */
-    operatorController.a().debounce(0.02).onTrue(
-      new InstantCommand(
-        () -> {
-          autoAimManager.updateLevel(Level.L1);
-          autoAimManager.updateSpot(Spot.MID);
-        }
-      )
-    );
+		// driveController.povLeft().debounce(0.02).whileTrue(
+		// new RelativeDrive(-0.1)
+		// );
 
-    operatorController.b().debounce(0.02).onTrue(
-      new InstantCommand(
-        () -> {
-          autoAimManager.updateLevel(Level.L2);
-        }
-      )
-    );
+		driveController.x().debounce(0.02).onTrue(
+				new InstantCommand(
+						() -> {
+							autoAimManager.cancle();
+							TeleopDrive.manualEnable = true;
+						}, swerveSubsystem));
 
-    operatorController.x().debounce(0.02).onTrue(
-      new InstantCommand(
-        () -> {
-          autoAimManager.updateLevel(Level.L3);
-        }
-      )
-    );
+		// endregion drivecontroller
 
-    operatorController.y().debounce(0.02).onTrue(
-      new InstantCommand(
-        () -> {
-          autoAimManager.updateLevel(Level.L4);
-        }
-      )
-    );
+		/*
+		 * AutoAim Settings
+		 */
+		operatorController.a().debounce(0.02).onTrue(
+				new InstantCommand(
+						() -> {
+							autoAimManager.updateLevel(Level.L1);
+							autoAimManager.updateSpot(Spot.MID);
+						}));
 
-    operatorController.povLeft().debounce(0.02).onTrue(
-      new InstantCommand(
-        () -> {
-          autoAimManager.updateSpot(Spot.L);    
-        }
-      )
-    );
+		operatorController.b().debounce(0.02).onTrue(
+				new InstantCommand(
+						() -> {
+							autoAimManager.updateLevel(Level.L2);
+						}));
 
-    operatorController.povRight().debounce(0.02).onTrue(
-      new InstantCommand(
-        () -> {
-          autoAimManager.updateSpot(Spot.R);    
-        }
-      )
-    );
+		operatorController.x().debounce(0.02).onTrue(
+				new InstantCommand(
+						() -> {
+							autoAimManager.updateLevel(Level.L3);
+						}));
 
-    operatorController.leftBumper().debounce(0.02).onTrue(
-      new InstantCommand(
-        () -> {
-            int mode = autoAimManager.getMode().value;
-          mode--;
-          if(mode < 0) mode = 2;
-          autoAimManager.updateMode(Mode.valueOf(mode));
-          if(mode == 2) elevatorSubsystem.fetchAlgae = false;
+		operatorController.y().debounce(0.02).onTrue(
+				new InstantCommand(
+						() -> {
+							autoAimManager.updateLevel(Level.L4);
+						}));
 
-          switch (mode) {
-            case 0:
-                ledSubsystem.setColor(Color.kRed);
-            break;
-            case 1:
-            ledSubsystem.setColor(Color.kBlue);
-            break;
-            case 2:
-            ledSubsystem.setColor(Color.kGreen);
-            break;
-          }
-        }, elevatorSubsystem, rollerSubsystem
-      )
-    );
+		operatorController.povLeft().debounce(0.02).onTrue(
+				new InstantCommand(
+						() -> {
+							autoAimManager.updateSpot(Spot.L);
+						}));
 
-    operatorController.rightBumper().debounce(0.02).onTrue(
-      new InstantCommand(
-        () -> {
-            int mode = autoAimManager.getMode().value;
-          mode++;
-          if(mode > 2) mode = 0;
-          autoAimManager.updateMode(Mode.valueOf(mode));
-          if(mode == 2) elevatorSubsystem.fetchAlgae = false;
+		operatorController.povRight().debounce(0.02).onTrue(
+				new InstantCommand(
+						() -> {
+							autoAimManager.updateSpot(Spot.R);
+						}));
 
-          switch (mode) {
-            case 0:
-                ledSubsystem.setColor(Color.kRed);
-            break;
-            case 1:
-            ledSubsystem.setColor(Color.kBlue);
-            break;
-            case 2:
-            ledSubsystem.setColor(Color.kGreen);
-            break;
-          }
-        }, elevatorSubsystem, rollerSubsystem
-      )
-    );
+		operatorController.leftBumper().debounce(0.02).onTrue(
+				new InstantCommand(
+						() -> {
+              // If coral is present, force mode to always be coral placement
+              if (rollerSubsystem.hasCoral()) {
+                autoAimManager.updateMode(Mode.CORAL_PLACE);
+                return;
+              } 
+              // If algae is present, force mode to always be algae mode
+              /* TODO: Fix algae detection
+              else if (rollerSubsystem.algaeDetected()) {
+                
+                autoAimManager.updateMode(Mode.ALGAE_PICK);
+              }
 
-    operatorController.povUp().debounce(0.02).whileTrue(
-        new WinchUpCommand(winchSubsystem, rollerSubsystem)
-    );
+              */
 
-    operatorController.povDown().debounce(0.02).whileTrue(
-        new WinchDownCommand(winchSubsystem, rollerSubsystem)
-    );
+							// Get current mode
+							int mode = autoAimManager.getMode().value;
+							// down-shift mode
+							mode--;
+							if (mode < 0) mode = 2;
+							autoAimManager.updateMode(Mode.valueOf(mode));
+							// unknown override no clue why this is here
+              if (mode == 2) elevatorSubsystem.fetchAlgae = false;
+						}, elevatorSubsystem, rollerSubsystem));
 
-    driveController.leftBumper().debounce(0.02).onTrue(
-      new InstantCommand(
-        () -> {
-            elevatorSubsystem.fetchAlgae = !elevatorSubsystem.fetchAlgae;
-        }, elevatorSubsystem, rollerSubsystem
-      )
-    );
+		operatorController.rightBumper().debounce(0.02).onTrue(
+				new InstantCommand(
+						() -> {
+              // get current mode
+							int mode = autoAimManager.getMode().value;
+							// up-shift mode
+              mode++;
+							if (mode > 2) mode = 0;
+							autoAimManager.updateMode(Mode.valueOf(mode));
+              // unknown override no clue why this is here
+							if (mode == 2) elevatorSubsystem.fetchAlgae = false;
+						}, elevatorSubsystem, rollerSubsystem));
 
-    driveController.rightBumper().debounce(0.02).whileTrue(
-      new IntakeAlgae(rollerSubsystem)
-    );
+		operatorController.povUp().debounce(0.02).whileTrue(
+				new WinchUpCommand(winchSubsystem, rollerSubsystem));
 
-    driveController.b().debounce(0.02).whileTrue(
-      new IntakeCoral(rollerSubsystem)
-    );
+		operatorController.povDown().debounce(0.02).whileTrue(
+				new WinchDownCommand(winchSubsystem, rollerSubsystem));
 
-    driveController.y().debounce(0.02).whileTrue(
-      new Shoot(rollerSubsystem)
-    );
+		driveController.leftBumper().debounce(0.02).onTrue(
+				new InstantCommand(
+						() -> {
+							elevatorSubsystem.fetchAlgae = !elevatorSubsystem.fetchAlgae;
+						}, elevatorSubsystem, rollerSubsystem));
 
-    NamedCommands.registerCommand(
-      "setModeCoral",
-      new InstantCommand(
-        () -> {
-          autoAimManager.updateMode(Mode.CORAL_PLACE);
-          ledSubsystem.setColor(Color.kRed);
-        }, ledSubsystem
-      )
-    );
+		driveController.rightBumper().debounce(0.02).whileTrue(
+				new IntakeAlgae(rollerSubsystem));
 
-    NamedCommands.registerCommand(
-      "setModeIntake",
-      new InstantCommand(
-        () -> {
-          autoAimManager.updateMode(Mode.CORAL_INTAKE);
-          ledSubsystem.setColor(Color.kBlue);
-        }, ledSubsystem
-      )
-    );
+		driveController.b().debounce(0.02).whileTrue(
+				new IntakeCoral(rollerSubsystem));
 
-    NamedCommands.registerCommand(
-      "setModeAlgae", 
-      new InstantCommand(
-        () -> {
-          autoAimManager.updateMode(Mode.ALGAE_PICK);
-          ledSubsystem.setColor(Color.kGreen);
-        }, ledSubsystem
-      )
-    );
+		driveController.y().debounce(0.02).whileTrue(
+				new Shoot(rollerSubsystem));
 
-    NamedCommands.registerCommand(
-      "setL1",
-      new InstantCommand(
-        () -> {
-          autoAimManager.updateLevel(Level.L1);
-        }
-      )
-    );
+		NamedCommands.registerCommand(
+				"setModeCoral",
+				new InstantCommand(
+						() -> {
+							autoAimManager.updateMode(Mode.CORAL_PLACE);
+							ledSubsystem.setColor(Color.kRed);
+						}, ledSubsystem));
 
-    NamedCommands.registerCommand(
-      "setL2",
-      new InstantCommand(
-        () -> {
-          autoAimManager.updateLevel(Level.L2);
-        }
-      )
-    );
+		NamedCommands.registerCommand(
+				"setModeIntake",
+				new InstantCommand(
+						() -> {
+							autoAimManager.updateMode(Mode.CORAL_INTAKE);
+							ledSubsystem.setColor(Color.kBlue);
+						}, ledSubsystem));
 
-    NamedCommands.registerCommand(
-      "setL3",
-      new InstantCommand(
-        () -> {
-          autoAimManager.updateLevel(Level.L3);
-        }
-      )
-    );
+		NamedCommands.registerCommand(
+				"setModeAlgae",
+				new InstantCommand(
+						() -> {
+							autoAimManager.updateMode(Mode.ALGAE_PICK);
+							ledSubsystem.setColor(Color.kGreen);
+						}, ledSubsystem));
 
-    NamedCommands.registerCommand(
-      "setL4",
-      new InstantCommand(
-        () -> {
-          autoAimManager.updateLevel(Level.L4);
-        }
-      )
-    );
+		NamedCommands.registerCommand(
+				"setL1",
+				new InstantCommand(
+						() -> {
+							autoAimManager.updateLevel(Level.L1);
+						}));
 
-    NamedCommands.registerCommand(
-      "setLeft",
-      new InstantCommand(
-        () -> {
-          autoAimManager.updateSpot(Spot.L);
-        }
-      )
-    );
+		NamedCommands.registerCommand(
+				"setL2",
+				new InstantCommand(
+						() -> {
+							autoAimManager.updateLevel(Level.L2);
+						}));
 
-    NamedCommands.registerCommand(
-      "setRight",
-      new InstantCommand(
-        () -> {
-          autoAimManager.updateSpot(Spot.R);
-        }
-      )
-    );
+		NamedCommands.registerCommand(
+				"setL3",
+				new InstantCommand(
+						() -> {
+							autoAimManager.updateLevel(Level.L3);
+						}));
 
-    NamedCommands.registerCommand(
-      "waitElevator",
-      new WaitElevator(elevatorSubsystem)
-    );
+		NamedCommands.registerCommand(
+				"setL4",
+				new InstantCommand(
+						() -> {
+							autoAimManager.updateLevel(Level.L4);
+						}));
 
-    NamedCommands.registerCommand(
-      "outTake",
-      new Shoot(rollerSubsystem).withTimeout(1)
-    );
+		NamedCommands.registerCommand(
+				"setLeft",
+				new InstantCommand(
+						() -> {
+							autoAimManager.updateSpot(Spot.L);
+						}));
 
-    NamedCommands.registerCommand(
-      "outTakeL1",
-      new SequentialCommandGroup(
-        new InstantCommand(
-          () -> {
-            rollerSubsystem.lowVoltage = true;
+		NamedCommands.registerCommand(
+				"setRight",
+				new InstantCommand(
+						() -> {
+							autoAimManager.updateSpot(Spot.R);
+						}));
 
-          }
-        ),
-        new Shoot(rollerSubsystem).withTimeout(1),
-        new InstantCommand(
-          () -> {
-            rollerSubsystem.lowVoltage = false;
-          }
-        )
-      )
-    );
+		NamedCommands.registerCommand(
+				"waitElevator",
+				new WaitElevator(elevatorSubsystem));
 
-    NamedCommands.registerCommand(
-      "intakeCoral",
-      new AutoIntakeCoral(rollerSubsystem)
-    );
+		NamedCommands.registerCommand(
+				"outTake",
+				new Shoot(rollerSubsystem).withTimeout(1));
 
-    NamedCommands.registerCommand(
-      "autoIntakeCoral", new AutoIntakeCoral(rollerSubsystem));
+		NamedCommands.registerCommand(
+				"outTakeL1",
+				new SequentialCommandGroup(
+						new InstantCommand(
+								() -> {
+									rollerSubsystem.lowVoltage = true;
 
-    NamedCommands.registerCommand(
-      "intakeAlgae",
-      new IntakeAlgae(rollerSubsystem).withTimeout(1.2)
-    );
+								}),
+						new Shoot(rollerSubsystem).withTimeout(1),
+						new InstantCommand(
+								() -> {
+									rollerSubsystem.lowVoltage = false;
+								})));
 
-    NamedCommands.registerCommand(
-      "fetchAlgae", 
-      new InstantCommand(
-        () -> {
-            elevatorSubsystem.fetchAlgae = !elevatorSubsystem.fetchAlgae;
-        }, elevatorSubsystem, rollerSubsystem
-      )
-    );
+		NamedCommands.registerCommand(
+				"intakeCoral",
+				new AutoIntakeCoral(rollerSubsystem));
 
-    // Vision commands
-    NamedCommands.registerCommand(
-      "visionEnable",
-      new InstantCommand(
-        () -> {
-          this.visionSubsystem.enable();
-        }
-      )
-    );
+		NamedCommands.registerCommand(
+				"autoIntakeCoral", new AutoIntakeCoral(rollerSubsystem));
 
-    NamedCommands.registerCommand(
-        "visionDisable",
-        new InstantCommand(
-          () -> {
-            this.visionSubsystem.disable();
-          }
-        )
-      );
-  }
+		NamedCommands.registerCommand(
+				"intakeAlgae",
+				new IntakeAlgae(rollerSubsystem).withTimeout(1.2));
 
-  public Command getAutonomousCommand() {    
-    return new SequentialCommandGroup(
-      new InstantCommand(
-        () -> {
-          Optional<Pose2d> initialPose;
-          
-          try {
-            initialPose = PathPlannerAuto.getPathGroupFromAutoFile(autoChooser.getSelected()).get(0).getStartingHolonomicPose();
-          } catch (IOException | ParseException e) {
-            throw new RuntimeException("[Pathplanner] No auto file found");
-          }
+		NamedCommands.registerCommand(
+				"fetchAlgae",
+				new InstantCommand(
+						() -> {
+							elevatorSubsystem.fetchAlgae = !elevatorSubsystem.fetchAlgae;
+						}, elevatorSubsystem, rollerSubsystem));
 
-          if(initialPose.isEmpty()) {
-            throw new RuntimeException("[Pathplanner] No starting pose found in auto file");
-          }else{
-            swerveSubsystem.resetPoseEstimate(
-              initialPose.get()
-            );
-          }
-        }, swerveSubsystem
-      ),
-      AutoBuilder.buildAuto(autoChooser.getSelected())
-    );
-  }
+		// Vision commands
+		NamedCommands.registerCommand(
+				"visionEnable",
+				new InstantCommand(
+						() -> {
+							this.visionSubsystem.enable();
+						}));
 
-  public void resetSimulationField() {
-    swerveSubsystem.resetPoseEstimate
-    (
-      DriveStationIO.isBlue() ? FieldConstants.INIT_POSE_BLUE 
-                              : FieldConstants.INIT_POSE_BLUE.flip()
-    );
-    
-    swerveSubsystem.resetGyro(-0.5);
-    SimulatedArena.getInstance().resetFieldForAuto();
-  }
-  
-  public void updateSimulation() {
-    SimulatedArena.getInstance().simulationPeriodic();
-  }
+		NamedCommands.registerCommand(
+				"visionDisable",
+				new InstantCommand(
+						() -> {
+							this.visionSubsystem.disable();
+						}));
+	}
 
-  public static CommandXboxController getDriveController() {
-    return driveController;
-  }
+	public Command getAutonomousCommand() {
+		return new SequentialCommandGroup(
+				new InstantCommand(
+						() -> {
+							Optional<Pose2d> initialPose;
+
+							try {
+								initialPose = PathPlannerAuto.getPathGroupFromAutoFile(autoChooser.getSelected()).get(0)
+										.getStartingHolonomicPose();
+							} catch (IOException | ParseException e) {
+								throw new RuntimeException("[Pathplanner] No auto file found");
+							}
+
+							if (initialPose.isEmpty()) {
+								throw new RuntimeException("[Pathplanner] No starting pose found in auto file");
+							} else {
+								swerveSubsystem.resetPoseEstimate(
+										initialPose.get());
+							}
+						}, swerveSubsystem),
+				AutoBuilder.buildAuto(autoChooser.getSelected()));
+	}
+
+	public void resetSimulationField() {
+		swerveSubsystem.resetPoseEstimate(
+				DriveStationIO.isBlue() ? FieldConstants.INIT_POSE_BLUE
+						: FieldConstants.INIT_POSE_BLUE.flip());
+
+		swerveSubsystem.resetGyro(-0.5);
+		SimulatedArena.getInstance().resetFieldForAuto();
+	}
+
+	public void updateSimulation() {
+		SimulatedArena.getInstance().simulationPeriodic();
+	}
+
+	public static CommandXboxController getDriveController() {
+		return driveController;
+	}
 }
