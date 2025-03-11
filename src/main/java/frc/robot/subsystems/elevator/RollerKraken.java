@@ -14,10 +14,12 @@ import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Robot;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.Physical;
 import frc.robot.Constants.FieldConstants.AutoAim;
+import frc.robot.commands.swerve.TempDriveOffsetCommand;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.utils.structures.DataStrcutures.Level;
@@ -102,10 +104,15 @@ public class RollerKraken implements RollerIO {
         ) {
             if (!sameCoral) {
                 sameCoral = true;
-                AutoAimManager.getInstance().updateLevel(Level.L2);
+                // Move the robot back and change the elevator state automatically
+                new TempDriveOffsetCommand(0, -1).withTimeout(0.25).andThen(
+                  new InstantCommand(() -> {
+                    // Change the mode back to coral placement
+                    AutoAimManager.getInstance().updateMode(Mode.CORAL_PLACE);  
+                  })
+                );
             }
             LEDSubsystem.getInstance().setBlink(true);
-            AutoAimManager.getInstance().updateMode(Mode.CORAL_PLACE);
         } else {
             sameCoral = false;
             LEDSubsystem.getInstance().setBlink(false);

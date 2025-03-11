@@ -16,7 +16,7 @@ public class TempDriveOffsetCommand extends Command {
   @Override
   public void initialize() {
     TeleopDrive.setRelativeXSpeedOffset(x);
-    TeleopDrive.setRelativeXSpeedOffset(y);
+    TeleopDrive.setRelativeYSpeedOffset(y);
 
     // Force the command to cancel if run for too long to prevent loss of driver control
     new WaitCommand(MAX_TIME).andThen(new InstantCommand(() -> {
@@ -27,6 +27,6 @@ public class TempDriveOffsetCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     TeleopDrive.setRelativeXSpeedOffset(0);
-    TeleopDrive.setRelativeXSpeedOffset(0);
+    TeleopDrive.setRelativeYSpeedOffset(0);
   }
 }

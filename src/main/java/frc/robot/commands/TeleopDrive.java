@@ -111,9 +111,13 @@ public class TeleopDrive extends Command {
       // swerveSubsystem.getGyroRotation2D());
       // }
 
-      // FIXME: remove the offsets if they mess up
-      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed + xOffset, ySpeed + yOffset, rotSpeed, swerveSubsystem.getGyroRotation2D());
 
+      // FIXME: remove the offsets if they mess up
+      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2D());
+      
+      // Add in the speed offsets and clamp to drivebase max speed
+      speeds.vxMetersPerSecond = Math.max(speeds.vxMetersPerSecond + xOffset, Physical.DriveBase.MAX_SPEED_METERS);
+      speeds.vyMetersPerSecond = Math.max(speeds.vyMetersPerSecond + yOffset, Physical.DriveBase.MAX_SPEED_METERS);
       swerveSubsystem.setModuleStates(speeds);
     }
   }
@@ -127,10 +131,18 @@ public class TeleopDrive extends Command {
     return false;
   }
 
+  /**
+   * Set the current x robot-relative speed offset
+   * @param offset velocity in m/s
+   */
   public static void setRelativeXSpeedOffset(double offset) {
     TeleopDrive.xOffset = offset;
   }
 
+  /**
+   * Set the current y robot-relative speed offset
+   * @param offset velocity in m/s
+   */
   public static void setRelativeYSpeedOffset(double offset) {
     TeleopDrive.yOffset = offset;
   }

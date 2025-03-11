@@ -22,13 +22,12 @@ public class IntakeCoral extends Command{
 
     @Override
     public boolean isFinished() {
-        return false;
+        return rollerSubsystem.hasCoral();
     }
 
     @Override
     public void end(boolean interrupted) {
-        if(rollerSubsystem.hasCoral()) rollerSubsystem.set(RollerMode.HOLD);
-        else rollerSubsystem.set(RollerMode.HOLD);
+        rollerSubsystem.set(RollerMode.HOLD);
 
         if(Robot.isSimulation()){
             RollerIOInputs newInputs = new RollerIOInputs();
