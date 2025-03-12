@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
     import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.elevator.RollerSubsystem;
 import frc.robot.subsystems.led.LEDSubsystem;
@@ -28,13 +29,12 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
 
     public class AutoAimManager{
         private static AutoAimManager instance;
-        
-        private WebServer server = WebServer.getInstance();
+        private AutoAimSetting settings = Constants.DEFAULT_SETTING;
+
         private Notifier notifier = new Notifier(this::updateValues);
 
         private Command command;
 
-        private AutoAimSetting settingTemp;
         private Supplier<Double> LTSupplier, RTSupplier;
 
         private Pose2d targetPose = new Pose2d();
@@ -48,7 +48,7 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
             Math.PI / 2
         );
 
-        private AutoAimManager(Supplier<Double> LTSupplier, Supplier<Double> RTSupplier){
+        public AutoAimManager(Supplier<Double> LTSupplier, Supplier<Double> RTSupplier){
             this.LTSupplier = LTSupplier;
             this.RTSupplier = RTSupplier;
 
@@ -73,7 +73,7 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
          * @param currentPos current {@link Translation2d} for the robot
          * @return the pose for target coral station
          */
-        private AdvancedPose2D cloestCoralStation(Translation2d currentPos){
+        private AdvancedPose2D nearestCoralStation(Translation2d currentPos){
             if(DriveStationIO.getAlliance() == Alliance.Blue){
                 if (
                     currentPos.getDistance(FieldConstants.AutoAim.CORAL_STATION_A.getTranslation()) > 
@@ -114,7 +114,7 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
             Pose2d currentPos = SwerveSubsystem.getInstance().getPoseEstimate();
 
             if(setting.getMode() == Mode.CORAL_INTAKE){
-                return cloestCoralStation(currentPos.getTranslation());
+                return nearestCoralStation(currentPos.getTranslation());
             }else if (setting.getMode() == Mode.CORAL_PLACE){
                 AdvancedPose2D aimPose = nearest(currentPos);
 
@@ -135,10 +135,8 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
          * a perodic funtion (0.05s) updates values from WebSocket, save/send Estimate Target Pose
          */
         private void updateValues() {
-            settingTemp = server.getAutoAimSettings();
-
             targetPose = estimateAimPos(
-                settingTemp,
+                this.settings,
                 new Translation2d
                 (
                     FieldConstants.AutoAim.MANUAL_TRANSLATION_RANGE * (LTSupplier.get() - RTSupplier.get()),
@@ -177,20 +175,19 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
         }
 
         public synchronized AutoAimSetting getSetting(){
-            return server.getAutoAimSettings();
+            return settings;
         }
 
         public synchronized void updateSetting(AutoAimSetting desireSetting){
-            this.settingTemp = desireSetting;
-            server.updateSetting(desireSetting);
+            this.settings = desireSetting;
         }
 
         public synchronized void updateSpot(Spot spot){
-            updateSetting(server.getAutoAimSettings().withSpot(spot));
+            updateSetting(this.settings.withSpot(spot));
         }
 
         public synchronized void updateMode(Mode mode){
-            updateSetting(server.getAutoAimSettings().withMode(mode));
+            updateSetting(this.settings.withMode(mode));
 
             LEDSubsystem ledSubsystem = LEDSubsystem.getInstance();
 
@@ -205,13 +202,13 @@ import frc.robot.subsystems.swerve.SwerveSubsystem;
                     ledSubsystem.setColor(Color.kGreen);
                     break;
           }
-        }
-
-        public Mode getMode(){
-            return server.getAutoAimSettings().getMode();
         }        
 
         public synchronized void updateLevel(Level level){
-            updateSetting(server.getAutoAimSettings().withLevel(level));
+            updateSetting(this.settings.withLevel(level));
         }
+
+        public Mode getMode(){
+          return this.settings.getMode();
+      }
     }
