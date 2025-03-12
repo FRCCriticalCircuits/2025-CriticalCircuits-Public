@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.AutoAimConstants.REEF_POSES_BLUE;
+
 import java.io.IOException;
 import java.util.Optional;
 
@@ -29,6 +31,7 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.KeyBinding;
 import frc.robot.commands.climber.WinchDownCommand;
 import frc.robot.commands.climber.WinchUpCommand;
+import frc.robot.commands.swerve.AutoAlignCommand;
 import frc.robot.commands.*;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.Controller;
@@ -76,7 +79,7 @@ public class RobotContainer {
 		LEDSubsystem.getInstance().setColor(Color.kRed);
 
 		swerveSubsystem = SwerveSubsystem.getInstance();
-		visionSubsystem = new VisionSubsystem();
+		visionSubsystem = new VisionSubsystem(swerveSubsystem);
 		rollerSubsystem = new RollerSubsystem(robot);
 		elevatorSubsystem = new ElevatorSubsystem(rollerSubsystem);
 		ledSubsystem = LEDSubsystem.getInstance();
@@ -119,13 +122,15 @@ public class RobotContainer {
 		/*
 		 * AutoAim
 		 */
-		driveController.a().debounce(0.02).onTrue(
-				new InstantCommand(
-						() -> {
-							new ParallelDeadlineGroup(
-									new WaitCommand(2.5),
-									autoAimManager.getCommand()).schedule();
-						}, swerveSubsystem));
+		// driveController.a().debounce(0.02).onTrue(
+		// 		new InstantCommand(
+		// 				() -> {
+		// 					new ParallelDeadlineGroup(
+		// 							new WaitCommand(2.5),
+		// 							autoAimManager.pathFindCommand()).schedule();
+		// 				}, swerveSubsystem));
+
+          driveController.a().whileTrue(new AutoAlignCommand(REEF_POSES_BLUE[3], swerveSubsystem));
 
 		// driveController.povRight().debounce(0.02).whileTrue(
 		// new RelativeDrive(0.1)

@@ -323,6 +323,10 @@ public class SwerveSubsystem extends SubsystemBase {
     poseEstimator.resetPosition(rawGyroRotation, getSwerveModulePositions(), pose);
   }
 
+  public synchronized SwerveDrivePoseEstimator getPoseEstimator() {
+    return this.poseEstimator;
+  }
+
   /**
    * This method will take in desired robot-relative chassis speeds,
    * generate a swerve setpoint, then set the target state for each module

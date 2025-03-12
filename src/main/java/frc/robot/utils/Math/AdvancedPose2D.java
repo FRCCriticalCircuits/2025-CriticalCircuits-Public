@@ -63,4 +63,8 @@ public class AdvancedPose2D extends Pose2d{
     public AdvancedPose2D withRobotRelativeTransformation(Translation2d transformation){
         return this.withVector(this.getRotation().minus(Rotation2d.fromDegrees(90)), transformation, this.getRotation()); // minus 90 because 0 axis changes to Y
     }
+
+    public Pose2d getPose2d() {
+      return this;
+    }
 }

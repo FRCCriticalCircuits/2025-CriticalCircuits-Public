@@ -16,8 +16,8 @@ public class RelativeDrive extends Command {
     private double speed;
 
     public RelativeDrive(
-            double speed) {
-        this.swerveSubsystem = SwerveSubsystem.getInstance();
+            double speed, SwerveSubsystem s) {
+        this.swerveSubsystem = s;
 
         this.speed = speed;
         addRequirements(swerveSubsystem);
