@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -132,29 +134,20 @@ public class AutoAimManager {
     //   }
     // }
 
-    AdvancedPose2D[] reefPoses;
+    List<Pose2d> reefPoses;
     AdvancedPose2D reefCenter;
 
     if (DriveStationIO.getAlliance() == Alliance.Blue) {
-      reefPoses = AutoAimConstants.REEF_POSES_BLUE;
+      reefPoses = Arrays.asList(AutoAimConstants.REEF_POSES_BLUE);
       reefCenter = AutoAimConstants.REEF_CENTER_BLUE;
     } else {
       // red alliance
-      reefPoses = AutoAimConstants.REEF_POSES_RED;
+      reefPoses = Arrays.asList(AutoAimConstants.REEF_POSES_RED);
       reefCenter = AutoAimConstants.REEF_CENTER_BLUE;
     }
 
-    for (int i = 0; i < 6; i++) {
-      AdvancedPose2D pose = reefPoses[i];
-      double tmpDist = pose.getTranslation().getDistance(currentPose.getTranslation());
-      // Check for distance
-      if (tmpDist < minDist) {
-        // Set found pose if closer
-        idx = i;
-        targetPose = pose;
-        minDist = tmpDist;
-      }
-    }
+    Pose2d pose = currentPose.nearest(reefPoses);
+    targetPose = new AdvancedPose2D(pose.getTranslation(), pose.getRotation());
 
     // set the target angle
     this.targetAngle = idx * 60;
