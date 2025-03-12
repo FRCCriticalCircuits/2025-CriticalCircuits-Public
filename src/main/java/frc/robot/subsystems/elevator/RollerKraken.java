@@ -55,7 +55,7 @@ public class RollerKraken implements RollerIO {
         rollerConfiguration.CurrentLimits.StatorCurrentLimitEnable = true;
         rollerConfiguration.CurrentLimits.StatorCurrentLimit = Physical.Elevator.CurrentLimits.ROLLER_CURRENT_LIMIT;
         rollerConfiguration.CurrentLimits.SupplyCurrentLimitEnable = true;
-        rollerConfiguration.CurrentLimits.SupplyCurrentLimit = 10;
+        rollerConfiguration.CurrentLimits.SupplyCurrentLimit = 5;
 
         rollerConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
@@ -138,7 +138,7 @@ public class RollerKraken implements RollerIO {
                     m_intakeMotor.stopMotor();
                 break;
             case HOLD:
-                    m_hatcherMotor.setControl(hatcherControl.withVelocity(3));
+                  m_hatcherMotor.setControl(hatcherControl.withVelocity(3));
                 m_intakeMotor.stopMotor();
                 break;
             // case IDLE:

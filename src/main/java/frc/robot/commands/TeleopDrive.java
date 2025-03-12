@@ -6,6 +6,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.proto.Kinematics;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import frc.robot.subsystems.swerve.SwerveSubsystem;
@@ -116,9 +117,15 @@ public class TeleopDrive extends Command {
       speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2D());
       
       // Add in the speed offsets and clamp to drivebase max speed
-      speeds.vxMetersPerSecond = Math.max(speeds.vxMetersPerSecond + xOffset, Physical.DriveBase.MAX_SPEED_METERS);
-      speeds.vyMetersPerSecond = Math.max(speeds.vyMetersPerSecond + yOffset, Physical.DriveBase.MAX_SPEED_METERS);
+      // speeds.vxMetersPerSecond = Math.max(speeds.vxMetersPerSecond + xOffset, Physical.DriveBase.MAX_SPEED_METERS);
+      // speeds.vyMetersPerSecond = Math.max(speeds.vyMetersPerSecond + yOffset, Physical.DriveBase.MAX_SPEED_METERS);
       swerveSubsystem.setModuleStates(speeds);
+
+      // SmartDashboard.putNumber("Requested x", speeds.vxMetersPerSecond);
+      // SmartDashboard.putNumber("Requested y", speeds.vyMetersPerSecond);
+
+      // SmartDashboard.putNumber("True x");
+      // SmartDashboard.putNumber("True y", speeds.vyMetersPerSecond);
     }
   }
 

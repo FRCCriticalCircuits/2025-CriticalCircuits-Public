@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import static frc.robot.subsystems.AutoAimConstants.PID.*;
 
@@ -33,21 +35,26 @@ public class AutoAlignCommand extends Command {
 
   @Override
   public void initialize() {
-    translationPIDx.setGoal(target.getX());
-    translationPIDy.setGoal(target.getY());
-    rotationPID.setGoal(target.getRotation().getDegrees());
+    translationPIDx.setGoal(0);
+    translationPIDy.setGoal(0);
+    rotationPID.setGoal(0);
+
+    swerveSubsystem.getField().getObject("target").setPose(target);
   }
 
   @Override
   public void execute() {
     Pose2d currPose = swerveSubsystem.getPoseEstimate();
-    double dist = currPose
-        .getTranslation()
-        .getDistance(target.getTranslation());
+    Translation2d dist = currPose
+        .getTranslation().minus(target.getTranslation());
 
-    double tx = translationPIDx.calculate(currPose.getX());
-    double ty = translationPIDy.calculate(currPose.getY());
-    double r = rotationPID.calculate(swerveSubsystem.getGyroRotation2D().getDegrees());
+    double tx = translationPIDx.calculate(dist.getX());
+    double ty = translationPIDy.calculate(dist.getY());
+    double r = rotationPID.calculate(dist.getAngle().getRadians());
+
+    SmartDashboard.putNumber("PosPIDx", tx);
+    SmartDashboard.putNumber("PosPIDy", ty);
+    SmartDashboard.putNumber("RotationPID", r);
 
     // vector from start pose to end pose
     // Translation2d startToEnd = target.getTranslation().minus(currPose.getTranslation());
@@ -56,8 +63,14 @@ public class AutoAlignCommand extends Command {
     // now have a translational speed t that we want to use, need to separate to components
     // startToEnd.getX()
 
-    ChassisSpeeds c = new ChassisSpeeds(tx, ty, r);
+    // ChassisSpeeds c = new ChassisSpeeds(tx, ty, Units.degreesToRadians(r));
+    ChassisSpeeds c = new ChassisSpeeds(tx, ty, Units.degreesToRadians(r));
 
-    swerveSubsystem.setModuleStates(c);
+    swerveSubsystem.setModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(c, currPose.getRotation()));
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    swerveSubsystem.getField().getObject("target").setPose(Pose2d.kZero);
   }
 }

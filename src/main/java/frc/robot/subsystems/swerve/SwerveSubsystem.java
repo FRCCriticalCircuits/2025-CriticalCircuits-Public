@@ -375,4 +375,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     m_field.setRobotPose(getPoseEstimate());
   }
+
+  public Field2d getField() {
+    return this.m_field;
+  }
 }

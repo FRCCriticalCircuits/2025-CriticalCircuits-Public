@@ -35,6 +35,7 @@ import frc.robot.commands.swerve.AutoAlignCommand;
 import frc.robot.commands.*;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.Controller;
+import frc.robot.subsystems.AutoAimManager.Reef;
 import frc.robot.subsystems.climber.WinchSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.RollerSubsystem;
@@ -100,7 +101,7 @@ public class RobotContainer {
 
 		autoChooser.setDefaultOption("1 Piece Mid", "1 Piece Mid");
 		autoChooser.addOption("test2", "test2");
-		autoChooser.addOption("2p test", "test2");
+		autoChooser.addOption("dist", "dtest");
 
 		SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -130,7 +131,9 @@ public class RobotContainer {
 		// 							autoAimManager.pathFindCommand()).schedule();
 		// 				}, swerveSubsystem));
 
-          driveController.a().whileTrue(new AutoAlignCommand(REEF_POSES_BLUE[3], swerveSubsystem));
+          driveController.a().whileTrue(
+            new AutoAlignCommand(autoAimManager.getNearestReef(swerveSubsystem.getPoseEstimate(), Reef.CENTER), swerveSubsystem)
+            );
 
 		// driveController.povRight().debounce(0.02).whileTrue(
 		// new RelativeDrive(0.1)

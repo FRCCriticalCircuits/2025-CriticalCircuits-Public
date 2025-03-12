@@ -64,11 +64,11 @@ public class AutoAimManager {
     autoAimPositionPublisher = NetworkTableInstance.getDefault()
         .getStructTopic("/AutoAim/estimatedPosition", Pose2d.struct).publish();
 
-    for (int i = 0; i < 6; i++) {
-    SwerveSubsystem.getInstance().m_field.getObject(String.valueOf(i)).setPose(
-      getNearestReef(AutoAimConstants.REEF_POSES_BLUE[i], Reef.RIGHT)
-    );
-    }
+    // for (int i = 0; i < 6; i++) {
+    // SwerveSubsystem.getInstance().m_field.getObject(String.valueOf(i)).setPose(
+    //   getNearestReef(AutoAimConstants.REEF_POSES_BLUE[i], Reef.RIGHT)
+    // );
+    // }
 
     Pose2d temp = new Pose2d(5.9, 6.24, Rotation2d.kZero);
     SwerveSubsystem.getInstance().m_field.getObject("temp").setPose(temp);
@@ -117,20 +117,10 @@ public class AutoAimManager {
    * @param currentPose Current robot pose
    * @return Reef side pose constant
    */
-  private AdvancedPose2D getNearestReef(Pose2d currentPose, Reef pos) {
+  public AdvancedPose2D getNearestReef(Pose2d currentPose, Reef pos) {
     AdvancedPose2D targetPose = null;
     double minDist = Double.MAX_VALUE;
     int idx = -1;
-
-    // for (AdvancedPose2D pose : AutoAimConstants.REEF_POSES) {
-    //   // Find distance between robot and reef posts
-    //   double tmpDist = pose.getTranslation().getDistance(currentPose.getTranslation());
-    //   // check all posts to find the closest one
-    //   if (tmpDist < minDist) {
-    //     targetPose = pose;
-    //     minDist = tmpDist;
-    //   }
-    // }
 
     AdvancedPose2D[] reefPoses;
     AdvancedPose2D reefCenter;
