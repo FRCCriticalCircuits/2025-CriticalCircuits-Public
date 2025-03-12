@@ -20,17 +20,15 @@ import frc.robot.utils.structures.AutoAimSetting;
 import frc.robot.utils.structures.DataStrcutures.Level;
 import frc.robot.utils.structures.DataStrcutures.Mode;
 import frc.robot.utils.structures.DataStrcutures.Spot;
-import frc.robot.utils.web.WebServer;
 
 public class AutoAimManager{
     private static AutoAimManager instance;
     
-    private WebServer server = WebServer.getInstance();
     private Notifier notifier = new Notifier(this::updateValues);
 
     private Command command;
 
-    private AutoAimSetting settingTemp;
+    private AutoAimSetting m_setting;
     private Supplier<Double> LTSupplier, RTSupplier;
 
     private Pose2d targetPose = new Pose2d();
@@ -131,10 +129,8 @@ public class AutoAimManager{
      * a perodic funtion (0.05s) updates values from WebSocket, save/send Estimate Target Pose
      */
     private void updateValues() {
-        settingTemp = server.getAutoAimSettings();
-
         targetPose = estimateAimPos(
-            settingTemp,
+            m_setting,
             new Translation2d
             (
                 FieldConstants.AutoAim.MANUAL_TRANSLATION_RANGE * (LTSupplier.get() - RTSupplier.get()),
@@ -171,23 +167,22 @@ public class AutoAimManager{
     }
 
     public synchronized AutoAimSetting getSetting(){
-        return server.getAutoAimSettings();
+        return m_setting;
     }
 
     public synchronized void updateSetting(AutoAimSetting desireSetting){
-        this.settingTemp = desireSetting;
-        server.updateSetting(desireSetting);
+        this.m_setting = desireSetting;
     }
 
     public synchronized void updateSpot(Spot spot){
-        updateSetting(server.getAutoAimSettings().withSpot(spot));
+        updateSetting(m_setting.withSpot(spot));
     }
 
     public synchronized void updateMode(Mode mode){
-        updateSetting(server.getAutoAimSettings().withMode(mode));
+        updateSetting(m_setting.withMode(mode));
     }
 
     public synchronized void updateLevel(Level level){
-        updateSetting(server.getAutoAimSettings().withLevel(level));
+        updateSetting(m_setting.withLevel(level));
     }
 }
