@@ -39,7 +39,7 @@ public class AutoAlignCommand extends Command {
   public void initialize() {
     translationPIDx.setGoal(0);
     translationPIDy.setGoal(0);
-    rotationPID.setGoal(targetSupplier.get().getRotation().getRadians());
+    rotationPID.setGoal(0);
   }
 
   @Override
@@ -49,10 +49,11 @@ public class AutoAlignCommand extends Command {
     Pose2d currPose = swerveSubsystem.getPoseEstimate();
     Translation2d dist = currPose
         .getTranslation().minus(targetSupplier.get().getTranslation());
+    double rotDist = targetSupplier.get().getRotation().getRadians();
 
     double tx = translationPIDx.calculate(dist.getX());
     double ty = translationPIDy.calculate(dist.getY());
-    double r = rotationPID.calculate(currPose.getRotation().getRadians());
+    double r = rotationPID.calculate(currPose.getRotation().getRadians()-rotDist);
 
     SmartDashboard.putNumber("PosPIDx", tx);
     SmartDashboard.putNumber("PosPIDy", ty);
