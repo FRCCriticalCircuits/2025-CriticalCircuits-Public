@@ -21,7 +21,7 @@ public class AutoAlignCommand extends Command {
   ProfiledPIDController translationPIDy;
   ProfiledPIDController rotationPID;
   Supplier<Pose2d> targetSupplier;
-  // Pose2d target;
+  Pose2d target;
 
   public AutoAlignCommand(Supplier<Pose2d> targetSupplier, SwerveSubsystem s) {
     this.targetSupplier = targetSupplier;
@@ -38,20 +38,19 @@ public class AutoAlignCommand extends Command {
 
   @Override
   public void initialize() {
+    target = targetSupplier.get();
     translationPIDx.setGoal(0);
     translationPIDy.setGoal(0);
-    rotationPID.setGoal(targetSupplier.get().getRotation().getRadians());
-
-    
+    rotationPID.setGoal(target.getRotation().getRadians());
   }
 
   @Override
   public void execute() {
-      swerveSubsystem.getField().getObject("target").setPose(targetSupplier.get());
+      swerveSubsystem.getField().getObject("target").setPose(target);
     
     Pose2d currPose = swerveSubsystem.getPoseEstimate();
     Translation2d dist = currPose
-        .getTranslation().minus(targetSupplier.get().getTranslation());
+        .getTranslation().minus(target.getTranslation());
 
     double tx = translationPIDx.calculate(dist.getX());
     double ty = translationPIDy.calculate(dist.getY());

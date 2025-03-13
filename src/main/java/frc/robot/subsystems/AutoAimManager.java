@@ -147,6 +147,8 @@ public class AutoAimManager {
     }
 
     Pose2d pose = currentPose.nearest(reefPoses);
+
+    idx = reefPoses.indexOf(pose);
     targetPose = new AdvancedPose2D(pose.getTranslation(), pose.getRotation());
 
     // set the target angle

@@ -11,25 +11,25 @@ import frc.robot.utils.Math.AdvancedPose2D;
 public class AutoAimConstants {
   public static class PID {
     public static class TranslationX {
-      public static final double kP = 5;
+      public static final double kP = 3;
       public static final double kI = 0;
-      public static final double kD = 0;
+      public static final double kD = 1;
       public static final double maxVelocity = 1.0;
       public static final double maxAcceleration = 2.5;
     }
     public static class TranslationY {
-      public static final double kP = 5;
+      public static final double kP = 3;
       public static final double kI = 0;
-      public static final double kD = 0;
+      public static final double kD = 1;
       public static final double maxVelocity = 1.0;
       public static final double maxAcceleration = 2.5;
     }
 
     public static class Rotation {
-      public static final double kP = 4;
+      public static final double kP = 0.5;
       public static final double kI = 0;
-      public static final double kD = 0.5;
-      public static final double maxVelocity = 1.0;
+      public static final double kD = 0;
+      public static final double maxVelocity = 0.766;
       public static final double maxAcceleration = 1.0;
     }
   }
@@ -37,7 +37,7 @@ public class AutoAimConstants {
   // inches
   public static final double REEF_EDGE_TO_CENTER = Units.inchesToMeters(32.75);
   // From side to side
-  public static final double ROBOT_BUMPER_WIDTH = Units.inchesToMeters(33.75);
+  public static final double ROBOT_BUMPER_WIDTH = Units.inchesToMeters(38);
   //
   public static final double REEF_CENTER_TO_ROBOT_CENTER = REEF_EDGE_TO_CENTER + ROBOT_BUMPER_WIDTH / 2;
   public static final double REEF_POST_OFFSET = Units.inchesToMeters(6.5);
