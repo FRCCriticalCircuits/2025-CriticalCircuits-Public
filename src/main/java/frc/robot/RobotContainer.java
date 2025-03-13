@@ -101,7 +101,7 @@ public class RobotContainer {
 		// ac.setDefaultOption("1 Piece Mid", "1 Piece Mid");
 
 		autoChooser.setDefaultOption("1 Piece Mid", "1 Piece Mid");
-		autoChooser.addOption("test2", "test2");
+		autoChooser.addOption("1P1M", "1 Piece + 1 Mid");
 		autoChooser.addOption("dist", "dtest");
 
 		SmartDashboard.putData("Auto Chooser", autoChooser);

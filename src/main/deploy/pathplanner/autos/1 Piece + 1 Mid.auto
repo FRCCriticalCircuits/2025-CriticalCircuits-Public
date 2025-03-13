@@ -7,12 +7,6 @@
         {
           "type": "named",
           "data": {
-            "name": "visionDisable"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "setModeCoral"
           }
         },
@@ -29,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "1 Piece + 1 Mid"
+                  "pathName": "(0) 1P1M"
                 }
               },
               {
@@ -48,19 +42,69 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "visionEnable"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Copy of 1 Piece + 1 Mid"
+                  "pathName": "(1) 1P1M"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "setModeIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeCoral"
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "(2) 1P1M"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "setModeCoral"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "setL1"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.25
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "outTakeL1"
                 }
               }
             ]
