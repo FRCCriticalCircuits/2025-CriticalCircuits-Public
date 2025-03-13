@@ -11,14 +11,14 @@ import frc.robot.utils.Math.AdvancedPose2D;
 public class AutoAimConstants {
   public static class PID {
     public static class TranslationX {
-      public static final double kP = 3;
+      public static final double kP = 6;
       public static final double kI = 0;
       public static final double kD = 1;
       public static final double maxVelocity = 1.0;
       public static final double maxAcceleration = 2.5;
     }
     public static class TranslationY {
-      public static final double kP = 3;
+      public static final double kP = 6;
       public static final double kI = 0;
       public static final double kD = 1;
       public static final double maxVelocity = 1.0;
