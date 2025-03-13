@@ -52,20 +52,22 @@ public class AutoAimConstants {
       REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(0), new Translation2d(-REEF_CENTER_TO_ROBOT_CENTER, 0),
           Rotation2d.fromDegrees(0)),
       // CD
-      REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(120), new Translation2d(-REEF_CENTER_TO_ROBOT_CENTER, 0),
-          Rotation2d.fromDegrees(120)),
-      // EF
       REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(60), new Translation2d(-REEF_CENTER_TO_ROBOT_CENTER, 0),
           Rotation2d.fromDegrees(60)),
+      // EF
+      REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(120), new Translation2d(-REEF_CENTER_TO_ROBOT_CENTER, 0),
+          Rotation2d.fromDegrees(120)),
       // GH
       REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(0), new Translation2d(REEF_CENTER_TO_ROBOT_CENTER, 0),
           Rotation2d.fromDegrees(180)),
       // IJ
       REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(60), new Translation2d(REEF_CENTER_TO_ROBOT_CENTER, 0),
           Rotation2d.fromDegrees(-120)),
-      // KL
+      // KL    
       REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(120), new Translation2d(REEF_CENTER_TO_ROBOT_CENTER, 0),
           Rotation2d.fromDegrees(-60))
+      
+      
   };
 
   public static AdvancedPose2D[] REEF_POSES_RED = {

@@ -35,7 +35,7 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.Physical;
 import frc.robot.Constants.TunedConstants;
-import frc.robot.utils.conversions.WheelConversions;
+import frc.robot.utils.WheelConversions;
 
 import java.util.Queue;
 import java.util.function.DoubleSupplier;

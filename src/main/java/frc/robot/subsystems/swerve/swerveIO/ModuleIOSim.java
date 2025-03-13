@@ -20,7 +20,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.Physical;
 import frc.robot.Constants.TunedConstants;
 import frc.robot.utils.MotorUtil;
-import frc.robot.utils.conversions.WheelConversions;
+import frc.robot.utils.WheelConversions;
 
 import java.util.Arrays;
 import org.ironmaple.simulation.drivesims.SwerveModuleSimulation;
