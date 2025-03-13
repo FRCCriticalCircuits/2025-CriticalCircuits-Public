@@ -8,6 +8,7 @@ import static frc.robot.subsystems.AutoAimConstants.REEF_POSES_BLUE;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.json.simple.parser.ParseException;
@@ -130,9 +131,9 @@ public class RobotContainer {
 		// 							new WaitCommand(2.5),
 		// 							autoAimManager.pathFindCommand()).schedule();
 		// 				}, swerveSubsystem));
-
+		  Supplier<Pose2d> targetPoseSupplier = ()->{return autoAimManager.getNearestReef(swerveSubsystem.getPoseEstimate(),Reef.CENTER);};
           driveController.a().whileTrue(
-            new AutoAlignCommand(autoAimManager.getNearestReef(swerveSubsystem.getPoseEstimate(), Reef.CENTER), swerveSubsystem)
+            new AutoAlignCommand(targetPoseSupplier, swerveSubsystem)
             );
 
 		// driveController.povRight().debounce(0.02).whileTrue(

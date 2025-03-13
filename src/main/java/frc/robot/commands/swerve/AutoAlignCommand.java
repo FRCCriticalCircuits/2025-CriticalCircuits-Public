@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import static frc.robot.subsystems.AutoAimConstants.PID.*;
 
+import java.util.function.Supplier;
+
 import frc.robot.subsystems.AutoAimConstants.PID.Rotation;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
@@ -18,10 +20,11 @@ public class AutoAlignCommand extends Command {
   ProfiledPIDController translationPIDx;
   ProfiledPIDController translationPIDy;
   ProfiledPIDController rotationPID;
+  Supplier<Pose2d> targetSupplier;
   Pose2d target;
 
-  public AutoAlignCommand(Pose2d target, SwerveSubsystem s) {
-    this.target = target;
+  public AutoAlignCommand(Supplier<Pose2d> targetSupplier, SwerveSubsystem s) {
+    this.targetSupplier = targetSupplier;
     swerveSubsystem = s;
     translationPIDx = new ProfiledPIDController(TranslationX.kP, TranslationX.kI, TranslationX.kD,
         new TrapezoidProfile.Constraints(TranslationX.maxVelocity, TranslationX.maxAcceleration));
@@ -39,11 +42,16 @@ public class AutoAlignCommand extends Command {
     translationPIDy.setGoal(0);
     rotationPID.setGoal(0);
 
-    swerveSubsystem.getField().getObject("target").setPose(target);
+    
   }
 
   @Override
   public void execute() {
+    if (target == null){
+      target = targetSupplier.get();
+      swerveSubsystem.getField().getObject("target").setPose(target);
+    }
+    
     Pose2d currPose = swerveSubsystem.getPoseEstimate();
     Translation2d dist = currPose
         .getTranslation().minus(target.getTranslation());
