@@ -136,15 +136,8 @@ public class AutoAimManager {
 
     List<Pose2d> reefPoses;
     AdvancedPose2D reefCenter;
-
-    if (DriveStationIO.getAlliance() == Alliance.Blue) {
-      reefPoses = Arrays.asList(AutoAimConstants.REEF_POSES_BLUE);
-      reefCenter = AutoAimConstants.REEF_CENTER_BLUE;
-    } else {
-      // red alliance
-      reefPoses = Arrays.asList(AutoAimConstants.REEF_POSES_RED);
-      reefCenter = AutoAimConstants.REEF_CENTER_BLUE;
-    }
+    reefPoses = Arrays.asList(AutoAimConstants.REEF_POSES_BLUE);
+    reefCenter = AutoAimConstants.REEF_CENTER_BLUE;
 
     Pose2d pose = currentPose.nearest(reefPoses);
 
@@ -174,6 +167,10 @@ public class AutoAimManager {
       case CENTER:
         // No change
         break;
+    }
+
+    if (DriveStationIO.getAlliance()== Alliance.Red){
+      targetPose.horizontallyFlip();
     }
 
     return targetPose;
