@@ -21,7 +21,7 @@ public class AutoAlignCommand extends Command {
   ProfiledPIDController translationPIDy;
   ProfiledPIDController rotationPID;
   Supplier<Pose2d> targetSupplier;
-  Pose2d target;
+  // Pose2d target;
 
   public AutoAlignCommand(Supplier<Pose2d> targetSupplier, SwerveSubsystem s) {
     this.targetSupplier = targetSupplier;
@@ -40,21 +40,18 @@ public class AutoAlignCommand extends Command {
   public void initialize() {
     translationPIDx.setGoal(0);
     translationPIDy.setGoal(0);
-    rotationPID.setGoal(0);
+    rotationPID.setGoal(targetSupplier.get().getRotation().getRadians());
 
     
   }
 
   @Override
   public void execute() {
-    if (target == null){
-      target = targetSupplier.get();
-      swerveSubsystem.getField().getObject("target").setPose(target);
-    }
+      swerveSubsystem.getField().getObject("target").setPose(targetSupplier.get());
     
     Pose2d currPose = swerveSubsystem.getPoseEstimate();
     Translation2d dist = currPose
-        .getTranslation().minus(target.getTranslation());
+        .getTranslation().minus(targetSupplier.get().getTranslation());
 
     double tx = translationPIDx.calculate(dist.getX());
     double ty = translationPIDy.calculate(dist.getY());
@@ -72,7 +69,7 @@ public class AutoAlignCommand extends Command {
     // startToEnd.getX()
 
     // ChassisSpeeds c = new ChassisSpeeds(tx, ty, Units.degreesToRadians(r));
-    ChassisSpeeds c = new ChassisSpeeds(tx, ty, Units.degreesToRadians(r));
+    ChassisSpeeds c = new ChassisSpeeds(tx, ty, r);
 
     swerveSubsystem.setModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(c, currPose.getRotation()));
   }
