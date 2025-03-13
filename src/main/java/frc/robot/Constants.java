@@ -237,15 +237,16 @@ public class Constants {
                 REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(-120), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(60)),
                 REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(-60), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(120)),
                 REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(0), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(180)),
-                REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(60), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(-120)),
                 REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(120), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(-60)),
+                REEF_CENTER_BLUE.withVector(Rotation2d.fromDegrees(60), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(-120)),
                 
                 REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(0), new Translation2d(-REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(0)),
                 REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(-120), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(60)),
                 REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(-60), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(120)),
                 REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(0), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(180)),
-                REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(60), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(-120)),
-                REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(120), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(-60))
+                REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(120), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(-60)),
+                REEF_CENTER_BLUE.horizontallyFlip().withVector(Rotation2d.fromDegrees(60), new Translation2d(REEF_CENTER_TO_ROBOT, 0), Rotation2d.fromDegrees(-120))
+                
             );
 
             public static AdvancedPose2D CORAL_STATION_A = new AdvancedPose2D(new Translation2d(0.836168, 0.6334625), null).withVector(Rotation2d.fromDegrees(54), new Translation2d(CORAL_STATION_TO_ROBOT, 0), Rotation2d.fromDegrees(-126));

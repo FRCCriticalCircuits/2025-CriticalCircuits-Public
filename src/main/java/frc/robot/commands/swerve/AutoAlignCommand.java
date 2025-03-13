@@ -1,11 +1,11 @@
 package frc.robot.commands.swerve;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import static frc.robot.subsystems.AutoAimConstants.PID.*;
@@ -49,11 +49,16 @@ public class AutoAlignCommand extends Command {
     Pose2d currPose = swerveSubsystem.getPoseEstimate();
     Translation2d dist = currPose
         .getTranslation().minus(targetSupplier.get().getTranslation());
-    double rotDist = targetSupplier.get().getRotation().getRadians();
+      
+    double rotDistCW = currPose.getRotation().getRadians()-targetSupplier.get().getRotation().getRadians();
+    double rotDistCCW = (targetSupplier.get().getRotation().getRadians()-currPose.getRotation().getRadians());
+    double rotDist = Math.abs(rotDistCCW) <= Math.abs(rotDistCW)? rotDistCW : rotDistCCW;
+    rotDist = MathUtil.angleModulus(rotDist);
+    
 
     double tx = translationPIDx.calculate(dist.getX());
     double ty = translationPIDy.calculate(dist.getY());
-    double r = rotationPID.calculate(currPose.getRotation().getRadians()-rotDist);
+    double r = rotationPID.calculate(rotDist);
 
     SmartDashboard.putNumber("PosPIDx", tx);
     SmartDashboard.putNumber("PosPIDy", ty);
