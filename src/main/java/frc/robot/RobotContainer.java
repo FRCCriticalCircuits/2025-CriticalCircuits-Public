@@ -131,7 +131,7 @@ public class RobotContainer {
 		// 							new WaitCommand(2.5),
 		// 							autoAimManager.pathFindCommand()).schedule();
 		// 				}, swerveSubsystem));
-		  Supplier<Pose2d> targetPoseSupplier = ()->{return autoAimManager.getNearestReef(swerveSubsystem.getPoseEstimate(),Reef.LEFT);};
+		  Supplier<Pose2d> targetPoseSupplier = ()->{return autoAimManager.getNearestReef(swerveSubsystem.getPoseEstimate());};
           driveController.a().whileTrue(
             new AutoAlignCommand(targetPoseSupplier, swerveSubsystem)
             );
