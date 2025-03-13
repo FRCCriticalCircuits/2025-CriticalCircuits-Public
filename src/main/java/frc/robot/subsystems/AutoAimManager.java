@@ -203,7 +203,7 @@ public class AutoAimManager {
         return aimPose.withRobotRelativeTransformation(manualTranslation);
       }
     } else {
-      AdvancedPose2D aimPose = getNearestReef(currentPos, Reef.CENTER);
+      AdvancedPose2D aimPose = getNearestReef(currentPos);
       return aimPose.withRobotRelativeTransformation(manualTranslation);
     }
   }
