@@ -26,9 +26,9 @@ public class AutoAimConstants {
     }
 
     public static class Rotation {
-      public static final double kP = 0.5;
+      public static final double kP = 2;
       public static final double kI = 0;
-      public static final double kD = 0;
+      public static final double kD = 0.25;
       public static final double maxVelocity = 0.766;
       public static final double maxAcceleration = 1.0;
     }
