@@ -55,7 +55,7 @@ public class AutoAlignCommand extends Command {
 
     double tx = translationPIDx.calculate(dist.getX());
     double ty = translationPIDy.calculate(dist.getY());
-    double r = rotationPID.calculate(dist.getAngle().getRadians());
+    double r = rotationPID.calculate(currPose.getRotation().getRadians());
 
     SmartDashboard.putNumber("PosPIDx", tx);
     SmartDashboard.putNumber("PosPIDy", ty);
