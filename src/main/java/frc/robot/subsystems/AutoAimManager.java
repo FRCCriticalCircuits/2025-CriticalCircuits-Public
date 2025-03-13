@@ -119,7 +119,7 @@ public class AutoAimManager {
    * @param currentPose Current robot pose
    * @return Reef side pose constant
    */
-  public AdvancedPose2D getNearestReef(Pose2d currentPose, Reef pos) {
+  public AdvancedPose2D getNearestReef(Pose2d currentPose) {
     AdvancedPose2D targetPose = null;
     double minDist = Double.MAX_VALUE;
     int idx = -1;
@@ -151,6 +151,14 @@ public class AutoAimManager {
 
     // set the target angle
     this.targetAngle = idx * 60;
+    Reef pos = Reef.CENTER;
+    if (LTSupplier.get()>0){
+      pos = Reef.LEFT;
+    }
+
+    if (RTSupplier.get()>0){
+      pos = Reef.RIGHT;
+    }
 
     switch (pos) {
       case LEFT:
@@ -183,7 +191,7 @@ public class AutoAimManager {
     if (setting.getMode() == Mode.CORAL_INTAKE) {
       return nearestCoralStation(currentPos.getTranslation());
     } else if (setting.getMode() == Mode.CORAL_PLACE) {
-      AdvancedPose2D aimPose = getNearestReef(currentPos, Reef.CENTER);
+      AdvancedPose2D aimPose = getNearestReef(currentPos);
 
       if (setting.getSpot() == Spot.L) {
         return aimPose.withRobotRelativeTransformation(new Translation2d(
