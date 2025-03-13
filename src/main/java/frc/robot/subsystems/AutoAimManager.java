@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.Constants;
@@ -121,7 +122,6 @@ public class AutoAimManager {
    */
   public AdvancedPose2D getNearestReef(Pose2d currentPose) {
     AdvancedPose2D targetPose = null;
-    double minDist = Double.MAX_VALUE;
     int idx = -1;
 
     // for (AdvancedPose2D pose : AutoAimConstants.REEF_POSES) {
@@ -136,16 +136,25 @@ public class AutoAimManager {
 
     List<Pose2d> reefPoses;
     AdvancedPose2D reefCenter;
-    reefPoses = Arrays.asList(AutoAimConstants.REEF_POSES_BLUE);
-    reefCenter = AutoAimConstants.REEF_CENTER_BLUE;
+    if (DriveStationIO.getAlliance() == Alliance.Blue) {
+      reefPoses = Arrays.asList(AutoAimConstants.REEF_POSES_BLUE);
+      reefCenter = AutoAimConstants.REEF_CENTER_BLUE;
+    } else {
+      // red alliance
+      reefPoses = Arrays.asList(AutoAimConstants.REEF_POSES_RED);
+      reefCenter = AutoAimConstants.REEF_CENTER_BLUE.horizontallyFlip();
+    }
+
 
     Pose2d pose = currentPose.nearest(reefPoses);
 
     idx = reefPoses.indexOf(pose);
+    SmartDashboard.putNumber("reefindex", idx);
     targetPose = new AdvancedPose2D(pose.getTranslation(), pose.getRotation());
 
     // set the target angle
     this.targetAngle = idx * 60;
+
     Reef pos = Reef.CENTER;
     if (LTSupplier.get()>0){
       pos = Reef.LEFT;
@@ -169,10 +178,6 @@ public class AutoAimManager {
         break;
     }
 
-    if (DriveStationIO.getAlliance()== Alliance.Red){
-      targetPose.horizontallyFlip();
-    }
-
     return targetPose;
   }
 
@@ -187,24 +192,26 @@ public class AutoAimManager {
   private AdvancedPose2D estimateAimPos(AutoAimSetting setting, Translation2d manualTranslation) {
     Pose2d currentPos = SwerveSubsystem.getInstance().getPoseEstimate();
 
-    if (setting.getMode() == Mode.CORAL_INTAKE) {
-      return nearestCoralStation(currentPos.getTranslation());
-    } else if (setting.getMode() == Mode.CORAL_PLACE) {
-      AdvancedPose2D aimPose = getNearestReef(currentPos);
+    // if (setting.getMode() == Mode.CORAL_INTAKE) {
+    //   return nearestCoralStation(currentPos.getTranslation());
+    // } else if (setting.getMode() == Mode.CORAL_PLACE) {
+    //   AdvancedPose2D aimPose = getNearestReef(currentPos);
 
-      if (setting.getSpot() == Spot.L) {
-        return aimPose.withRobotRelativeTransformation(new Translation2d(
-            -FieldConstants.AutoAim.AUTO_TRANSLATION + FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET, 0));
-      } else if (setting.getSpot() == Spot.R) {
-        return aimPose.withRobotRelativeTransformation(new Translation2d(
-            FieldConstants.AutoAim.AUTO_TRANSLATION + FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET, 0));
-      } else {
-        return aimPose.withRobotRelativeTransformation(manualTranslation);
-      }
-    } else {
-      AdvancedPose2D aimPose = getNearestReef(currentPos);
-      return aimPose.withRobotRelativeTransformation(manualTranslation);
-    }
+    //   if (setting.getSpot() == Spot.L) {
+    //     return aimPose.withRobotRelativeTransformation(new Translation2d(
+    //         -FieldConstants.AutoAim.AUTO_TRANSLATION + FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET, 0));
+    //   } else if (setting.getSpot() == Spot.R) {
+    //     return aimPose.withRobotRelativeTransformation(new Translation2d(
+    //         FieldConstants.AutoAim.AUTO_TRANSLATION + FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET, 0));
+    //   } else {
+    //     return aimPose.withRobotRelativeTransformation(manualTranslation);
+    //   }
+    // } else {
+    //   AdvancedPose2D aimPose = getNearestReef(currentPos);
+    //   return aimPose.withRobotRelativeTransformation(manualTranslation);
+    // }
+    AdvancedPose2D aimPose = getNearestReef(currentPos);
+    return aimPose.withRobotRelativeTransformation(manualTranslation);
   }
 
   /**
