@@ -32,7 +32,7 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.KeyBinding;
 import frc.robot.commands.climber.WinchDownCommand;
 import frc.robot.commands.climber.WinchUpCommand;
-import frc.robot.commands.swerve.AutoReefAlignCommand;
+import frc.robot.commands.swerve.AutoAlignCommand;
 import frc.robot.commands.*;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.Controller;
@@ -61,7 +61,7 @@ public class RobotContainer {
 	private WinchSubsystem winchSubsystem = WinchSubsystem.getInstance();
 
 	private SendableChooser<String> autoChooser = new SendableChooser<>();
-	private SendableChooser<String> ac = new SendableChooser<>();
+	private SendableChooser<Command> ac;
 
 	private Controller controller = Controller.getInstance();
 
@@ -97,9 +97,6 @@ public class RobotContainer {
 						() -> controller.getDriverLT(),
 						() -> controller.getDriverRT()));
 
-		// ac = AutoBuilder.buildAutoChooser();
-		// ac.setDefaultOption("1 Piece Mid", "1 Piece Mid");
-
 
 		autoChooser.setDefaultOption("1 Piece Mid", "1 Piece Mid");
 		autoChooser.addOption("1.5 Piece Mid", "1 Piece + 1 Mid");
@@ -134,7 +131,7 @@ public class RobotContainer {
 		// 				}, swerveSubsystem));
 		  Supplier<Pose2d> targetPoseSupplier = ()->{return autoAimManager.getNearestReef(swerveSubsystem.getPoseEstimate());};
           driveController.a().whileTrue(
-            new AutoReefAlignCommand(targetPoseSupplier, swerveSubsystem)
+            new AutoAlignCommand(targetPoseSupplier, swerveSubsystem)
             );
 
 		// driveController.povRight().debounce(0.02).whileTrue(

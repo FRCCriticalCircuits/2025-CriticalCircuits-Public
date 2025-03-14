@@ -49,6 +49,9 @@ public class TeleopDrive extends Command {
     this.yLimiter = new SlewRateLimiter(5);
     this.omegaLimiter = new SlewRateLimiter(Math.PI);
 
+    this.xOffset = 0;
+    this.yOffset = 0;
+
     addRequirements(swerveSubsystem);
   }
 
@@ -112,10 +115,9 @@ public class TeleopDrive extends Command {
       // swerveSubsystem.getGyroRotation2D());
       // }
 
-
-      // FIXME: remove the offsets if they mess up
       speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, swerveSubsystem.getGyroRotation2D());
       
+      // FIXME: remove the offsets if they mess up
       // Add in the speed offsets and clamp to drivebase max speed
       // speeds.vxMetersPerSecond = Math.max(speeds.vxMetersPerSecond + xOffset, Physical.DriveBase.MAX_SPEED_METERS);
       // speeds.vyMetersPerSecond = Math.max(speeds.vyMetersPerSecond + yOffset, Physical.DriveBase.MAX_SPEED_METERS);

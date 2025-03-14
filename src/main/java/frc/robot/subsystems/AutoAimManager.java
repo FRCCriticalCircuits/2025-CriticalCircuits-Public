@@ -40,7 +40,7 @@ public class AutoAimManager {
   private static AutoAimManager instance;
   private AutoAimSetting settings = Constants.DEFAULT_SETTING;
 
-  private Notifier notifier = new Notifier(this::updateValues);
+  // private Notifier notifier = new Notifier(this::updateValues);
 
   private Command command;
 
@@ -61,15 +61,15 @@ public class AutoAimManager {
     this.LTSupplier = LTSupplier;
     this.RTSupplier = RTSupplier;
 
-    notifier.setName("Autoaim Thread");
-    notifier.startPeriodic(0.02);
+    // notifier.setName("Autoaim Thread");
+    // notifier.startPeriodic(0.02);
 
     autoAimPositionPublisher = NetworkTableInstance.getDefault()
         .getStructTopic("/AutoAim/estimatedPosition", Pose2d.struct).publish();
 
     // for (int i = 0; i < 6; i++) {
     // SwerveSubsystem.getInstance().m_field.getObject(String.valueOf(i)).setPose(
-    //   getNearestReef(AutoAimConstants.REEF_POSES_BLUE[i], Reef.RIGHT)
+    // getNearestReef(AutoAimConstants.REEF_POSES_BLUE[i], Reef.RIGHT)
     // );
     // }
 
@@ -99,8 +99,9 @@ public class AutoAimManager {
    * @return the pose for target coral station
    */
 
-   // TODO: finish this and add a new command for Coral Station alignment
-  private AdvancedPose2D getNearestCoralStation(Translation2d currentPos) {
+  private AdvancedPose2D getNearestStation(Translation2d currentPos) {
+    // TODO: finish this and add a new command for Coral Station alignment
+    // TODO: change to pose2d
     if (DriveStationIO.getAlliance() == Alliance.Blue) {
       if (currentPos.getDistance(FieldConstants.AutoAim.CORAL_STATION_A.getTranslation()) > currentPos
           .getDistance(FieldConstants.AutoAim.CORAL_STATION_B.getTranslation()))
@@ -127,13 +128,14 @@ public class AutoAimManager {
     int idx = -1;
 
     // for (AdvancedPose2D pose : AutoAimConstants.REEF_POSES) {
-    //   // Find distance between robot and reef posts
-    //   double tmpDist = pose.getTranslation().getDistance(currentPose.getTranslation());
-    //   // check all posts to find the closest one
-    //   if (tmpDist < minDist) {
-    //     targetPose = pose;
-    //     minDist = tmpDist;
-    //   }
+    // // Find distance between robot and reef posts
+    // double tmpDist =
+    // pose.getTranslation().getDistance(currentPose.getTranslation());
+    // // check all posts to find the closest one
+    // if (tmpDist < minDist) {
+    // targetPose = pose;
+    // minDist = tmpDist;
+    // }
     // }
 
     List<Pose2d> reefPoses;
@@ -147,7 +149,6 @@ public class AutoAimManager {
       reefCenter = AutoAimConstants.REEF_CENTER_BLUE.horizontallyFlip();
     }
 
-
     Pose2d pose = currentPose.nearest(reefPoses);
 
     idx = reefPoses.indexOf(pose);
@@ -158,22 +159,24 @@ public class AutoAimManager {
     this.targetAngle = idx * 60;
 
     Reef pos = Reef.CENTER;
-    if (LTSupplier.get()>0){
+    if (LTSupplier.get() > 0) {
       pos = Reef.LEFT;
     }
 
-    if (RTSupplier.get()>0){
+    if (RTSupplier.get() > 0) {
       pos = Reef.RIGHT;
     }
 
     switch (pos) {
       case LEFT:
-        targetPose = reefCenter.withVector(Rotation2d.fromDegrees(60 * idx), new Translation2d(-AutoAimConstants.REEF_CENTER_TO_ROBOT_CENTER, AutoAimConstants.REEF_POST_OFFSET), 
-        Rotation2d.fromDegrees(60 * idx));
+        targetPose = reefCenter.withVector(Rotation2d.fromDegrees(60 * idx),
+            new Translation2d(-AutoAimConstants.REEF_CENTER_TO_ROBOT_CENTER, AutoAimConstants.REEF_POST_OFFSET),
+            Rotation2d.fromDegrees(60 * idx));
         break;
       case RIGHT:
-        targetPose = reefCenter.withVector(Rotation2d.fromDegrees(60 * idx), new Translation2d(-AutoAimConstants.REEF_CENTER_TO_ROBOT_CENTER, -AutoAimConstants.REEF_POST_OFFSET), 
-        Rotation2d.fromDegrees(60 * idx));
+        targetPose = reefCenter.withVector(Rotation2d.fromDegrees(60 * idx),
+            new Translation2d(-AutoAimConstants.REEF_CENTER_TO_ROBOT_CENTER, -AutoAimConstants.REEF_POST_OFFSET),
+            Rotation2d.fromDegrees(60 * idx));
         break;
       case CENTER:
         // No change
@@ -195,22 +198,24 @@ public class AutoAimManager {
     Pose2d currentPos = SwerveSubsystem.getInstance().getPoseEstimate();
 
     // if (setting.getMode() == Mode.CORAL_INTAKE) {
-    //   return nearestCoralStation(currentPos.getTranslation());
+    // return nearestCoralStation(currentPos.getTranslation());
     // } else if (setting.getMode() == Mode.CORAL_PLACE) {
-    //   AdvancedPose2D aimPose = getNearestReef(currentPos);
+    // AdvancedPose2D aimPose = getNearestReef(currentPos);
 
-    //   if (setting.getSpot() == Spot.L) {
-    //     return aimPose.withRobotRelativeTransformation(new Translation2d(
-    //         -FieldConstants.AutoAim.AUTO_TRANSLATION + FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET, 0));
-    //   } else if (setting.getSpot() == Spot.R) {
-    //     return aimPose.withRobotRelativeTransformation(new Translation2d(
-    //         FieldConstants.AutoAim.AUTO_TRANSLATION + FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET, 0));
-    //   } else {
-    //     return aimPose.withRobotRelativeTransformation(manualTranslation);
-    //   }
+    // if (setting.getSpot() == Spot.L) {
+    // return aimPose.withRobotRelativeTransformation(new Translation2d(
+    // -FieldConstants.AutoAim.AUTO_TRANSLATION +
+    // FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET, 0));
+    // } else if (setting.getSpot() == Spot.R) {
+    // return aimPose.withRobotRelativeTransformation(new Translation2d(
+    // FieldConstants.AutoAim.AUTO_TRANSLATION +
+    // FieldConstants.AutoAim.AUTO_TRANSLATION_OFFSET, 0));
     // } else {
-    //   AdvancedPose2D aimPose = getNearestReef(currentPos);
-    //   return aimPose.withRobotRelativeTransformation(manualTranslation);
+    // return aimPose.withRobotRelativeTransformation(manualTranslation);
+    // }
+    // } else {
+    // AdvancedPose2D aimPose = getNearestReef(currentPos);
+    // return aimPose.withRobotRelativeTransformation(manualTranslation);
     // }
     AdvancedPose2D aimPose = getNearestReef(currentPos);
     return aimPose.withRobotRelativeTransformation(manualTranslation);
@@ -250,10 +255,6 @@ public class AutoAimManager {
     );
 
     return new PrintCommand("autoaim");
-  }
-
-  public synchronized Command profiledPidCommand() {
-    return null;
   }
 
   public synchronized boolean isFinished() {
