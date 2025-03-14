@@ -15,14 +15,14 @@ import java.util.function.Supplier;
 import frc.robot.subsystems.AutoAimConstants.PID.Rotation;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
-public class AutoAlignCommand extends Command {
+public class AutoReefAlignCommand extends Command {
   private SwerveSubsystem swerveSubsystem;
   private ProfiledPIDController translationPIDx;
   private ProfiledPIDController translationPIDy;
   private ProfiledPIDController rotationPID;
   private Supplier<Pose2d> targetSupplier;
 
-  public AutoAlignCommand(Supplier<Pose2d> targetSupplier, SwerveSubsystem s) {
+  public AutoReefAlignCommand(Supplier<Pose2d> targetSupplier, SwerveSubsystem s) {
     this.targetSupplier = targetSupplier;
     swerveSubsystem = s;
 

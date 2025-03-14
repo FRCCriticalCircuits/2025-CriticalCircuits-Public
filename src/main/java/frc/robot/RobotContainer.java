@@ -32,7 +32,7 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.KeyBinding;
 import frc.robot.commands.climber.WinchDownCommand;
 import frc.robot.commands.climber.WinchUpCommand;
-import frc.robot.commands.swerve.AutoAlignCommand;
+import frc.robot.commands.swerve.AutoReefAlignCommand;
 import frc.robot.commands.*;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.Controller;
@@ -134,7 +134,7 @@ public class RobotContainer {
 		// 				}, swerveSubsystem));
 		  Supplier<Pose2d> targetPoseSupplier = ()->{return autoAimManager.getNearestReef(swerveSubsystem.getPoseEstimate());};
           driveController.a().whileTrue(
-            new AutoAlignCommand(targetPoseSupplier, swerveSubsystem)
+            new AutoReefAlignCommand(targetPoseSupplier, swerveSubsystem)
             );
 
 		// driveController.povRight().debounce(0.02).whileTrue(

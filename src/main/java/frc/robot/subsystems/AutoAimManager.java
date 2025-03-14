@@ -98,7 +98,9 @@ public class AutoAimManager {
    * @param currentPos current {@link Translation2d} for the robot
    * @return the pose for target coral station
    */
-  private AdvancedPose2D nearestCoralStation(Translation2d currentPos) {
+
+   // TODO: finish this and add a new command for Coral Station alignment
+  private AdvancedPose2D getNearestCoralStation(Translation2d currentPos) {
     if (DriveStationIO.getAlliance() == Alliance.Blue) {
       if (currentPos.getDistance(FieldConstants.AutoAim.CORAL_STATION_A.getTranslation()) > currentPos
           .getDistance(FieldConstants.AutoAim.CORAL_STATION_B.getTranslation()))
