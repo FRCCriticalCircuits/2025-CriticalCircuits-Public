@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.List;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -10,27 +8,20 @@ import frc.robot.utils.Math.AdvancedPose2D;
 
 public class AutoAimConstants {
   public static class PID {
-    public static class TranslationX {
+    public static class Translation {
       public static final double kP = 6;
       public static final double kI = 0;
       public static final double kD = 1;
-      public static final double maxVelocity = 1.0;
-      public static final double maxAcceleration = 2.5;
-    }
-    public static class TranslationY {
-      public static final double kP = 6;
-      public static final double kI = 0;
-      public static final double kD = 1;
-      public static final double maxVelocity = 1.0;
-      public static final double maxAcceleration = 2.5;
+      public static final double maxVelocity = 0.75;
+      public static final double maxAcceleration = 1.5;
     }
 
     public static class Rotation {
       public static final double kP = 2;
       public static final double kI = 0;
       public static final double kD = 0.25;
-      public static final double maxVelocity = 0.766;
-      public static final double maxAcceleration = 1.0;
+      public static final double maxVelocity = Units.degreesToRadians(180); // Per second
+      public static final double maxAcceleration = 1.0; // Per second^2
     }
   }
   

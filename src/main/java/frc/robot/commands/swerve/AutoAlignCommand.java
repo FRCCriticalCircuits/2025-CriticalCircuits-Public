@@ -16,19 +16,21 @@ import frc.robot.subsystems.AutoAimConstants.PID.Rotation;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
 
 public class AutoAlignCommand extends Command {
-  SwerveSubsystem swerveSubsystem;
-  ProfiledPIDController translationPIDx;
-  ProfiledPIDController translationPIDy;
-  ProfiledPIDController rotationPID;
-  Supplier<Pose2d> targetSupplier;
+  private SwerveSubsystem swerveSubsystem;
+  private ProfiledPIDController translationPIDx;
+  private ProfiledPIDController translationPIDy;
+  private ProfiledPIDController rotationPID;
+  private Supplier<Pose2d> targetSupplier;
 
   public AutoAlignCommand(Supplier<Pose2d> targetSupplier, SwerveSubsystem s) {
     this.targetSupplier = targetSupplier;
     swerveSubsystem = s;
-    translationPIDx = new ProfiledPIDController(TranslationX.kP, TranslationX.kI, TranslationX.kD,
-        new TrapezoidProfile.Constraints(TranslationX.maxVelocity, TranslationX.maxAcceleration));
-    translationPIDy = new ProfiledPIDController(TranslationY.kP, TranslationY.kI, TranslationY.kD,
-        new TrapezoidProfile.Constraints(TranslationY.maxVelocity, TranslationY.maxAcceleration));
+
+    // Create PID controllers for x, y, theta
+    translationPIDx = new ProfiledPIDController(Translation.kP, Translation.kI, Translation.kD,
+        new TrapezoidProfile.Constraints(Translation.maxVelocity, Translation.maxAcceleration));
+    translationPIDy = new ProfiledPIDController(Translation.kP, Translation.kI, Translation.kD,
+        new TrapezoidProfile.Constraints(Translation.maxVelocity, Translation.maxAcceleration));
     rotationPID = new ProfiledPIDController(Rotation.kP, Rotation.kI, Rotation.kD,
         new TrapezoidProfile.Constraints(Rotation.maxVelocity, Rotation.maxAcceleration));
 
@@ -47,6 +49,7 @@ public class AutoAlignCommand extends Command {
       swerveSubsystem.getField().getObject("target").setPose(targetSupplier.get());
     
     Pose2d currPose = swerveSubsystem.getPoseEstimate();
+    // Get translation vector from current to final pose
     Translation2d dist = currPose
         .getTranslation().minus(targetSupplier.get().getTranslation());
       
@@ -55,7 +58,6 @@ public class AutoAlignCommand extends Command {
     double rotDist = Math.abs(rotDistCCW) <= Math.abs(rotDistCW)? rotDistCW : rotDistCCW;
     rotDist = MathUtil.angleModulus(rotDist);
     
-
     double tx = translationPIDx.calculate(dist.getX());
     double ty = translationPIDy.calculate(dist.getY());
     double r = rotationPID.calculate(rotDist);
