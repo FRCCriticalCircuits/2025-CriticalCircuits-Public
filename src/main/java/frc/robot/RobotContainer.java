@@ -99,8 +99,10 @@ public class RobotContainer {
 
 
 		autoChooser.setDefaultOption("1 Piece Mid", "1 Piece Mid");
-		autoChooser.addOption("1.5 Piece Mid", "1 Piece + 1 Mid");
-		autoChooser.addOption("(Left) 1 Piece Mid", "(Left) 1 Piece Mid");
+		autoChooser.addOption("2 Piece Mid", "1 Piece + 1 Mid");
+    autoChooser.addOption("(C) 2 Piece Mid", "(C) 1 Piece + 1 Mid");
+    autoChooser.addOption("Taxi", "Taxi");
+		// autoChooser.addOption("(Left) 1 Piece Mid", "(Left) 1 Piece Mid");
 
 		SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -118,6 +120,10 @@ public class RobotContainer {
 						() -> {
 							swerveSubsystem.resetGyro(-0.5);
 						}));
+
+    operatorController.button(KeyBinding.GYRO_RESET).debounce(0.02).onTrue(
+      new HomeWrist(elevatorSubsystem)
+    );
 
 		/*
 		 * AutoAim

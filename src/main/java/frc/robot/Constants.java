@@ -78,7 +78,7 @@ public class Constants {
             public static double DRIVE_FEED_FORWARD_KV = 0.04;
             public static double DRIVE_FEED_FORWARD_KA = 0;
 
-            public static double TURN_PID_P = 0.3;
+            public static double TURN_PID_P = 0.4;
             public static double TURN_PID_I = 0;
             public static double TURN_PID_D = 0;
 
@@ -213,7 +213,7 @@ public class Constants {
             public static final double BLINK_TIME_ON = 0.150;
             public static final double BLINK_TIME_OFF = 0.10;
             public static final double SCROLL_PERCENT_PER_SEC = 65;
-            public static final double BRIGHTNESS = 100;
+            public static final double BRIGHTNESS = 30;
         }
     }
 

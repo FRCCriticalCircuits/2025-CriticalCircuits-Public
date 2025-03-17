@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,7 +28,11 @@ public class Robot extends TimedRobot {
   // Game Pieces Publisher
   StructArrayPublisher<Pose3d> coralPublisher, algaePublisher;
 
+  private Timer m_gcTimer;
+
   public Robot() {
+    m_gcTimer = new Timer();
+    m_gcTimer.start();
     m_robotContainer = new RobotContainer(this);
 
     coralPublisher = NetworkTableInstance.getDefault().getStructArrayTopic("/simulationGamePieces/coral", Pose3d.struct).publish();
@@ -42,6 +47,12 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+
+    // Garbage collect more often
+    if (m_gcTimer.advanceIfElapsed(5)) {
+     System.gc();
+    }
+
   }
 
   @Override

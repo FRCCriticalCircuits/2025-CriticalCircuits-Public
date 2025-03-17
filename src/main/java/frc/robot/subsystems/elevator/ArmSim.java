@@ -34,4 +34,26 @@ public class ArmSim implements ArmIO{
         SmartDashboard.putNumber("ArmSim/position", inputs.ioRotation.getDegrees());
         SmartDashboard.putNumber("ArmSim/targetPosition", inputs.targetRotation.getDegrees());
     }
+
+    public void enable() {
+
+    }
+
+    public void disable() {
+
+    }
+
+    public void setVoltage(double v) {
+      
+    }
+
+    public double getVelocity() {
+      return 0;
+    }
+
+    @Override
+    public void resetEncoder() {
+    // TODO Auto-generated method stub
+    
+    }
 }

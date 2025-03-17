@@ -10,4 +10,13 @@ public interface ArmIO {
 
     public default void updateInputs(ArmIOInputs inputs, boolean coralDetected, boolean algaeDetected) {}
     public void setRotation(Rotation2d rotation);
+
+    public void enable();
+
+    public void disable();
+
+    public void setVoltage(double v);
+
+    public double getVelocity();
+    public void resetEncoder();
 }

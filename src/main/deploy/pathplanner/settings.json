@@ -19,10 +19,10 @@
   "robotTrackwidth": 0.6,
   "driveWheelRadius": 0.051,
   "driveGearing": 6.12,
-  "maxDriveSpeed": 4.5,
+  "maxDriveSpeed": 4.6,
   "driveMotorType": "krakenX60",
   "driveCurrentLimit": 70.0,
-  "wheelCOF": 2.0,
+  "wheelCOF": 1.48,
   "flModuleX": 0.276,
   "flModuleY": 0.276,
   "frModuleX": 0.2759,
@@ -33,5 +33,8 @@
   "brModuleY": -0.276,
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
-  "robotFeatures": []
+  "robotFeatures": [
+    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.4,\"y\":0.0},\"size\":{\"width\":0.2,\"length\":0.3},\"borderRadius\":0.075,\"strokeWidth\":0.05,\"filled\":false}}",
+    "{\"name\":\"Bumper\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.0,\"y\":0.0},\"size\":{\"width\":0.7112,\"length\":0.7112},\"borderRadius\":0.05,\"strokeWidth\":0.01,\"filled\":false}}"
+  ]
 }

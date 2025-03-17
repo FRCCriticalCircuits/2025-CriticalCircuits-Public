@@ -9,7 +9,7 @@ import frc.robot.utils.Math.AdvancedPose2D;
 public class AutoAimConstants {
   public static class PID {
     public static class Translation {
-      public static final double kP = 6;
+      public static final double kP = 5;
       public static final double kI = 0;
       public static final double kD = 1;
       public static final double maxVelocity = 0.75;

@@ -83,11 +83,16 @@ public class RollerKraken implements RollerIO {
 
     @Override
     public void updateInputs(RollerIOInputs inputs, boolean lowVoltage) {
+        // inputs.algaeDetected = algaeDebouncer.calculate(
+        //     algaeSensor.isRangeValid() &&
+        //     algaeSensor.getRange() < 90
+        // );
         inputs.algaeDetected = algaeDebouncer.calculate(
-            algaeSensor.isRangeValid() &&
-            algaeSensor.getRange() < 90
+            m_intakeMotor.getVelocity().getValueAsDouble() < 1.5
+              && m_intakeMotor.getDeviceEnable().getValue().value == 1.0
         );
 
+        // Debounce 100ms due to velocity error
         inputs.coralDetected = coralDebouncer.calculate(
             m_hatcherMotor.getVelocity().getValueAsDouble() < 1.5
         );
@@ -141,10 +146,10 @@ public class RollerKraken implements RollerIO {
                   m_hatcherMotor.setControl(hatcherControl.withVelocity(3));
                 m_intakeMotor.stopMotor();
                 break;
-            // case IDLE:
-            //     m_hatcherMotor.stopMotor();
-            //     m_intakeMotor.stopMotor();
-            //     break;
+            case IDLE:
+                m_hatcherMotor.stopMotor();
+                m_intakeMotor.stopMotor();
+                break;
         }
     }
 
