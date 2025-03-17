@@ -32,6 +32,7 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.KeyBinding;
 import frc.robot.commands.climber.WinchDownCommand;
 import frc.robot.commands.climber.WinchUpCommand;
+import frc.robot.commands.elevator.ZeroWrist;
 import frc.robot.commands.swerve.AutoAlignCommand;
 import frc.robot.commands.*;
 import frc.robot.subsystems.AutoAimManager;
@@ -122,7 +123,7 @@ public class RobotContainer {
 						}));
 
     operatorController.button(KeyBinding.GYRO_RESET).debounce(0.02).onTrue(
-      new HomeWrist(elevatorSubsystem)
+      new ZeroWrist(elevatorSubsystem)
     );
 
 		/*
