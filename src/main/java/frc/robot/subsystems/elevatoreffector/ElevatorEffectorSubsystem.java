@@ -1,7 +1,11 @@
 package frc.robot.subsystems.elevatoreffector;
 
 
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
 
 public class ElevatorEffectorSubsystem extends SubsystemBase {
     public enum ElevatorState {
@@ -11,48 +15,38 @@ public class ElevatorEffectorSubsystem extends SubsystemBase {
         BARGE
     }
 
-    private WristIO wristIO;
+    private final ElevatorIO elevatorIO;
+    private final WristIO wristIO;
+
+    private final ElevatorIOInputsAutoLogged elevatorInputs = new ElevatorIOInputsAutoLogged();
+    private final WristIOInputsAutoLogged wristInputs = new WristIOInputsAutoLogged();
 
     private ElevatorState currentState;
     private ElevatorState requestedState;
 
-    public ElevatorEffectorSubsystem() {
+    public ElevatorEffectorSubsystem(ElevatorIO elevatorIO, WristIO wristIO) {
+        this.elevatorIO = elevatorIO;
+        this.wristIO = wristIO;
+
         // Default state
         currentState = ElevatorState.ZERO;
         requestedState = ElevatorState.IDLE;
+
+
         // TODO: Set the default command, if any, for this subsystem by calling setDefaultCommand(command)
         //       in the constructor or in the robot coordination class, such as RobotContainer.
-        //       Also, you can call addChild(name, sendableChild) to associate sendables with the subsystem
-        //       such as SpeedControllers, Encoders, DigitalInputs, etc.
-
     }
 
     @Override
     public void periodic() {
-        switch (currentState) {
-            case ZERO:
+        elevatorIO.updateInputs(elevatorInputs);
+        wristIO.updateInputs(wristInputs);
 
-                break;
-            case IDLE:
-                break;
-            case L1_CORAL:
-                break;
-            case L2_CORAL:
-                break;
-            case L3_CORAL:
-                break;
-            case L1_ALGAE:
-                break;
-            case L2_ALGAE:
-                break;
-            case INTAKE_CORAL:
-                break;
-            case INTAKE_ALGAE:
-                break;
-            case BARGE:
-                break;
-        }
-        super.periodic();
+        Logger.processInputs("Elevator", elevatorInputs);
+        Logger.processInputs("Wrist", wristInputs);
+
+        // TODO: implement graph for elevator
+
     }
 }
 
