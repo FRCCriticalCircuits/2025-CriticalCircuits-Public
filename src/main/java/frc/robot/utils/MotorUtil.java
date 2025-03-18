@@ -15,6 +15,7 @@ package frc.robot.utils;
 
 import static edu.wpi.first.units.Units.Seconds;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase;
 import edu.wpi.first.wpilibj.Timer;

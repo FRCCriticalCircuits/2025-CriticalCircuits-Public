@@ -1,4 +1,4 @@
-package frc.robot.constants;
+package frc.robot;
 
 public class HardwareMap {
     public class CAN {

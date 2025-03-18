@@ -1,7 +1,6 @@
 package frc.robot.subsystems.elevatoreffector;
 
-import frc.robot.constants.ElevatorConstants;
-import frc.robot.constants.HardwareMap.CAN;
+import frc.robot.HardwareMap.CAN;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.geometry.Rotation2d;
 

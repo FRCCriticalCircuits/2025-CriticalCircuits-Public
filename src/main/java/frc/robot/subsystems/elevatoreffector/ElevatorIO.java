@@ -14,5 +14,5 @@ public interface ElevatorIO {
 
     public default void updateInputs(ElevatorIOInputs inputs) {}
 
-    public default void setTargetPosition() {}
+    public default void setTargetPosition(Distance target) {}
 }
