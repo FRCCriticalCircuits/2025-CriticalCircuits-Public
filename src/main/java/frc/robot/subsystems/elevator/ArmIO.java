@@ -13,6 +13,9 @@ public interface ArmIO {
 
     public void enable();
 
+    /**
+     * Soft-disable this device
+     */
     public void disable();
 
     public void setVoltage(double v);

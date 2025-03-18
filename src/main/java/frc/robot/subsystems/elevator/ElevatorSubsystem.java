@@ -240,18 +240,6 @@ public class ElevatorSubsystem extends SubsystemBase {
       curState = nextState.getFirst();
   }
 
-  public void disableWrist() {
-    this.armIO.disable();
-  }
-
-  public void enableWrist() {
-    this.armIO.enable();
-  }
-
-  public void setWristVoltage(double v) {
-    this.armIO.setVoltage(v);
-  }
-
   public ArmIO getWrist() {
     return this.armIO;
   }
