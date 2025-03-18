@@ -11,15 +11,7 @@ public class DriveStationIO {
      * @return true if <b>Blue</b>, false if <b>Red</b> or <b>neither</b>
      */
     public static boolean isBlue(){
-        return (DriverStation.getAlliance().isPresent()) ? DriverStation.getAlliance().get() == Alliance.Blue : false; 
-    }
-
-    /**
-     * check if the robot is in Red Alliance
-     * @return true if <b>Red</b>, false if <b>Blue</b> or <b>neither</b>
-     */
-    public static boolean isRed(){
-        return (DriverStation.getAlliance().isPresent()) ? DriverStation.getAlliance().get() == Alliance.Red : false; 
+        return DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue;
     }
 
     /**

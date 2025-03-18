@@ -51,25 +51,25 @@ import frc.robot.utils.structures.DataStrcutures.Spot;
 
 public class RobotContainer {
 	private Robot robot;
-	private SwerveSubsystem swerveSubsystem;
-	private VisionSubsystem visionSubsystem;
+	private final SwerveSubsystem swerveSubsystem;
+	private final VisionSubsystem visionSubsystem;
 
-	private ElevatorSubsystem elevatorSubsystem;
-	private RollerSubsystem rollerSubsystem;
+	private final ElevatorSubsystem elevatorSubsystem;
+	private final RollerSubsystem rollerSubsystem;
 
-	private LEDSubsystem ledSubsystem;
+	private final LEDSubsystem ledSubsystem;
 
 	private WinchSubsystem winchSubsystem = WinchSubsystem.getInstance();
 
-	private SendableChooser<String> autoChooser = new SendableChooser<>();
+	private final SendableChooser<String> autoChooser = new SendableChooser<>();
 	private SendableChooser<Command> ac;
 
-	private Controller controller = Controller.getInstance();
+	private final Controller controller = Controller.getInstance();
 
-	private static CommandXboxController driveController = new CommandXboxController(0);
-	private CommandXboxController operatorController = new CommandXboxController(1);
+	private static final CommandXboxController driveController = new CommandXboxController(0);
+	private final CommandXboxController operatorController = new CommandXboxController(1);
 
-	private AutoAimManager autoAimManager = AutoAimManager.getInstance(
+	private final AutoAimManager autoAimManager = AutoAimManager.getInstance(
 			() -> controller.getDriverLT(),
 			() -> controller.getDriverRT());
 
