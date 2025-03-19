@@ -1,7 +1,9 @@
 package frc.robot.subsystems.elevatoreffector;
 
 
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.utils.structures.DataStrcutures;
 import org.littletonrobotics.junction.Logger;
 import static frc.robot.subsystems.elevatoreffector.ElevatorConstants.Physical;
@@ -31,6 +33,7 @@ public class ElevatorEffectorSubsystem extends SubsystemBase {
     private Level level;
 
     public ElevatorEffectorSubsystem(ElevatorIO elevatorIO, WristIO wristIO) {
+        LEDSubsystem ledSubsystem = LEDSubsystem.getInstance();
         this.elevatorIO = elevatorIO;
         this.wristIO = wristIO;
 
@@ -83,13 +86,51 @@ public class ElevatorEffectorSubsystem extends SubsystemBase {
         );
 
 
-        // TODO: Add edges and set heigh constnats properly
+        // TODO: set heigh constnats properly
+
+        switch (this.mode) {
+            case CORAL_INTAKE -> {
+                ledSubsystem.setColor(Color.kRed);
+                this.requestedState = ElevatorState.INTAKE_CORAL;
+            }
+            case CORAL_PLACE -> {
+                ledSubsystem.setColor(Color.kBlue);
+                switch(this.level) {
+                    case L1 -> {
+                    }
+                    case L2 -> {
+                    }
+                    case L3 -> {
+                    }
+                    case L4 -> {
+                    }
+                    case LClimb -> {
+                    }
+                }
+            }
+            case ALGAE_INTAKE -> {
+                ledSubsystem.setColor(Color.kGreen);
+                switch(this.level) {
+                    case L1 -> {
+                        // g intake
+                    }
+                    case L2 -> {
+                        // processor
+                    }
+                    case L3 -> {
+                        // l1 algae
+
+                    }
+                    case L4 -> {
+                        // l2 algae
+                    }
+                }
+            }
+        }
 
         // TODO: Set the default command, if any, for this subsystem by calling setDefaultCommand(command)
         //       in the constructor or in the robot coordination class, such as RobotContainer.
     }
-
-
 
     @Override
     public void periodic() {
@@ -101,6 +142,22 @@ public class ElevatorEffectorSubsystem extends SubsystemBase {
 
         // TODO: implement graph for elevator
 
+    }
+
+    public void setMode(Mode mode) {
+        this.mode = mode;
+    }
+
+    public Mode getMode() {
+        return this.mode;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
+    }
+
+    public Level getLevel() {
+        return this.level;
     }
 }
 
