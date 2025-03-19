@@ -1,6 +1,8 @@
 package frc.robot.subsystems.elevatoreffector;
 
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,8 +22,13 @@ public class ElevatorStateMachine {
 
     public ElevatorStateMachine() {}
 
-    public void addNode(ElevatorState name, Pair<Double, Double> commands) {
-        nodes.put(name, new Node(name, commands));
+    /**
+     * Add a node to the graph
+     * @param name state
+     * @param positions distance angle pair
+     */
+    public void addNode(ElevatorState name, Pair<Distance, Angle> positions) {
+        nodes.put(name, new Node(name, positions));
         edges.putIfAbsent(name, new HashSet<>());
     }
 
@@ -32,7 +39,19 @@ public class ElevatorStateMachine {
         }
     }
 
-    public Pair<ElevatorState, Pair<Double, Double>> findPath(ElevatorState originNode, ElevatorState targetNode) {
+    /**
+     * Connect all nodes together such that any node can go to any other node
+     * @param states all nodes to be connected
+     */
+    public void addFullyConnectedEdges(ElevatorState... states) {
+        for (int i = 0; i < states.length; i++) {
+            for (int j = i + 1; j < states.length; j++) {
+                addEdge(states[i], states[j]);
+            }
+        }
+    }
+
+    public Pair<ElevatorState, Pair<Distance, Angle>> findPath(ElevatorState originNode, ElevatorState targetNode) {
         if (!nodes.containsKey(originNode) || !nodes.containsKey(targetNode)) {
             throw new IllegalArgumentException("Node does not exist: " + originNode + "," + targetNode);
         }
@@ -69,8 +88,8 @@ public class ElevatorStateMachine {
             current = predecessors.get(current);
         }
 
-        if(path.size() > 1) return new Pair<ElevatorState, Pair<Double, Double>>(path.get(1), nodes.get(path.get(1)).getCommands());
-        else return new Pair<ElevatorState, Pair<Double, Double>>(path.get(0), nodes.get(path.get(0)).getCommands());
+        if(path.size() > 1) return new Pair<ElevatorState, Pair<Distance, Angle>>(path.get(1), nodes.get(path.get(1)).getCommands());
+        else return new Pair<ElevatorState, Pair<Distance, Angle>>(path.get(0), nodes.get(path.get(0)).getCommands());
     }
 
     public Node getNode(ElevatorState name) {
@@ -79,9 +98,9 @@ public class ElevatorStateMachine {
 
     public static class Node {
         private final ElevatorState name;
-        private Pair<Double, Double> commands;
+        private Pair<Distance, Angle> commands;
 
-        public Node(ElevatorState name, Pair<Double, Double> commands) {
+        public Node(ElevatorState name, Pair<Distance, Angle> commands) {
             this.name = name;
             this.commands = commands;
         }
@@ -90,7 +109,7 @@ public class ElevatorStateMachine {
             return name;
         }
 
-        public Pair<Double, Double> getCommands() {
+        public Pair<Distance, Angle> getCommands() {
             return commands;
         }
     }

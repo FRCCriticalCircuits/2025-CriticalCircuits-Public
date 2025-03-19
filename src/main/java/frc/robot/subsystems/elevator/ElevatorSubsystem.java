@@ -183,7 +183,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       case CORAL_INTAKE:
         this.targetState = "coralIntake";
         break;
-      case ALGAE_PICK:
+      case ALGAE_INTAKE:
         switch (currentSettings.getLevel()) {
           case L1:
             this.targetState = "groundAlgae"; // No AutoAim

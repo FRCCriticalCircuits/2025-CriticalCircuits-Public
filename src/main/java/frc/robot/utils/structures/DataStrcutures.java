@@ -87,7 +87,7 @@ public class DataStrcutures{
     public enum Mode{
         CORAL_INTAKE(0),
         CORAL_PLACE(1),
-        ALGAE_PICK(2);
+        ALGAE_INTAKE(2);
 
         public final int value;
 
