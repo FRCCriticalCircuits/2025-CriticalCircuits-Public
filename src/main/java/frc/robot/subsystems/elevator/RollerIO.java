@@ -8,10 +8,13 @@ public interface RollerIO {
 
     public enum RollerMode{
         IN,
+        CORAL_IN,
         OUT,
-        C_OUT_LIGHT,
-        HOLD,
-        IDLE
+        CORAL_OUT,
+        ALGAE_IN,
+        ALGAE_OUT,
+        CORAL_OUT_LIGHT,
+        HOLD
     }
 
     public default void updateInputs(RollerIOInputs inputs, boolean lowVoltage) {}

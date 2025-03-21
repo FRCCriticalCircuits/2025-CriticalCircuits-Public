@@ -34,4 +34,8 @@ public class WinchSubsystem extends SubsystemBase {
         if (instance == null) instance = new WinchSubsystem();
         return instance;
     }
+
+    public void blink(double f) {
+        winchIO.blink(f);
+    }
 }

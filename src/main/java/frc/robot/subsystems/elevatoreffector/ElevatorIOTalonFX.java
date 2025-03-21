@@ -20,9 +20,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     private final TalonFX leftMotorLeader = new TalonFX(HardwareMap.CAN.ELEVATOR_LEFT_ID);
     private final TalonFX rightMotorFollower = new TalonFX(HardwareMap.CAN.ELEVATOR_RIGHT_ID);
 
-    private PositionVoltage positionVoltage = new PositionVoltage(0).withSlot(0);
+    private final PositionVoltage positionVoltage = new PositionVoltage(0).withSlot(0);
 
-    private final StatusSignal<Angle> position = leftMotorLeader.getPosition();
+    private final StatusSignal<Angle> currentRotationSignal = leftMotorLeader.getPosition();
     private Distance targetPosition = Meters.of(0);
 
 
@@ -35,6 +35,10 @@ public class ElevatorIOTalonFX implements ElevatorIO {
         config.Feedback.SensorToMechanismRatio = ElevatorConstants.SENSOR_TO_MECHANISM_RATIO;
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         config.MotorOutput.Inverted = ElevatorConstants.INVERT_LEFT;
+
+        config.Slot0.kP = ElevatorConstants.PID.kP;
+        config.Slot0.kI = ElevatorConstants.PID.kI;
+        config.Slot0.kD = ElevatorConstants.PID.kD;
 
         StatusCode status = leftMotorLeader.getConfigurator().apply(config, 0.25);
         // Show error if failed to init
@@ -57,28 +61,31 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
         // TODO: Tune sprocket PD
-        inputs.currentPosition = Inches.of(position.getValueAsDouble() *
-                Math.PI * ElevatorConstants.SPROCKET_PD);
+        inputs.currentPosition = rotationsToDistance(currentRotationSignal.getValue());
         inputs.targetPosition = targetPosition;
     }
 
     /**
-     * Set the target position of the elevator
-     * @param target linear position
+     * Set the target currentRotationSignal of the elevator
+     *
+     * @param target linear currentRotationSignal
      */
     @Override
     public void setTargetPosition(Distance target) {
         this.targetPosition = target;
+
+        // Use normal positionvoltage control for now
         leftMotorLeader.setControl(positionVoltage.withPosition(
                 distanceToRotations(target)
         ));
+
     }
 
-    private double distanceToRotations(Distance d) {
-        return d.in(Inches) / (Math.PI * ElevatorConstants.SPROCKET_PD);
+    private Angle distanceToRotations(Distance d) {
+        return Rotations.of(d.in(Inches) / (Math.PI * ElevatorConstants.SPROCKET_PD));
     }
 
-    private double rotationsToDistance(Angle a) {
-        return a.in(Rotations) * (Math.PI * ElevatorConstants.SPROCKET_PD);
+    private Distance rotationsToDistance(Angle a) {
+        return Inches.of(a.in(Rotations) * (Math.PI * ElevatorConstants.SPROCKET_PD));
     }
 }

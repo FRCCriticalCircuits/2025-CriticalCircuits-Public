@@ -8,4 +8,6 @@ public interface WinchIO {
     }
     
     default public void runWinch(double voltage) {};
+
+    default public void blink(double frequency) {};
 }

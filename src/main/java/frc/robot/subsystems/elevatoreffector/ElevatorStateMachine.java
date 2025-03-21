@@ -11,8 +11,9 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import static frc.robot.subsystems.elevatoreffector.ElevatorEffectorSubsystem.ElevatorState.*;
-import static frc.robot.subsystems.elevatoreffector.ElevatorEffectorSubsystem.ElevatorState;
+
+import static frc.robot.subsystems.elevatoreffector.ElevatorSubsystem2.ElevatorState;
+
 /**
  * a graph class can find a path between two nodes (states).
  */
@@ -20,11 +21,13 @@ public class ElevatorStateMachine {
     private final Map<ElevatorState, Node> nodes = new HashMap<>();
     private final Map<ElevatorState, Set<ElevatorState>> edges = new HashMap<>();
 
-    public ElevatorStateMachine() {}
+    public ElevatorStateMachine() {
+    }
 
     /**
      * Add a node to the graph
-     * @param name state
+     *
+     * @param name      state
      * @param positions distance angle pair
      */
     public void addNode(ElevatorState name, Pair<Distance, Angle> positions) {
@@ -41,6 +44,7 @@ public class ElevatorStateMachine {
 
     /**
      * Connect all nodes together such that any node can go to any other node
+     *
      * @param states all nodes to be connected
      */
     public void addFullyConnectedEdges(ElevatorState... states) {
@@ -51,7 +55,7 @@ public class ElevatorStateMachine {
         }
     }
 
-    public Pair<ElevatorState, Pair<Distance, Angle>> findPath(ElevatorState originNode, ElevatorState targetNode) {
+    public Node findPath(ElevatorState originNode, ElevatorState targetNode) {
         if (!nodes.containsKey(originNode) || !nodes.containsKey(targetNode)) {
             throw new IllegalArgumentException("Node does not exist: " + originNode + "," + targetNode);
         }
@@ -88,8 +92,13 @@ public class ElevatorStateMachine {
             current = predecessors.get(current);
         }
 
-        if(path.size() > 1) return new Pair<ElevatorState, Pair<Distance, Angle>>(path.get(1), nodes.get(path.get(1)).getCommands());
-        else return new Pair<ElevatorState, Pair<Distance, Angle>>(path.get(0), nodes.get(path.get(0)).getCommands());
+//        if(path.size() > 1) return new Pair<ElevatorState, Pair<Distance, Angle>>(path.get(1), nodes.get(path.get(1)).getCommands());
+//        else return new Pair<ElevatorState, Pair<Distance, Angle>>(path.get(0), nodes.get(path.get(0)).getCommands());
+
+        // Return the next node in the path if a path is found
+        if (path.size() > 1) return nodes.get(path.get(1));
+        // If no path just return itself
+        else return nodes.get(path.get(0));
     }
 
     public Node getNode(ElevatorState name) {

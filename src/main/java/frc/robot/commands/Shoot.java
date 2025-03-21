@@ -6,7 +6,6 @@ import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
 import frc.robot.subsystems.elevator.RollerIO.RollerMode;
 import frc.robot.utils.structures.DataStrcutures.Level;
 import frc.robot.subsystems.AutoAimManager;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.RollerSubsystem;
 
 public class Shoot extends Command{
@@ -21,9 +20,9 @@ public class Shoot extends Command{
     @Override
     public void initialize(){
         if (AutoAimManager.getInstance().getSetting().getLevel() == Level.L1) {
-            rollerSubsystem.set(RollerMode.C_OUT_LIGHT);
+            rollerSubsystem.setMode(RollerMode.CORAL_OUT_LIGHT);
         } else {
-            rollerSubsystem.set(RollerMode.OUT);
+            rollerSubsystem.setMode(RollerMode.OUT);
         }
         
         /*
@@ -68,7 +67,7 @@ public class Shoot extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        rollerSubsystem.set(RollerMode.HOLD);
+        rollerSubsystem.setMode(RollerMode.HOLD);
 
         if(Robot.isSimulation()){
             RollerIOInputs newInputs = new RollerIOInputs();

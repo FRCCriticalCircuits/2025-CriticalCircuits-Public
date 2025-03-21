@@ -1,9 +1,12 @@
 package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MusicTone;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import java.util.Timer;
 
 public class WinchKraken implements WinchIO {
     TalonFX winchKraken = new TalonFX(29);
@@ -22,10 +25,18 @@ public class WinchKraken implements WinchIO {
         winchConfig.Feedback.SensorToMechanismRatio = 80;
         winchConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
+        winchConfig.Audio.AllowMusicDurDisable = true;
+
         winchKraken.getConfigurator().apply(winchConfig);
     }
     
     public void runWinch(double voltage) {
         winchKraken.setVoltage(voltage);
+    }
+
+    @Override
+    public void blink(double frequency) {
+        MusicTone t = new MusicTone(frequency);
+        winchKraken.setControl(t);
     }
 }

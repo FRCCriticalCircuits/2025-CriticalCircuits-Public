@@ -17,7 +17,7 @@ public class AutoIntakeCoral extends Command{
     
     @Override
     public void initialize(){
-        rollerSubsystem.set(RollerMode.IN);
+        rollerSubsystem.setMode(RollerMode.IN);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class AutoIntakeCoral extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        rollerSubsystem.set(RollerMode.HOLD);
+        rollerSubsystem.setMode(RollerMode.HOLD);
 
         if(Robot.isSimulation()){
             RollerIOInputs newInputs = new RollerIOInputs();
