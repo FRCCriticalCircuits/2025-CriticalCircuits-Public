@@ -19,6 +19,7 @@ import frc.robot.Constants.Physical;
 import frc.robot.commands.swerve.TempDriveOffsetCommand;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.led.LEDSubsystem;
+import frc.robot.utils.DriveStationIO.DriveStationIO;
 import frc.robot.utils.structures.DataStrcutures.Mode;
 
 public class RollerKraken implements RollerIO {
@@ -84,13 +85,12 @@ public class RollerKraken implements RollerIO {
         // );
         inputs.algaeDetected = algaeDebouncer.calculate(
             algaeMotor.getVelocity().getValueAsDouble() < 1.5
-              && algaeMotor.getDeviceEnable().getValue().value == 1.0
-        );
+        ) && DriveStationIO.isEnabled();
 
         // Debounce 100ms due to velocity error
         inputs.coralDetected = coralDebouncer.calculate(
             hatcherMotor.getVelocity().getValueAsDouble() < 1.5
-        );
+        ) && DriveStationIO.isEnabled();
 
         SmartDashboard.putBoolean("algae", inputs.algaeDetected);
         SmartDashboard.putBoolean("coral", inputs.coralDetected);
@@ -140,6 +140,10 @@ public class RollerKraken implements RollerIO {
             case HOLD -> {
                 hatcherMotor.setControl(hatcherControl.withVelocity(3));
                 algaeMotor.stopMotor();
+            }
+            case HOLD_ALGAE ->  {
+                hatcherMotor.setControl(hatcherControl.withVelocity(3));
+                algaeMotor.setControl(hatcherControl.withVelocity(3));
             }
         }
     }

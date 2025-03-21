@@ -268,19 +268,13 @@ public class RobotContainer {
 
         NamedCommands.registerCommand(
                 "intakeCoral",
-                new AutoIntakeCoral(rollerSubsystem));
-
-        // TODO: make autointakealgae command, these wont work as is due to not constantly being run
-//        NamedCommands.registerCommand(
-//                "intakeAlgae",
-//                rollerSubsystem.intakeAlgaeCommand());
-//
-//        NamedCommands.registerCommand(
-//                "fetchAlgae",
-//                new InstantCommand(
-//                        () -> {
-//                            elevatorSubsystem.fetchAlgae = !elevatorSubsystem.fetchAlgae;
-//                        }, elevatorSubsystem, rollerSubsystem));
+                rollerSubsystem.intakeCoralCommand().until(rollerSubsystem::hasCoral));
+        NamedCommands.registerCommand(
+                "intakeAlgae",
+                rollerSubsystem.intakeAlgaeCommand().until(rollerSubsystem::hasAlgae));
+        NamedCommands.registerCommand(
+                "fetchAlgae",
+                elevatorSubsystem.fetchAlgaeCommand().until(rollerSubsystem::hasAlgae));
 
         // Vision commands
         NamedCommands.registerCommand(

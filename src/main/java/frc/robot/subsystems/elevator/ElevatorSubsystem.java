@@ -212,7 +212,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     nextState = graphMachine.findPath(curState, targetState);
 
     armIO.setRotation(Rotation2d.fromRotations(nextState.getSecond().getFirst()));
-    armIO.updateInputs(armInputs, rollerSubsystem.hasCoral(), rollerSubsystem.algaeDetected());
+    armIO.updateInputs(armInputs, rollerSubsystem.hasCoral(), rollerSubsystem.hasAlgae());
 
     elevatorIO.setPosition(nextState.getSecond().getSecond());
     elevatorIO.updateInputs(elevatorInputs);

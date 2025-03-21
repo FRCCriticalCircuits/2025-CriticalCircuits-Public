@@ -14,7 +14,8 @@ public interface RollerIO {
         ALGAE_IN,
         ALGAE_OUT,
         CORAL_OUT_LIGHT,
-        HOLD
+        HOLD,
+        HOLD_ALGAE
     }
 
     public default void updateInputs(RollerIOInputs inputs, boolean lowVoltage) {}

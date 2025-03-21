@@ -26,7 +26,7 @@ public class IntakeAlgae extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        if(rollerSubsystem.algaeDetected()) rollerSubsystem.setMode(RollerMode.HOLD);
+        if(rollerSubsystem.hasAlgae()) rollerSubsystem.setMode(RollerMode.HOLD);
         else rollerSubsystem.setMode(RollerMode.HOLD);
 
         if(Robot.isSimulation()){
