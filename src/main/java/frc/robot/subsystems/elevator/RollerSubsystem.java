@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.RollerIO.RollerIOInputs;
 import frc.robot.subsystems.elevator.RollerIO.RollerMode;
+import frc.robot.subsystems.elevatoreffector.ElevatorSubsystem2;
 import frc.robot.utils.structures.DataStrcutures;
 
 import java.util.function.Supplier;
@@ -15,9 +16,9 @@ public class RollerSubsystem extends SubsystemBase {
     private RollerIO rollerIO;
     private RollerIOInputs inputs = new RollerIOInputs();
 
-    public RollerSubsystem(Robot r) {
+    public RollerSubsystem(Robot r, ElevatorSubsystem2 e) {
         if (Robot.isReal()) {
-            this.rollerIO = new RollerKraken(r);
+            this.rollerIO = new RollerKraken(r, e);
         } else {
             this.rollerIO = new RollerSim();
         }

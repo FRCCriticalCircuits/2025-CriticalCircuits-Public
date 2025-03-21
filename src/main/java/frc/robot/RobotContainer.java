@@ -20,8 +20,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.KeyBinding;
-import frc.robot.commands.AutoIntakeCoral;
-import frc.robot.commands.Shoot;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.WaitElevator;
 import frc.robot.commands.climber.WinchDownCommand;
@@ -80,14 +78,15 @@ public class RobotContainer {
 
         swerveSubsystem = SwerveSubsystem.getInstance();
         visionSubsystem = new VisionSubsystem(swerveSubsystem);
-        rollerSubsystem = new RollerSubsystem(robot);
-//		elevatorSubsystem = new ElevatorSubsystem(rollerSubsystem);
         if (Robot.isReal()) {
             elevatorSubsystem = new ElevatorSubsystem2(new ElevatorIOTalonFX(), new WristIOTalonFX());
         } else {
             // Simulation classes
             elevatorSubsystem = new ElevatorSubsystem2(new ElevatorIO() {}, new WristIO() {});
         }
+        rollerSubsystem = new RollerSubsystem(robot, elevatorSubsystem);
+//		elevatorSubsystem = new ElevatorSubsystem(rollerSubsystem);
+
         winchSubsystem = WinchSubsystem.getInstance();
 
         visionSubsystem.start();
@@ -210,11 +209,11 @@ public class RobotContainer {
                             elevatorSubsystem.setMode(Mode.valueOf(mode));
                         }, elevatorSubsystem, rollerSubsystem));
 
-        operatorController.povUp().debounce(0.02).whileTrue(
-                new WinchUpCommand(winchSubsystem, rollerSubsystem));
-
-        operatorController.povDown().debounce(0.02).whileTrue(
-                new WinchDownCommand(winchSubsystem, rollerSubsystem));
+//        operatorController.povUp().debounce(0.02).whileTrue(
+//                new WinchUpCommand(winchSubsystem, rollerSubsystem, elevatorSubsystem));
+//
+//        operatorController.povDown().debounce(0.02).whileTrue(
+//                new WinchDownCommand(winchSubsystem, rollerSubsystem, elevatorSubsystem));
 
         driveController.leftBumper().debounce(0.02).whileTrue(
                 new ParallelCommandGroup(

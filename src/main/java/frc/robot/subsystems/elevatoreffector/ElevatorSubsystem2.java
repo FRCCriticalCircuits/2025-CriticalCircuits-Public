@@ -139,6 +139,9 @@ public class ElevatorSubsystem2 extends SubsystemBase {
 
     private ElevatorState updateCurrentRequestedState(Mode mode, Level level) {
         switch (this.mode) {
+            case CLIMB -> {
+                return ElevatorState.CLIMB;
+            }
             case CORAL_INTAKE -> {
                 ledSubsystem.setColor(Color.kRed);
                 // FIXME: temporary IDLE state for testing

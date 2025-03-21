@@ -18,11 +18,13 @@ import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.Physical;
 import frc.robot.commands.swerve.TempDriveOffsetCommand;
 import frc.robot.subsystems.AutoAimManager;
+import frc.robot.subsystems.elevatoreffector.ElevatorSubsystem2;
 import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
 import frc.robot.utils.structures.DataStrcutures.Mode;
 
 public class RollerKraken implements RollerIO {
+    private final ElevatorSubsystem2 elevatorSubsystem;
     private TalonFX hatcherMotor;
     private TalonFX algaeMotor;
 
@@ -40,8 +42,9 @@ public class RollerKraken implements RollerIO {
 
     private boolean sameCoral = false;
 
-    public RollerKraken(Robot r){
+    public RollerKraken(Robot r, ElevatorSubsystem2 e){
         this.robot = r;
+        this.elevatorSubsystem = e;
         hatcherMotor = new TalonFX(DeviceID.Angler.HATCHER_ID);
         algaeMotor = new TalonFX(DeviceID.Angler.INTAKE_ID);
 
@@ -95,12 +98,9 @@ public class RollerKraken implements RollerIO {
         SmartDashboard.putBoolean("algae", inputs.algaeDetected);
         SmartDashboard.putBoolean("coral", inputs.coralDetected);
 
-        if (inputs.coralDetected && 
-            (AutoAimManager.getInstance().getSetting().getMode() == Mode.CORAL_INTAKE 
-                || AutoAimManager.getInstance().getSetting().getMode() == Mode.CORAL_PLACE
-            ) && hatcherMotor.getDeviceEnable().getValue().value == 1.0
+        // Automatic state changing
+        if (inputs.coralDetected && elevatorSubsystem.getMode() == Mode.CORAL_INTAKE
             && robot.isTeleopEnabled()
-            
         ) {
             if (!sameCoral) {
                 sameCoral = true;
@@ -108,7 +108,7 @@ public class RollerKraken implements RollerIO {
                 new TempDriveOffsetCommand(0, -1).withTimeout(0.25).andThen(
                   new InstantCommand(() -> {
                     // Change the mode back to coral placement
-                    AutoAimManager.getInstance().updateMode(Mode.CORAL_PLACE);  
+                    elevatorSubsystem.setMode(Mode.CORAL_PLACE);
                   })
                 );
             }
