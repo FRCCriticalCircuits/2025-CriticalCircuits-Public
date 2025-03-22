@@ -38,11 +38,12 @@ public class ElevatorSubsystem2 extends SubsystemBase {
     private final WristIOInputsAutoLogged wristInputs = new WristIOInputsAutoLogged();
 
     private final ElevatorStateMachine stateMachine;
+    // default state is zeroed
     private ElevatorState currentState;
     private ElevatorState requestedState;
 
-    private Mode mode;
-    private Level level;
+    private Mode mode = Mode.CORAL_PLACE;
+    private Level level = Level.L1;
     private boolean algaeIntake = false;
 
     public ElevatorSubsystem2(ElevatorIO elevatorIO, WristIO wristIO) {
@@ -115,7 +116,6 @@ public class ElevatorSubsystem2 extends SubsystemBase {
         Logger.processInputs("Elevator", elevatorInputs);
         Logger.processInputs("Wrist", wristInputs);
 
-        // TODO: implement graph for elevator
         // TODO: set heigh constnats properly
 
         // gigantic switch statement that turns the mode, level to a state
@@ -138,7 +138,7 @@ public class ElevatorSubsystem2 extends SubsystemBase {
     }
 
     private ElevatorState updateCurrentRequestedState(Mode mode, Level level) {
-        switch (this.mode) {
+        switch (mode) {
             case CLIMB -> {
                 return ElevatorState.CLIMB;
             }
@@ -150,7 +150,7 @@ public class ElevatorSubsystem2 extends SubsystemBase {
             }
             case CORAL_PLACE -> {
                 ledSubsystem.setColor(Color.kBlue);
-                switch (this.level) {
+                switch (level) {
                     case L1 -> {
                         return ElevatorState.L1_CORAL;
                     }
@@ -176,7 +176,7 @@ public class ElevatorSubsystem2 extends SubsystemBase {
                 return ElevatorState.IDLE;
 
                 /*
-                switch (this.level) {
+                switch (level) {
                     case L1 -> {
                         return ElevatorState.GROUND_INTAKE_ALGAE;
                     }
@@ -201,7 +201,7 @@ public class ElevatorSubsystem2 extends SubsystemBase {
                 */
             }
         }
-        return null;
+        return ElevatorState.IDLE;
     }
 
     /**

@@ -17,7 +17,6 @@ import frc.robot.Robot;
 import frc.robot.Constants.DeviceID;
 import frc.robot.Constants.Physical;
 import frc.robot.commands.swerve.TempDriveOffsetCommand;
-import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.elevatoreffector.ElevatorSubsystem2;
 import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.utils.DriveStationIO.DriveStationIO;
@@ -35,10 +34,10 @@ public class RollerKraken implements RollerIO {
     private Debouncer coralDebouncer = new Debouncer(0.1);
     private Debouncer algaeDebouncer = new Debouncer(0.1);
 
-    private RollerMode mode = RollerMode.HOLD;
+    private final VelocityVoltage hatcherControl = new VelocityVoltage(0).withSlot(0);
+    private final Robot robot;
 
-    private VelocityVoltage hatcherControl = new VelocityVoltage(0).withSlot(0);
-    private Robot robot;
+    private RollerMode mode = RollerMode.HOLD_CORAL;
 
     private boolean sameCoral = false;
 
@@ -95,28 +94,13 @@ public class RollerKraken implements RollerIO {
             hatcherMotor.getVelocity().getValueAsDouble() < 1.5
         ) && DriveStationIO.isEnabled();
 
+        inputs.mode = mode;
+
         SmartDashboard.putBoolean("algae", inputs.algaeDetected);
         SmartDashboard.putBoolean("coral", inputs.coralDetected);
 
         // Automatic state changing
-        if (inputs.coralDetected && elevatorSubsystem.getMode() == Mode.CORAL_INTAKE
-            && robot.isTeleopEnabled()
-        ) {
-            if (!sameCoral) {
-                sameCoral = true;
-                // Move the robot back and change the elevator state automatically
-                new TempDriveOffsetCommand(0, -1).withTimeout(0.25).andThen(
-                  new InstantCommand(() -> {
-                    // Change the mode back to coral placement
-                    elevatorSubsystem.setMode(Mode.CORAL_PLACE);
-                  })
-                );
-            }
-            LEDSubsystem.getInstance().setBlink(true);
-        } else {
-            sameCoral = false;
-            LEDSubsystem.getInstance().setBlink(false);
-        }
+
     }
 
     @Override
@@ -137,7 +121,7 @@ public class RollerKraken implements RollerIO {
                 hatcherMotor.setControl(hatcherControl.withVelocity(-4.5));
                 algaeMotor.stopMotor();
             }
-            case HOLD -> {
+            case HOLD_CORAL -> {
                 hatcherMotor.setControl(hatcherControl.withVelocity(3));
                 algaeMotor.stopMotor();
             }

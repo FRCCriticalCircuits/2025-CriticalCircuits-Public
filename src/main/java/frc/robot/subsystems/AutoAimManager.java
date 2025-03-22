@@ -96,17 +96,6 @@ public class AutoAimManager {
         AdvancedPose2D targetPose = null;
         int idx = -1;
 
-        // for (AdvancedPose2D pose : AutoAimConstants.REEF_POSES) {
-        // // Find distance between robot and reef posts
-        // double tmpDist =
-        // pose.getTranslation().getDistance(currentPose.getTranslation());
-        // // check all posts to find the closest one
-        // if (tmpDist < minDist) {
-        // targetPose = pose;
-        // minDist = tmpDist;
-        // }
-        // }
-
         List<Pose2d> reefPoses;
         AdvancedPose2D reefCenter;
         if (DriveStationIO.getAlliance() == Alliance.Blue) {

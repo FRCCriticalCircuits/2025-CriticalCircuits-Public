@@ -4,6 +4,7 @@ public interface RollerIO {
     public static class RollerIOInputs {
         public boolean coralDetected = false; 
         public boolean algaeDetected = false;
+        public RollerMode mode = RollerMode.HOLD_CORAL;
     }
 
     public enum RollerMode{
@@ -14,7 +15,7 @@ public interface RollerIO {
         ALGAE_IN,
         ALGAE_OUT,
         CORAL_OUT_LIGHT,
-        HOLD,
+        HOLD_CORAL,
         HOLD_ALGAE
     }
 

@@ -17,8 +17,8 @@ public class TeleopDrive extends Command {
   public static TeleopDrive instance;
   public static boolean manualEnable = true;
   // xy speed offsets for the robot
-  private static double xOffset;
-  private static double yOffset;
+  private static double xOffset = 0;
+  private static double yOffset = 0;
 
   private SwerveSubsystem swerveSubsystem;
 
@@ -48,9 +48,6 @@ public class TeleopDrive extends Command {
     this.xLimiter = new SlewRateLimiter(5);
     this.yLimiter = new SlewRateLimiter(5);
     this.omegaLimiter = new SlewRateLimiter(Math.PI);
-
-    this.xOffset = 0;
-    this.yOffset = 0;
 
     addRequirements(swerveSubsystem);
   }
@@ -85,8 +82,8 @@ public class TeleopDrive extends Command {
       xSpeed = Math.abs(xSpeed) > 0.15 ? xSpeed : 0.0;
       ySpeed = Math.abs(ySpeed) > 0.15 ? ySpeed : 0.0;
       rotSpeed = Math.abs(rotSpeed) > 0.15 ? rotSpeed : 0.0;
-      factorA = (factorA > 0.3) ? factorA : 0.3;
-      factorB = (factorB > 0.3) ? factorB : 0.3;
+      factorA = Math.max(factorA, 0.3);
+      factorB = Math.max(factorB, 0.3);
 
       /**
        * Apply Speed Factors
@@ -119,12 +116,15 @@ public class TeleopDrive extends Command {
       
       // FIXME: remove the offsets if they mess up
       // Add in the speed offsets and clamp to drivebase max speed
-      // speeds.vxMetersPerSecond = Math.max(speeds.vxMetersPerSecond + xOffset, Physical.DriveBase.MAX_SPEED_METERS);
-      // speeds.vyMetersPerSecond = Math.max(speeds.vyMetersPerSecond + yOffset, Physical.DriveBase.MAX_SPEED_METERS);
+       speeds.vxMetersPerSecond = Math.min(speeds.vxMetersPerSecond + xOffset, Physical.DriveBase.MAX_SPEED_METERS);
+       speeds.vyMetersPerSecond = Math.min(speeds.vyMetersPerSecond + yOffset, Physical.DriveBase.MAX_SPEED_METERS);
       swerveSubsystem.setModuleStates(speeds);
 
-      // SmartDashboard.putNumber("Requested x", speeds.vxMetersPerSecond);
-      // SmartDashboard.putNumber("Requested y", speeds.vyMetersPerSecond);
+      SmartDashboard.putNumber("Requestedx", speeds.vxMetersPerSecond);
+      SmartDashboard.putNumber("Requestedy", speeds.vyMetersPerSecond);
+
+      // System.out.println("Requestedx" + speeds.vxMetersPerSecond);
+      // System.out.println("Requestedy" + speeds.vyMetersPerSecond);
 
       // SmartDashboard.putNumber("True x");
       // SmartDashboard.putNumber("True y", speeds.vyMetersPerSecond);

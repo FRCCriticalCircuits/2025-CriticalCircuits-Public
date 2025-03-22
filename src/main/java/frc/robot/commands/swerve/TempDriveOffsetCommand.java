@@ -7,7 +7,7 @@ import frc.robot.commands.TeleopDrive;
 
 public class TempDriveOffsetCommand extends Command {
   private double x, y;
-  private int MAX_TIME = 1;
+  private final int MAX_TIME = 1;
   public TempDriveOffsetCommand(double x, double y) {
     this.x = x;
     this.y = y;
@@ -19,9 +19,7 @@ public class TempDriveOffsetCommand extends Command {
     TeleopDrive.setRelativeYSpeedOffset(y);
 
     // Force the command to cancel if run for too long to prevent loss of driver control
-    new WaitCommand(MAX_TIME).andThen(new InstantCommand(() -> {
-      cancel();
-    })).schedule();
+    new WaitCommand(MAX_TIME).andThen(new InstantCommand(this::cancel)).schedule();
   }
 
   @Override

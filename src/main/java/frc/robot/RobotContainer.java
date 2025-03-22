@@ -8,9 +8,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -22,18 +22,16 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.KeyBinding;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.WaitElevator;
-import frc.robot.commands.climber.WinchDownCommand;
-import frc.robot.commands.climber.WinchUpCommand;
 import frc.robot.commands.swerve.AutoAlignCommand;
 import frc.robot.subsystems.AutoAimManager;
 import frc.robot.subsystems.Controller;
 import frc.robot.subsystems.climber.WinchSubsystem;
-import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.RollerSubsystem;
 import frc.robot.subsystems.elevatoreffector.ElevatorIO;
-import frc.robot.subsystems.elevatoreffector.ElevatorIOTalonFX;
+import frc.robot.subsystems.elevatoreffector.ElevatorIOSim;
 import frc.robot.subsystems.elevatoreffector.ElevatorSubsystem2;
 import frc.robot.subsystems.elevatoreffector.WristIO;
+import frc.robot.subsystems.elevatoreffector.WristIOSim;
 import frc.robot.subsystems.elevatoreffector.WristIOTalonFX;
 import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.swerve.SwerveSubsystem;
@@ -79,10 +77,11 @@ public class RobotContainer {
         swerveSubsystem = SwerveSubsystem.getInstance();
         visionSubsystem = new VisionSubsystem(swerveSubsystem);
         if (Robot.isReal()) {
-            elevatorSubsystem = new ElevatorSubsystem2(new ElevatorIOTalonFX(), new WristIOTalonFX());
+            elevatorSubsystem = new ElevatorSubsystem2(new ElevatorIOSim(), new WristIOTalonFX());
         } else {
+            DriverStation.silenceJoystickConnectionWarning(true);
             // Simulation classes
-            elevatorSubsystem = new ElevatorSubsystem2(new ElevatorIO() {}, new WristIO() {});
+            elevatorSubsystem = new ElevatorSubsystem2(new ElevatorIOSim(), new WristIOSim());
         }
         rollerSubsystem = new RollerSubsystem(robot, elevatorSubsystem);
 //		elevatorSubsystem = new ElevatorSubsystem(rollerSubsystem);
@@ -106,7 +105,8 @@ public class RobotContainer {
         autoChooser.addOption("Taxi", "Taxi");
         // autoChooser.addOption("(Left) 1 Piece Mid", "(Left) 1 Piece Mid");
 
-        SmartDashboard.putData("Auto Chooser", autoChooser);
+        //FIXME: reenable auto chooser after fixing elevator
+//        SmartDashboard.putData("Auto Chooser", autoChooser);
 
         configureBindings();
     }
@@ -147,6 +147,13 @@ public class RobotContainer {
         driveController.a().whileTrue(
                 new AutoAlignCommand(targetPoseSupplier, swerveSubsystem)
         );
+
+        driveController.rightBumper().debounce(0.02).whileTrue(
+                rollerSubsystem.intakeCoralCommand()
+        );
+
+        driveController.y().debounce(0.02).whileTrue(
+                rollerSubsystem.outtakeCoralCommand(elevatorSubsystem::getLevel));
 
         // Test side step
         // driveController.povRight().debounce(0.02).whileTrue(
@@ -221,13 +228,6 @@ public class RobotContainer {
                         rollerSubsystem.intakeAlgaeCommand()
                 )
         );
-
-        driveController.rightBumper().debounce(0.02).whileTrue(
-                rollerSubsystem.intakeCoralCommand()
-        );
-
-        driveController.y().debounce(0.02).whileTrue(
-                rollerSubsystem.outtakeCoralCommand(elevatorSubsystem::getLevel));
 
         NamedCommands.registerCommand(
                 "setModeCoral",
